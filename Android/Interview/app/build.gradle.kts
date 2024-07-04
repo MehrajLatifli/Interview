@@ -140,18 +140,18 @@ dependencies {
     // optional - Test helpers for Lifecycle runtime
     testImplementation ("androidx.lifecycle:lifecycle-runtime-testing:$lifecycle_version")
 
-
     //Viewpager2
     implementation("androidx.viewpager2:viewpager2:1.1.0")
     implementation(platform("androidx.compose:compose-bom:2024.06.00"))
 
+    //Dotsindicator
     implementation("com.tbuonomo:dotsindicator:5.0")
 
     //Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
 
-
+    //Swipe Refreshlayout
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 
     //Splash Screen

@@ -2,4 +2,11 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="bluemana">#51c9f4</color>
+    <color name="maize">#f4ce51</color>
+    <color name="fuchsiafelicity">#f45178</color>
+    <color name="thalliumflame">#51f47c</color>
+    <color name="kinkypinky">#f451c9</color>
+    <color name="richgardenia">#f47c51</color>
+    <color name="transparent">#00000000</color>
 </resources>
