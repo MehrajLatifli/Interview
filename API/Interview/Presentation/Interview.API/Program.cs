@@ -130,13 +130,18 @@ builder.Services.AddAuthentication(options =>
 
 
 
+//builder.WebHost.UseUrls("https://localhost:6000");
 
-builder.WebHost.UseUrls("https://localhost:7077");
 
-IConfigurationRoot configuration = new ConfigurationBuilder()
-    .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
-    .AddJsonFile("appsettings.json")
-.Build();
+
+
+
+var env = builder.Environment;
+
+builder.Configuration
+    .SetBasePath(env.ContentRootPath)
+    .AddJsonFile("appsettings.json", optional: false)
+    .AddJsonFile($"appsettings{env.EnvironmentName}.json", optional: true).Build();
 
 
 builder.Services.AddRateLimiterServiceExtension();
@@ -159,12 +164,19 @@ builder.Services.AddAzureClients(clientBuilder =>
 
 
 
+
 // Disable when use ApiExceptionFilterAttribute
 builder.Services.AddTransient<ExceptionMiddleware>();
 
 
 
-builder.Host.UseSerilog(builder.Services.AddCustomSerilog(builder.Configuration.GetConnectionString("LogConnection"),builder.Configuration["Seq:SeqConnection"]));
+builder.Host.UseSerilog(builder.Services.AddCustomSerilog(builder.Configuration.GetConnectionString("LogConnection"), builder.Configuration["Seq:SeqConnection"]));
+
+
+//builder.WebHost.ConfigureKestrel(options =>
+//{
+//    options.ListenAnyIP(6000); 
+//});
 
 var app = builder.Build();
 
@@ -173,8 +185,23 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.UseHttpsRedirection();
+}
+if (app.Environment.IsProduction())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+    app.UseHttpsRedirection();
+}
+else
+{
+    app.UseHttpsRedirection();
+    app.UseHsts();
+    app.UseSwagger();
+    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "API V1"));
 }
 
 
@@ -191,7 +218,7 @@ app.UseRateLimiter();
 
 app.UseRouting();
 
-app.UseHttpsRedirection();
+
 
 app.UseAuthentication();
 app.UseAuthorization();

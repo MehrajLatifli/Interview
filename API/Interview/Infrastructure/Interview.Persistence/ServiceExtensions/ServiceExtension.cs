@@ -44,9 +44,13 @@ namespace Interview.Persistence.ServiceExtensions
         {
             get
             {
+                var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+
                 ConfigurationManager configurationManager = new ConfigurationManager();
-                //configurationManager.SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "../../Presentation/Interview.API"));
-                configurationManager.AddJsonFile("appsettings.json");
+                configurationManager.SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{env}.json", optional: true) // Load environment specific settings
+                .AddEnvironmentVariables();
 
                 return configurationManager.GetConnectionString("CustomDbConnection");
             }
@@ -56,9 +60,13 @@ namespace Interview.Persistence.ServiceExtensions
         {
             get
             {
+                var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+
                 ConfigurationManager configurationManager = new ConfigurationManager();
-                //configurationManager.SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "../../Presentation/Interview.API"));
-                configurationManager.AddJsonFile("appsettings.json");
+                configurationManager.SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{env}.json", optional: true) // Load environment specific settings
+                .AddEnvironmentVariables();
 
                 return configurationManager.GetConnectionString("DefaultConnection");
             }
@@ -69,9 +77,13 @@ namespace Interview.Persistence.ServiceExtensions
         {
             get
             {
+                var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+
                 ConfigurationManager configurationManager = new ConfigurationManager();
-                //configurationManager.SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "../../Presentation/Interview.API"));
-                configurationManager.AddJsonFile("appsettings.json");
+                configurationManager.SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{env}.json", optional: true) // Load environment specific settings
+                .AddEnvironmentVariables();
 
                 return configurationManager["ConnectionAzureStorage"];
             }
@@ -260,8 +272,8 @@ namespace Interview.Persistence.ServiceExtensions
                 logging.RequestHeaders.Add("sec-ch-ua");
                 logging.ResponseHeaders.Add("Interview.API");
                 logging.MediaTypeOptions.AddText("application/javascript");
-                logging.RequestBodyLogLimit = 40960;
-                logging.ResponseBodyLogLimit = 40960;
+                logging.RequestBodyLogLimit = 4096;
+                logging.ResponseBodyLogLimit = 4096;
 
             });
 

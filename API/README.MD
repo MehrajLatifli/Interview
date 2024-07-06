@@ -42,7 +42,17 @@ ORDER BY Timestamp DESC </p>
 
 </br>
 
+<h1> Dockerize </h1>
+docker build    -f "Your_RootPath\Interview\API\Interview\Presentation\Interview.API\Dockerfile"    -t interview:dev    "Your_RootPath\Interview\API\Interview"
 
+<p> If Unable to configure HTTPS endpoint</p> 
+1)dotnet dev-certs https --clean
+2)dotnet dev-certs https --trust
+3)Restart VS
+4)docker-compose down    
+5)docker-compose up --build
+
+</br>
 
 <h1> Migration </h1>
 add-migration InterviewContextMigration -Context Interview.Persistence.Contexts.InterviewDbContext.InterviewContext
