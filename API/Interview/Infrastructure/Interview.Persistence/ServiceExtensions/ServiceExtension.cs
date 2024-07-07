@@ -36,6 +36,7 @@ using Interview.Application.Validations;
 using Interview.Domain.Entities.IdentityAuth;
 using Interview.Application.Repositories.Abstract;
 using Asp.Versioning;
+using Microsoft.Extensions.Options;
 
 namespace Interview.Persistence.ServiceExtensions
 {
@@ -91,23 +92,6 @@ namespace Interview.Persistence.ServiceExtensions
         }
 
 
-
-        public static void APIVersion(this IServiceCollection services)
-        {
-            services.AddApiVersioning(options =>
-            {
-                options.DefaultApiVersion = new ApiVersion(1);
-                options.ReportApiVersions = true;
-                options.AssumeDefaultVersionWhenUnspecified = true;
-                options.ApiVersionReader = ApiVersionReader.Combine(
-                    new UrlSegmentApiVersionReader(),
-                    new HeaderApiVersionReader("X-Api-Version"));
-            }).AddApiExplorer(options =>
-            {
-                options.GroupNameFormat = "'v'V";
-                options.SubstituteApiVersionInUrl = true;
-            });
-        }
 
 
         public static void AddPersistenceServices(this IServiceCollection services)
@@ -206,16 +190,38 @@ namespace Interview.Persistence.ServiceExtensions
 
         }
 
+        public static void APIVersion(this IServiceCollection services)
+        {
+            services.AddApiVersioning(options =>
+            {
+                options.DefaultApiVersion = new ApiVersion(1);
+                options.ReportApiVersions = true;
+                options.AssumeDefaultVersionWhenUnspecified = true;
+                options.ApiVersionReader = ApiVersionReader.Combine(
+                    new UrlSegmentApiVersionReader(),
+                    new HeaderApiVersionReader("X-Api-Version"));
+            }).AddApiExplorer(options =>
+            {
+                options.GroupNameFormat = "'v'V";
+                options.SubstituteApiVersionInUrl = true;
+            });
+        }
+
 
         public static IServiceCollection AddSwaggerGenServiceExtension(this IServiceCollection services)
         {
+            var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+
+            var apiVersioningOptions = services.BuildServiceProvider().GetRequiredService<IOptions<ApiVersioningOptions>>().Value;
+            var defaultApiVersion = apiVersioningOptions.DefaultApiVersion;
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Title = "Interview WebAPI",
-                    Version = "v1",
-                    Description = "It is intended for the convenience of the interview process."
+                    Title = $"Interview WebAPI",
+                    Version = $"v{defaultApiVersion}",
+                    Description = $"Environment: {env}"
                 });
 
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme

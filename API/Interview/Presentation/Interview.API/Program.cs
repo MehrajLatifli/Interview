@@ -187,22 +187,23 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
 
+    app.UseHttpsRedirection();
     app.UseSwagger();
     app.UseSwaggerUI();
-    app.UseHttpsRedirection();
 }
 if (app.Environment.IsProduction())
 {
+
+    app.UseHttpsRedirection();
     app.UseSwagger();
     app.UseSwaggerUI();
-    app.UseHttpsRedirection();
 }
 else
 {
-    app.UseHttpsRedirection();
-    app.UseHsts();
+   // app.UseHttpsRedirection();
+   // app.UseHsts();
     app.UseSwagger();
-    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "API V1"));
+    app.UseSwaggerUI();
 }
 
 
