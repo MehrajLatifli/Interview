@@ -128,6 +128,7 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+builder.Services.APIVersion();
 
 
 //builder.WebHost.UseUrls("https://localhost:6000");

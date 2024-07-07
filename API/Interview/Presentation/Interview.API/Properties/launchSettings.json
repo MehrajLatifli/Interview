@@ -1,17 +1,17 @@
 {
   "profiles": {
-    "InterviewAPI.Production": {
+    "InterviewAPI.http": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "swagger",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Production"
+        "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "dotnetRunMessages": true,
       "applicationUrl": "http://localhost:5053"
     },
 
-    "InterviewAPI.Development": {
+    "InterviewAPI.https": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "swagger",
@@ -47,7 +47,7 @@
       "launchBrowser": true,
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/swagger",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Docker",
+        "ASPNETCORE_ENVIRONMENT": "Development",
         "ASPNETCORE_URLS": "https://+:443;http://+:80"
       },
       "publishAllPorts": true,

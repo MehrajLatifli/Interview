@@ -24,10 +24,13 @@ using Interview.Persistence.Contexts.InterviewDbContext;
 using Microsoft.EntityFrameworkCore;
 using Interview.Persistence.SqlQueries;
 using Interview.Application.Mapper.DTO.AuthDTO;
+using Asp.Versioning;
 
 namespace Interview.API.Controllers.Auth
 {
-    [Route("api/[controller]")]
+
+    [ApiVersion(1, Deprecated = true)]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
     {
