@@ -1,4 +1,5 @@
-﻿using Interview.API.API_Routes;
+﻿using Asp.Versioning;
+using Interview.API.API_Routes;
 using Interview.Application.Mapper.DTO.CategoryDTO;
 using Interview.Application.Services.Abstract;
 using Interview.Domain.Entities.AuthModels;
@@ -8,7 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Interview.API.Controllers.Operations
 {
-    [Route("api/[controller]")]
+    [ApiVersion(1, Deprecated = true)]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
 
     public class CategoryController : ControllerBase
