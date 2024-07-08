@@ -1,12 +1,8 @@
 package com.example.interview.utilities
 
-import android.content.Context
-import androidx.fragment.app.Fragment
-
 object Constants {
 
-    private lateinit var context: Context
+    const val Base_URL = "https://api.tomorrow.io/v4/weather/"
 
-    val Base_URL = "https://${context.getSharedPreferences("baseURL_local", Context.MODE_PRIVATE)}/"
 
 }

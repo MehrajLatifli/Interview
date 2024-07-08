@@ -1,13 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
-    <color name="bluemana">#51c9f4</color>
-    <color name="maize">#f4ce51</color>
-    <color name="fuchsiafelicity">#f45178</color>
-    <color name="thalliumflame">#51f47c</color>
-    <color name="kinkypinky">#f451c9</color>
-    <color name="richgardenia">#f47c51</color>
-    <color name="red">#FF0000</color>
-    <color name="transparent">#00000000</color>
+    <color name="Black">#FF000000</color>
+    <color name="White">#FFFFFFFF</color>
+    <color name="Transparent">#00FFFFFF</color>
+    <color name="Red">#F44336</color>
+    <color name="Pink">#E91E63</color>
+    <color name="Purple">#9C27B0</color>
+    <color name="DeepPurple">#673AB7</color>
+    <color name="Indigo">#3F51B5</color>
+    <color name="Blue">#2196F3</color>
+    <color name="LightBlue">#03A9F4</color>
+    <color name="Cyan">#00BCD4</color>
+    <color name="Teal">#009688</color>
+    <color name="Green">#4CAF50</color>
+    <color name="LightGreen">#8BC34A</color>
+    <color name="Lime">#CDDC39</color>
+    <color name="Yellow">#FFEB3B</color>
+    <color name="Amber">#FFC107</color>
+    <color name="Orange">#FF9800</color>
+    <color name="DeepOrange">#FF5722</color>
+    <color name="Brown">#795548</color>
+    <color name="BlueGrey">#607D8B</color>
 </resources>
