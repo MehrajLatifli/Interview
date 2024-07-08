@@ -49,8 +49,9 @@ docker build    -f "Your_RootPath\Interview\API\Interview\Presentation\Interview
 1)dotnet dev-certs https --clean
 2)dotnet dev-certs https --trust
 3)if do not work anything -> Restart VS
-4)docker-compose down    
-5)docker-compose up --build
+4)cd Your_RootPath\Interview\API\Interview
+5)docker-compose down    
+6)docker-compose up --build
 
 </br>
 

@@ -185,21 +185,30 @@ if (app.Environment.IsDevelopment())
 
     app.UseHttpsRedirection();
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Interview API V1");
+    });
 }
 if (app.Environment.IsProduction())
 {
 
     app.UseHttpsRedirection();
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Interview API V1");
+    });
 }
 else
 {
    // app.UseHttpsRedirection();
    // app.UseHsts();
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Interview API V1");
+    });
 }
 
 
