@@ -46,17 +46,17 @@ ORDER BY Timestamp DESC </p>
 docker build    -f "Your_RootPath\Interview\API\Interview\Presentation\Interview.API\Dockerfile"    -t interview:dev    "Your_RootPath\Interview\API\Interview" 
 <br/>
 <br/>
-1)dotnet dev-certs https --clean
+1) dotnet dev-certs https --clean
 <br/>
-2)dotnet dev-certs https --trust
+2) dotnet dev-certs https --trust
 <br/>
-3)if do not work anything -> Restart VS
+3) if do not work anything -> Restart VS
 <br/>
-4)cd Your_RootPath\Interview\API\Interview
+4) cd Your_RootPath\Interview\API\Interview
 <br/>
-5)docker-compose down
+5) docker-compose down
 <br/>    
-6)docker-compose up --build
+6) docker-compose up --build
 
 </br>
 <br/>
