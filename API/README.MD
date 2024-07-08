@@ -44,7 +44,8 @@ ORDER BY Timestamp DESC </p>
 
 <h1> Dockerize </h1>
 docker build    -f "Your_RootPath\Interview\API\Interview\Presentation\Interview.API\Dockerfile"    -t interview:dev    "Your_RootPath\Interview\API\Interview" 
-
+<br/>
+<br/>
 1)dotnet dev-certs https --clean
 <br/>
 2)dotnet dev-certs https --trust
