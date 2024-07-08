@@ -99,6 +99,7 @@ namespace Interview.API.Middlewares
                     user = username,
                     date = localTime,
                     machine= Environment.MachineName,
+                    mode=Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"),
                 };
 
 

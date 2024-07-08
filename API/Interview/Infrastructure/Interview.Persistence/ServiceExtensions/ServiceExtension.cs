@@ -49,10 +49,23 @@ namespace Interview.Persistence.ServiceExtensions
                 var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 
                 ConfigurationManager configurationManager = new ConfigurationManager();
-                configurationManager.SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{env}.json", optional: true) // Load environment specific settings
-                .AddEnvironmentVariables();
+                // configurationManager.SetBasePath(Directory.GetCurrentDirectory())
+                // .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+
+                //configurationManager.AddJsonFile($"appsettings.{env}.json", optional: true) // Load environment specific settings
+                //.AddEnvironmentVariables();
+                if (env != null)
+                {
+                    configurationManager.SetBasePath(Directory.GetCurrentDirectory())
+           .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+           .AddJsonFile($"appsettings.{env}.json", optional: true) // Load environment specific settings
+           .AddEnvironmentVariables();
+                }
+                else
+                {
+                    configurationManager.AddJsonFile($"appsettings.json", optional: true);
+                }
+
 
                 return configurationManager.GetConnectionString("CustomDbConnection");
             }
@@ -65,10 +78,23 @@ namespace Interview.Persistence.ServiceExtensions
                 var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 
                 ConfigurationManager configurationManager = new ConfigurationManager();
-                configurationManager.SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{env}.json", optional: true) // Load environment specific settings
-                .AddEnvironmentVariables();
+                // configurationManager.SetBasePath(Directory.GetCurrentDirectory())
+                //  .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                //configurationManager.AddJsonFile($"appsettings.{env}.json", optional: true) // Load environment specific settings
+                //.AddEnvironmentVariables();
+
+
+                if (env != null)
+                {
+                    configurationManager.SetBasePath(Directory.GetCurrentDirectory())
+          .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+          .AddJsonFile($"appsettings.{env}.json", optional: true) // Load environment specific settings
+          .AddEnvironmentVariables();
+                }
+                else
+                {
+                    configurationManager.AddJsonFile($"appsettings.json", optional: true);
+                }
 
                 return configurationManager.GetConnectionString("DefaultConnection");
             }
@@ -82,10 +108,19 @@ namespace Interview.Persistence.ServiceExtensions
                 var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 
                 ConfigurationManager configurationManager = new ConfigurationManager();
-                configurationManager.SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{env}.json", optional: true) // Load environment specific settings
-                .AddEnvironmentVariables();
+
+
+                if (env != null)
+                {
+                    configurationManager.SetBasePath(Directory.GetCurrentDirectory())
+                     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                     .AddJsonFile($"appsettings.{env}.json", optional: true) // Load environment specific settings
+                     .AddEnvironmentVariables();
+                }
+                else
+                {
+                    configurationManager.AddJsonFile($"appsettings.json", optional: true);
+                }
 
                 return configurationManager["ConnectionAzureStorage"];
             }
@@ -264,7 +299,7 @@ namespace Interview.Persistence.ServiceExtensions
 
                 //options.AddPolicy("HROnly", policy =>
                 //    policy.RequireRole(UserRoles.HR));
-             
+
 
                 //options.AddPolicy("AllRoles", policy =>
                 //{

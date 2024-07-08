@@ -6,3 +6,6 @@ services:
     build:
       context: .
       dockerfile: Presentation/Interview.API/Dockerfile
+    ports:
+      - "50000:80"
+      - "50005:443"

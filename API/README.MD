@@ -43,12 +43,12 @@ ORDER BY Timestamp DESC </p>
 </br>
 
 <h1> Dockerize </h1>
-docker build    -f "Your_RootPath\Interview\API\Interview\Presentation\Interview.API\Dockerfile"    -t interview:dev    "Your_RootPath\Interview\API\Interview"
+docker build    -f "Your_RootPath\Interview\API\Interview\Presentation\Interview.API\Dockerfile"    -t interview:dev    "Your_RootPath\Interview\API\Interview" 
 
 <p> If Unable to configure HTTPS endpoint</p> 
 1)dotnet dev-certs https --clean
 2)dotnet dev-certs https --trust
-3)Restart VS
+3)if do not work anything -> Restart VS
 4)docker-compose down    
 5)docker-compose up --build
 

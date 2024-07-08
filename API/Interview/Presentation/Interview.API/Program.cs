@@ -28,6 +28,7 @@ using System.Configuration;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Interview.Persistence.Contexts.InterviewDbContext;
 using Microsoft.AspNetCore.Authorization;
+using static Org.BouncyCastle.Math.EC.ECCurve;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -137,12 +138,7 @@ builder.Services.APIVersion();
 
 
 
-var env = builder.Environment;
 
-builder.Configuration
-    .SetBasePath(env.ContentRootPath)
-    .AddJsonFile("appsettings.json", optional: false)
-    .AddJsonFile($"appsettings{env.EnvironmentName}.json", optional: true).Build();
 
 
 builder.Services.AddRateLimiterServiceExtension();
