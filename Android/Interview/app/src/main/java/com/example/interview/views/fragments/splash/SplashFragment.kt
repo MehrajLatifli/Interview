@@ -29,7 +29,7 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>(FragmentSplashBinding
             if (isAuth) {
                // findNavController().navigate(SplashFragmentDirections.actionSplashFragmentToHomeFragment())
             } else {
-               // findNavController().navigate(SplashFragmentDirections.actionSplashFragmentToLoginFragment())
+                findNavController().navigate(SplashFragmentDirections.actionSplashFragmentToWalkthroughFragment())
             }
 
         }
