@@ -18,5 +18,14 @@
         android:id="@+id/walkthroughFragment"
         android:name="com.example.interview.views.fragments.walkthrough.WalkthroughFragment"
         android:label="fragment_walkthrough"
-        tools:layout="@layout/fragment_walkthrough" />
+        tools:layout="@layout/fragment_walkthrough" >
+        <action
+            android:id="@+id/action_walkthroughFragment_to_accountTypeFragment"
+            app:destination="@id/accountTypeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/accountTypeFragment"
+        android:name="com.example.interview.views.fragments.accounttype.AccountTypeFragment"
+        android:label="fragment_account_type"
+        tools:layout="@layout/fragment_account_type" />
 </navigation>

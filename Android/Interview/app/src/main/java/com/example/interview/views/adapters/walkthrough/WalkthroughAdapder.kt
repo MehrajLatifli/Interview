@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.interview.databinding.ItemWalkthroughBinding
-import com.example.interview.models.walkthrough.Walkthrough
+import com.example.interview.models.localadapdermodels.walkthrough.Walkthrough
 import com.example.interview.views.adapters.base.BaseAdapter
 
 class WalkthroughAdapter : BaseAdapter<Walkthrough, WalkthroughAdapter.WalkthroughViewHolder>() {

@@ -1,13 +1,11 @@
 package com.example.interview.views.fragments.walkthrough
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import com.example.interview.R
 import com.example.interview.databinding.FragmentWalkthroughBinding
-import com.example.interview.models.walkthrough.Walkthrough
+import com.example.interview.models.localadapdermodels.walkthrough.Walkthrough
 import com.example.interview.views.adapters.walkthrough.WalkthroughAdapter
 import com.example.interview.views.fragments.base.BaseFragment
 
@@ -30,16 +28,24 @@ class WalkthroughFragment : BaseFragment<FragmentWalkthroughBinding>(FragmentWal
         walkthroughAdapter.updateList(walkthroughList)
 
 
-            binding.viewPager2.adapter = walkthroughAdapter
+        binding.viewPager2.adapter = walkthroughAdapter
 
 
+        val dotsIndicator = binding.indicator
+        val viewPager = binding.viewPager2
+        viewPager.adapter = walkthroughAdapter
+        dotsIndicator.attachTo(viewPager)
 
-            val dotsIndicator = binding.indicator
-            val viewPager = binding.viewPager2
-            viewPager.adapter = walkthroughAdapter
-            dotsIndicator.attachTo(viewPager)
+
+        binding.RegistrationButton.setOnClickListener{
+
+            findNavController().navigate(WalkthroughFragmentDirections.actionWalkthroughFragmentToAccountTypeFragment())
+        }
+
+        binding.LogInButton.setOnClickListener{
 
 
+        }
 
 
     }

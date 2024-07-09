@@ -6,7 +6,6 @@ abstract class BaseAdapter<T, VH : RecyclerView.ViewHolder> : RecyclerView.Adapt
 
     protected val list = mutableListOf<T>()
     protected var lastSelectedItemPosition = RecyclerView.NO_POSITION
-    lateinit var onClickItem: (String) -> Unit
 
     override fun getItemCount(): Int = list.size
 
