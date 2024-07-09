@@ -26,6 +26,6 @@ fun ImageView.loadImageWithGlideAndResize(imageId: String, context: Context) {
         .apply(RequestOptions()
             .diskCacheStrategy(DiskCacheStrategy.ALL)
             .placeholder(R.color.Transparent)
-            .error(R.color.Red))
+            .error(R.color.MellowMelon))
         .into(this)
 }

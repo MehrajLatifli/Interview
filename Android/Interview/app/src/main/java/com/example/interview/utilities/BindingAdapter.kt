@@ -28,6 +28,6 @@ fun ImageView.loadImageWithGlide(imageId: String) {
         .apply(RequestOptions()
             .diskCacheStrategy(DiskCacheStrategy.ALL)
             .placeholder(R.color.Transparent)
-            .error(R.color.Red))
+            .error(R.color.MellowMelon))
         .into(this)
 }

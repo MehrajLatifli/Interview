@@ -30,7 +30,7 @@
         android:layout_marginStart="183dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="183dp"
-        app:dotsColor="@color/BlueGrey"
+        app:dotsColor="@color/KinglyCloud"
         app:dotsCornerRadius="8dp"
         app:dotsSize="16dp"
         app:dotsSpacing="4dp"

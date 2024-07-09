@@ -3,14 +3,13 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/newsMaterialCardView"
+    android:id="@+id/mainMaterialCardView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="4dp"
-    android:layout_marginVertical="4dp"
+    android:layout_marginVertical="12.5dp"
     android:background="@color/White"
     app:cardCornerRadius="16dp"
-    app:strokeColor="@color/BlueGrey"
     app:strokeWidth="2dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -18,43 +17,75 @@
         android:layout_height="wrap_content"
         android:background="@color/White">
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/imagecardview"
-            android:layout_width="135dp"
-            android:layout_height="135dp"
-            android:layout_margin="16dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            app:cardCornerRadius="50dp"
+        <!-- Guideline for vertical split -->
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.25" />
+
+        <!-- Left Container (Red background) -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/leftContainer"
+            android:layout_width="0dp"
+            android:layout_height="100dp"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/guideline"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <ImageView
-                android:id="@+id/itemimageView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop"/>
+            <androidx.cardview.widget.CardView
+                android:id="@+id/imagecardview"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="50dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-        </androidx.cardview.widget.CardView>
+                <ImageView
+                    android:id="@+id/itemimageView"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center" />
 
+            </androidx.cardview.widget.CardView>
 
-        <TextView
-            android:id="@+id/itemtextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:fontFamily="@font/nunito_bold"
-            android:gravity="start|top"
-            android:text=""
-            android:textColor="@color/Black"
-            android:textSize="24dp"
-            app:layout_constraintBottom_toBottomOf="@+id/imagecardview"
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Right Container (Black background) -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/rightContainer"
+            android:layout_width="0dp"
+            android:layout_height="100dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/imagecardview"
-            app:layout_constraintTop_toTopOf="@+id/imagecardview" />
+            app:layout_constraintStart_toEndOf="@id/guideline"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/itemtextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:fontFamily="@font/nunito_bold"
+                android:gravity="start|top"
+                android:text=""
+                android:textColor="@color/Black"
+                android:textSize="24dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

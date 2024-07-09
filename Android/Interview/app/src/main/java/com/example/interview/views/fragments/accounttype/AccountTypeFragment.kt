@@ -14,18 +14,21 @@ class AccountTypeFragment  : BaseFragment<FragmentAccountTypeBinding>(FragmentAc
 
 
     private var accountTypeList = arrayListOf(
-        AccountType(R.drawable.person_1, "HR"),
-        AccountType(R.drawable.person_2, "Custom")
+        AccountType(R.drawable.person_1, "Admin"),
+        AccountType(R.drawable.person_2, "HR"),
+        AccountType(R.drawable.person_3, "Custom")
+
     )
 
-    private val accountTypeAdapder =AccountTypeAdapder()
+    private val accountTypeAdapder = AccountTypeAdapder()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        accountTypeAdapder.updateList(accountTypeList)
 
         binding.rvAccounttype.adapter = accountTypeAdapder
+
+        accountTypeAdapder.updateList(accountTypeList)
 
     }
 }
