@@ -14,7 +14,8 @@ namespace Interview.API.Controllers.Operations
     [ApiVersion(1, Deprecated = true)]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
- 
+    [Authorize]
+
     public class SessionQuestionController : ControllerBase
     {
 
