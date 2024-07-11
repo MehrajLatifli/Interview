@@ -82,6 +82,18 @@ namespace Interview.API.Controllers.Auth
 
 
         [HttpPost]
+        [Route(Routes.RegisterHR)]
+        public async Task<IActionResult> RegisterHR([FromForm] RegisterAdminDTO model)
+        {
+
+            await _authservice.RegisterHR(model, ServiceExtension.ConnectionStringAzure);
+
+
+            return Ok(new Response { Status = "Success", Message = "User created successfully!" });
+        }
+
+
+        [HttpPost]
         [Route(Routes.Login)]
         public async Task<IActionResult> Login([FromBody] LoginDTO model)
         {

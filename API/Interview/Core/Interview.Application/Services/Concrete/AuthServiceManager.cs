@@ -895,7 +895,231 @@ namespace Interview.Application.Services.Concrete
 
         }
 
+        public async Task RegisterHR(RegisterAdminDTO model, string ConnectionStringAzure)
+        {
+            var userAccesses = await UserAccessAsync();
 
+
+            var roleAccessMethods = await MethodsAsync();
+
+
+
+            var entity = _mapper.Map<Register>(model);
+
+            var userExists = _userReadRepository.GetAll(false).AsEnumerable().Any(i => i.UserName == model.Username);
+
+            if (userExists == true)
+            {
+                throw new ConflictException("User already exists!");
+            }
+
+            string connectionString = ConnectionStringAzure;
+
+            string azuriteConnectionString = Environment.GetEnvironmentVariable("CUSTOMCONNSTR_AZURE_STORAGE_CONNECTION_STRING");
+            if (!string.IsNullOrEmpty(azuriteConnectionString))
+            {
+                connectionString = azuriteConnectionString;
+            }
+
+            string containerName = "profile-images";
+
+            string blobName = entity.Username + "_" + Guid.NewGuid().ToString() + Path.GetExtension(entity.ImagePath.FileName);
+
+            Azure.Storage.Blobs.BlobServiceClient blobServiceClient = new Azure.Storage.Blobs.BlobServiceClient(connectionString);
+            Azure.Storage.Blobs.BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(containerName);
+
+            await containerClient.CreateIfNotExistsAsync(Azure.Storage.Blobs.Models.PublicAccessType.Blob);
+
+            Azure.Storage.Blobs.BlobClient blobClient = containerClient.GetBlobClient(blobName);
+
+            using (Stream stream = entity.ImagePath.OpenReadStream())
+            {
+                await blobClient.UploadAsync(stream, true);
+            }
+
+            string imageUrl = blobClient.Uri.ToString();
+
+
+            User user = new()
+            {
+                UserName = entity.Username,
+                Email = entity.Email,
+                Password = PasswordComputeHash(model.Password, Environment.GetEnvironmentVariable("Salt")),
+                Phonenumber = entity.PhoneNumber,
+                ConcurrencyStamp = Guid.NewGuid().ToString(),
+                ImagePath = imageUrl,
+
+            };
+
+
+            var roleExists = _roleReadRepository.GetAll(false).AsEnumerable().Any(i => i.Name == UserRoles.HR);
+
+
+
+
+          
+
+                await _userWriteRepository.AddAsync(user);
+
+                await _userWriteRepository.SaveAsync();
+
+                var result1 = await _roleWriteRepository.SaveAsync();
+
+                if (result1 == -1)
+                {
+                    throw new InvalidOperationException("Failed to create the user.");
+                }
+
+
+
+                var newRole = new Role
+                {
+                    Name = UserRoles.HR,
+                    ConcurrencyStamp = Guid.NewGuid().ToString(),
+
+                };
+
+
+
+                await _roleWriteRepository.AddAsync(newRole);
+
+                var result = await _roleWriteRepository.SaveAsync();
+
+                if (result == -1)
+                {
+                    throw new InvalidOperationException("Failed to create the role.");
+                }
+
+
+
+
+
+
+
+            var userRole = new UserRole();
+
+            var roleExists2 = _roleReadRepository.GetAll(false).AsEnumerable().Any(i => i.Name == UserRoles.HR);
+
+            var userExists2 = _userReadRepository.GetAll(false).AsEnumerable().Any(i => i.UserName == user.UserName);
+
+            if (roleExists2 && userExists2)
+            {
+
+
+                userRole = new UserRole
+                {
+                    UserId = _userReadRepository.GetAll(false).AsEnumerable().Where(i => i.UserName == user.UserName).FirstOrDefault().Id,
+                    RoleId = _roleReadRepository.GetAll(false).AsEnumerable().Where(i => i.Name == UserRoles.HR).FirstOrDefault().Id,
+
+                };
+
+                await _userRoleWriteRepository.AddAsync(userRole);
+
+                var result3 = await _roleWriteRepository.SaveAsync();
+
+                if (result3 == -1)
+                {
+                    throw new InvalidOperationException("Failed to create the UserRole.");
+                }
+
+
+
+            }
+            if (!userExists2)
+            {
+                throw new ConflictException("User does not exist.");
+            }
+            if (!roleExists2)
+            {
+                throw new ConflictException("Role does not exist.");
+            }
+
+            var roleClaims = new List<RoleClaim>();
+
+            var methods = await MethodsAsync();
+
+
+
+
+
+            var role = _roleReadRepository.GetAll(false).Where(i => i.Id == _roleReadRepository.GetAll(false).AsEnumerable().Where(i => i.Name == UserRoles.Admin).FirstOrDefault().Id).ToList();
+
+            if (role != null)
+            {
+
+
+                
+                    roleClaims.Add(new RoleClaim()
+                    {
+                        ClaimType = "Get",
+                        ClaimValue = "GetHRs",
+                        RoleId = _roleReadRepository.GetAll(false).AsEnumerable().Where(i => i.Name == UserRoles.HR).FirstOrDefault().Id,
+                    });
+                
+
+
+
+
+
+                //await _roleManager.AddClaimAsync(role, claim);
+
+
+                await _roleClaimWriteRepository.AddRangeAsync(roleClaims);
+
+                var result4 = await _roleClaimWriteRepository.SaveAsync();
+
+                if (result4 == -1)
+                {
+                    throw new InvalidOperationException("Failed to create the RoleClaim.");
+                }
+
+
+
+            }
+
+
+
+            var userClaims = new List<UserClaim>();
+
+
+
+
+
+
+            var users = _userReadRepository.GetAll(false).Where(i => i.Id == Convert.ToInt32(_userReadRepository.GetAll(false).AsEnumerable().Where(i => i.UserName == model.Username).FirstOrDefault().Id));
+
+            if (users != null)
+            {
+
+                foreach (var item in userAccesses)
+                {
+
+                    userClaims.Add(new UserClaim()
+                    {
+                        ClaimType = userAccesses.Where(i => i.Id == Convert.ToInt32(item.Id)).FirstOrDefault().UserAccess,
+                        ClaimValue = userAccesses.Where(i => i.Id == Convert.ToInt32(item.Id)).FirstOrDefault().UserAccessDescription,
+                        UserId = Convert.ToInt32(_userReadRepository.GetAll(false).AsEnumerable().Where(i => i.UserName == model.Username).FirstOrDefault().Id),
+                    });
+                };
+
+
+                await _userClaimWriteRepository.AddRangeAsync(userClaims);
+
+                var result5 = await _userClaimWriteRepository.SaveAsync();
+
+                if (result5 == -1)
+                {
+                    throw new InvalidOperationException("Failed to create the UserClaim.");
+                }
+
+
+
+            }
+
+
+
+
+        }
 
 
         public async Task<LoginResponse> Login(LoginDTO model)

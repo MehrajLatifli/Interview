@@ -30,6 +30,8 @@ namespace Interview.Application.Services.Abstract
 
         public Task RegisterAdmin(RegisterAdminDTO model, string ConnectionStringAzure);
 
+        public Task RegisterHR(RegisterAdminDTO model, string ConnectionStringAzure);
+
 
         //public Task RegisterAdmin(RegisterDTO model, string ConnectionStringAzure);
 
