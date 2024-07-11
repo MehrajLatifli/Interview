@@ -22,10 +22,31 @@
         <action
             android:id="@+id/action_walkthroughFragment_to_accountTypeFragment"
             app:destination="@id/accountTypeFragment" />
+        <action
+            android:id="@+id/action_walkthroughFragment_to_logInFragment"
+            app:destination="@id/logInFragment" />
     </fragment>
     <fragment
         android:id="@+id/accountTypeFragment"
         android:name="com.example.interview.views.fragments.accounttype.AccountTypeFragment"
         android:label="fragment_account_type"
-        tools:layout="@layout/fragment_account_type" />
+        tools:layout="@layout/fragment_account_type" >
+        <action
+            android:id="@+id/action_accountTypeFragment_to_registrationFragment"
+            app:destination="@id/registrationFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/registrationFragment"
+        android:name="com.example.interview.views.fragments.auth.registration.RegistrationFragment"
+        android:label="fragment_registration"
+        tools:layout="@layout/fragment_registration" >
+        <argument
+            android:name="accountType"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/logInFragment"
+        android:name="com.example.interview.views.fragments.auth.login.LogInFragment"
+        android:label="fragment_log_in"
+        tools:layout="@layout/fragment_log_in" />
 </navigation>

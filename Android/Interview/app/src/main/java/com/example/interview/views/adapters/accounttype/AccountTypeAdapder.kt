@@ -22,11 +22,30 @@ class AccountTypeAdapder : BaseAdapter<AccountType, AccountTypeAdapder.AccountTy
         return AccountTypeViewHolder(binding)
     }
 
+    lateinit var onClickItem: (String) -> Unit
+
     override fun onBindViewHolder(holder: AccountTypeViewHolder, position: Int) {
         val item = list[position]
 
         holder.itemBinding.itemimageView.setImageResource(item.image)
         holder.itemBinding.itemtextView.text = item.text
+
+        holder.itemBinding.mainMaterialCardView.setOnClickListener {
+            val currentSelectedItemPosition = holder.bindingAdapterPosition
+
+            if (currentSelectedItemPosition != lastSelectedItemPosition) {
+                val previousSelectedItemPosition = lastSelectedItemPosition
+                lastSelectedItemPosition = currentSelectedItemPosition
+                notifyItemChanged(previousSelectedItemPosition)
+                notifyItemChanged(currentSelectedItemPosition)
+                onClickItem.invoke(list[currentSelectedItemPosition].text.toString())
+            } else {
+                lastSelectedItemPosition = RecyclerView.NO_POSITION
+                notifyItemChanged(currentSelectedItemPosition)
+                onClickItem.invoke("")
+            }
+        }
+
 
         when (item.text) {
             "Admin" -> {

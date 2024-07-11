@@ -1,8 +1,6 @@
 package com.example.interview.utilities
 
 object Constants {
-
-    const val Base_URL = "https://api.tomorrow.io/v4/weather/"
-
-
+    const val Base_URL = "https://192.168.0.189:50005/api/v1/"
 }
+

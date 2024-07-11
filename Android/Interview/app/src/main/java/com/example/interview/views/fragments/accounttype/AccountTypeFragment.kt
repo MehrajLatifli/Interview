@@ -2,6 +2,7 @@ package com.example.interview.views.fragments.accounttype
 
 import android.os.Bundle
 import android.view.View
+import androidx.navigation.fragment.findNavController
 import com.example.interview.R
 import com.example.interview.databinding.FragmentAccountTypeBinding
 import com.example.interview.models.localadapdermodels.accounttype.AccountType
@@ -29,6 +30,12 @@ class AccountTypeFragment  : BaseFragment<FragmentAccountTypeBinding>(FragmentAc
         binding.rvAccounttype.adapter = accountTypeAdapder
 
         accountTypeAdapder.updateList(accountTypeList)
+
+        accountTypeAdapder.onClickItem = { accountType ->
+
+            val action = AccountTypeFragmentDirections.actionAccountTypeFragmentToRegistrationFragment(accountType)
+            findNavController().navigate(action)
+        }
 
     }
 }
