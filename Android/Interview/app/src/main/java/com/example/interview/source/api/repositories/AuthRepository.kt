@@ -20,9 +20,6 @@ import javax.inject.Inject
 class AuthRepository @Inject constructor(private val api: IApiManager) {
 
     suspend fun registerUser(register: Register) = safeApiRequest {
-        // Logging request parameters
-        Log.d("AuthRepository", "Registering user with username: ${register.username}, email: ${register.email}")
-
         val usernamePart = register.username?.toRequestBody("multipart/form-data".toMediaType())
             ?: "".toRequestBody("multipart/form-data".toMediaType())
         val emailPart = register.email?.toRequestBody("multipart/form-data".toMediaType())
@@ -37,8 +34,6 @@ class AuthRepository @Inject constructor(private val api: IApiManager) {
             MultipartBody.Part.createFormData("imagePath", it.name, requestFile)
         }
 
-        Log.d("AuthRepository", "Sending request with body: username=${register.username}, password=${register.password}")
-
         api.createAccount(
             username = usernamePart,
             email = emailPart,
@@ -50,19 +45,15 @@ class AuthRepository @Inject constructor(private val api: IApiManager) {
 
     private suspend fun <T> safeApiRequest(request: suspend () -> Response<T>) = flow<Resource<Unit>> {
         try {
-            val response = request.invoke()
-            Log.d("AuthRepository", "Response received with status code: ${response.code()}")
-
+            val response = request()
             if (response.isSuccessful) {
                 emit(Resource.Success(Unit))
             } else {
-                // Attempt to parse error response
                 val errorResponse = parseErrorResponse(response)
                 emit(Resource.Error(errorResponse))
-                Log.e("AuthRepository", "Validation Error: ${errorResponse?.title?: "Unknown error"}")
             }
         } catch (e: Exception) {
-            Log.e("AuthRepository", "Request failed: ${e.message}")
+            Log.e("AuthRepository", "Request failed: ${e.localizedMessage}")
             emit(Resource.Error(ErrorResponse(
                 date = "Unknown",
                 machine = "Unknown",
@@ -87,9 +78,8 @@ class AuthRepository @Inject constructor(private val api: IApiManager) {
             val errorBody = response.errorBody()?.string() ?: return null
             Gson().fromJson(errorBody, ErrorResponse::class.java)
         } catch (e: Exception) {
-            Log.e("AuthRepository", "Error parsing error response: ${e.message}")
+            Log.e("AuthRepository", "Error parsing error response: ${e.localizedMessage}")
             null
         }
     }
 }
-

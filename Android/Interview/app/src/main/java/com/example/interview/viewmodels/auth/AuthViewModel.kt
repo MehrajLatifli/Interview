@@ -36,8 +36,6 @@ class AuthViewModel @Inject constructor(private val authRepository: AuthReposito
                         _authResult.postValue(true)
                     }
                     is Resource.Error -> {
-                        // Combine all errors into a single message
-                        Log.e("Register",register.toString())
                         val errorMessage = result.errorResponse?.title ?: "Unknown error"
                         Log.e("AuthViewModel", "Error during registration: $errorMessage")
                         _error.postValue(errorMessage)
