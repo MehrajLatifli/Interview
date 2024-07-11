@@ -6,10 +6,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.OpenableColumns
 import android.text.InputType
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
+import android.util.Patterns
 import android.view.View
-import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
@@ -22,7 +20,6 @@ import com.example.interview.viewmodels.auth.AuthViewModel
 import com.example.interview.views.fragments.base.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
-import java.io.InputStream
 
 @AndroidEntryPoint
 class RegistrationFragment : BaseFragment<FragmentRegistrationBinding>(FragmentRegistrationBinding::inflate) {
@@ -31,6 +28,7 @@ class RegistrationFragment : BaseFragment<FragmentRegistrationBinding>(FragmentR
     private val viewModel by viewModels<AuthViewModel>()
 
     private var selectedFile: File? = null
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -53,8 +51,38 @@ class RegistrationFragment : BaseFragment<FragmentRegistrationBinding>(FragmentR
             val username = binding.editText.text.toString()
             val email = binding.editText2.text.toString()
             val password = binding.editText3.text.toString()
-            val phoneNumber = binding.editText4.text.toString()
+            val confirmpassword = binding.editText4.text.toString()
+            val phoneNumber = binding.editText5.text.toString()
             val imagePath = selectedFile
+
+
+            if (!isPasswordValid(username)) {
+                Toast.makeText(requireContext(), "Username must have at least 8 characters, one uppercase letter, one lowercase letter, one special character, and one number", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if (!isPasswordValid(password)) {
+                Toast.makeText(requireContext(), "Password must have at least 8 characters, one uppercase letter, one lowercase letter, one special character, and one number", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if (!isPasswordValid(confirmpassword)) {
+                Toast.makeText(requireContext(), "Confirm password must have at least 8 characters, one uppercase letter, one lowercase letter, one special character, and one number", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if(password != confirmpassword)
+            {
+                Toast.makeText(requireContext(), "Password and Confirm Password are not same", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+
+
+            if (!isEmailValid(email)) {
+                Toast.makeText(requireContext(), "Invalid email format", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
 
             val registerData = Register(
                 username = username,
@@ -67,19 +95,31 @@ class RegistrationFragment : BaseFragment<FragmentRegistrationBinding>(FragmentR
             viewModel.register(registerData)
         }
 
-        // Observe ViewModel LiveData
-        viewModel.loading.observe(viewLifecycleOwner) {
-            // Show or hide progress indicator
+
+        viewModel.loading.observe(viewLifecycleOwner) { isLoading ->
+
+            if (isLoading) {
+
+            } else {
+
+            }
         }
 
         viewModel.error.observe(viewLifecycleOwner) { errorMessage ->
             errorMessage?.let {
-                Toast.makeText(requireContext(), it.toString(), Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
             }
         }
 
-        viewModel.authResult.observe(viewLifecycleOwner) {
-            // Handle authentication result
+        viewModel.authResult.observe(viewLifecycleOwner) { authResult ->
+
+            authResult?.let {
+                if (it) {
+
+                } else {
+
+                }
+            }
         }
     }
 
@@ -99,7 +139,7 @@ class RegistrationFragment : BaseFragment<FragmentRegistrationBinding>(FragmentR
 
     private fun openFilePicker() {
         val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
-            type = "*/*" // You can specify a MIME type if needed
+            type = "image/jpeg, image/png, image/jpg, image/gif"
         }
         startActivityForResult(intent, PICK_FILE_REQUEST_CODE)
     }
@@ -108,11 +148,17 @@ class RegistrationFragment : BaseFragment<FragmentRegistrationBinding>(FragmentR
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == PICK_FILE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             data?.data?.let { uri ->
+
+                if (!isValidImageFile(uri)) {
+                    Toast.makeText(requireContext(), "Please select a valid image", Toast.LENGTH_SHORT).show()
+                    return
+                }
+
                 val fileName = getFileName(uri)
-                binding.editText6.setText(fileName)
+                binding.editText6.setText(fileName+"...")
                 selectedFile = File(requireContext().cacheDir, fileName)
 
-                // Copy content to cache file
+
                 requireContext().contentResolver.openInputStream(uri)?.use { inputStream ->
                     selectedFile?.outputStream()?.use { outputStream ->
                         inputStream.copyTo(outputStream)
@@ -120,6 +166,15 @@ class RegistrationFragment : BaseFragment<FragmentRegistrationBinding>(FragmentR
                 }
             }
         }
+    }
+
+    private fun isPasswordValid(password: String): Boolean {
+        val passwordPattern = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z\\d\\s])(?=\\S+\$).{8,}"
+        return password.matches(passwordPattern.toRegex())
+    }
+
+    private fun isEmailValid(email: String): Boolean {
+        return Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }
 
     private fun getFileName(uri: Uri): String? {
@@ -130,6 +185,11 @@ class RegistrationFragment : BaseFragment<FragmentRegistrationBinding>(FragmentR
                 it.getString(nameIndex)
             } else null
         }
+    }
+
+    private fun isValidImageFile(uri: Uri): Boolean {
+        val type = requireContext().contentResolver.getType(uri)
+        return type?.startsWith("image/jpeg") == true || type?.startsWith("image/png") == true  || type?.startsWith("image/jpg") == true  || type?.startsWith("image/gif") == true
     }
 
     companion object {

@@ -15,19 +15,20 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class AuthRepository @Inject constructor(private val api: IApiManager) {
 
     suspend fun registerUser(register: Register) = safeApiRequest {
-        val usernamePart = register.username?.toRequestBody("multipart/form-data".toMediaType())
-            ?: "".toRequestBody("multipart/form-data".toMediaType())
-        val emailPart = register.email?.toRequestBody("multipart/form-data".toMediaType())
-            ?: "".toRequestBody("multipart/form-data".toMediaType())
-        val passwordPart = register.password?.toRequestBody("multipart/form-data".toMediaType())
-            ?: "".toRequestBody("multipart/form-data".toMediaType())
-        val phoneNumberPart = register.phoneNumber?.toRequestBody("multipart/form-data".toMediaType())
-            ?: "".toRequestBody("multipart/form-data".toMediaType())
+        val usernamePart = register.username?.toRequestBody("text/plain".toMediaType())
+            ?: "".toRequestBody("text/plain".toMediaType())
+        val emailPart = register.email?.toRequestBody("text/plain".toMediaType())
+            ?: "".toRequestBody("text/plain".toMediaType())
+        val passwordPart = register.password?.toRequestBody("text/plain".toMediaType())
+            ?: "".toRequestBody("text/plain".toMediaType())
+        val phoneNumberPart = register.phoneNumber?.toRequestBody("text/plain".toMediaType())
+            ?: "".toRequestBody("text/plain".toMediaType())
 
         val imagePathPart = register.imagePath?.let {
             val requestFile = it.asRequestBody("image/*".toMediaType())
@@ -43,43 +44,27 @@ class AuthRepository @Inject constructor(private val api: IApiManager) {
         )
     }
 
-    private suspend fun <T> safeApiRequest(request: suspend () -> Response<T>) = flow<Resource<Unit>> {
-        try {
-            val response = request()
-            if (response.isSuccessful) {
-                emit(Resource.Success(Unit))
-            } else {
-                val errorResponse = parseErrorResponse(response)
-                emit(Resource.Error(errorResponse))
-            }
-        } catch (e: Exception) {
-            Log.e("AuthRepository", "Request failed: ${e.localizedMessage}")
-            emit(Resource.Error(ErrorResponse(
-                date = "Unknown",
-                machine = "Unknown",
-                status = -1,
-                title = e.localizedMessage ?: "Unknown error",
-                user = "Unknown"
-            )))
-        }
-    }.catch {
-        Log.e("AuthRepository", "Flow failed: ${it.localizedMessage}")
-        emit(Resource.Error(ErrorResponse(
-            date = "Unknown",
-            machine = "Unknown",
-            status = -1,
-            title = it.localizedMessage ?: "Unknown error",
-            user = "Unknown"
-        )))
-    }.flowOn(Dispatchers.IO)
 
-    private fun <T> parseErrorResponse(response: Response<T>): ErrorResponse? {
-        return try {
-            val errorBody = response.errorBody()?.string() ?: return null
-            Gson().fromJson(errorBody, ErrorResponse::class.java)
-        } catch (e: Exception) {
-            Log.e("AuthRepository", "Error parsing error response: ${e.localizedMessage}")
-            null
+
+    suspend fun <T> safeApiRequest(request: suspend () -> Response<T>): Resource<T> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val response = request.invoke()
+
+                if (response.isSuccessful) {
+                    Resource.Success(response.body())
+                } else {
+                    val errorBody = response.errorBody()?.string()
+                    val errorMessage = Gson().fromJson(errorBody, ErrorResponse::class.java)?.title
+                        ?: response.message()
+                    Log.e("Resource.Error", errorMessage ?: "Unknown error")
+                    Resource.Error(errorMessage ?: "Unknown error")
+                }
+            } catch (e: Exception) {
+                Log.e("Resource.Error", e.localizedMessage ?: "Unknown error")
+                Resource.Error(e.localizedMessage ?: "Unknown error")
+            }
         }
     }
+
 }

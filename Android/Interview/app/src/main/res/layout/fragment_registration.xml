@@ -7,6 +7,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".views.fragments.auth.registration.RegistrationFragment">
 
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/headerConstraintLayout"
         android:layout_width="0dp"
@@ -83,7 +84,7 @@
             android:layout_marginEnd="24dp"
             android:maxLength="15"
             android:maxLines="1"
-            android:text="Admin_1234"
+            android:text=""
             android:background="@drawable/rounded_edittext_bg"
             android:fontFamily="@font/nunito_medium"
             android:hint="Username"
@@ -109,7 +110,7 @@
             android:background="@drawable/rounded_edittext_bg"
             android:fontFamily="@font/nunito_medium"
             android:hint="E-mail"
-            android:text="Admin_1234"
+            android:text=""
             android:maxLength="30"
             android:maxLines="1"
             android:paddingLeft="20dp"
@@ -134,7 +135,7 @@
             android:background="@drawable/rounded_edittext_bg"
             android:fontFamily="@font/nunito_medium"
             android:hint="Password"
-            android:text="Admin_1234"
+            android:text=""
             android:inputType="textPassword"
             android:maxLength="15"
             android:maxLines="1"
@@ -171,7 +172,7 @@
             android:background="@drawable/rounded_edittext_bg"
             android:fontFamily="@font/nunito_medium"
             android:hint="Confirm password"
-            android:text="Admin_1234"
+            android:text=""
             android:inputType="textPassword"
             android:maxLength="15"
             android:maxLines="1"
@@ -198,7 +199,7 @@
             android:background="@drawable/rounded_edittext_bg"
             android:fontFamily="@font/nunito_medium"
             android:hint="Phone number"
-            android:text="Admin_1234"
+            android:text=""
             android:inputType="text"
             android:maxLength="15"
             android:maxLines="1"
@@ -230,7 +231,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="16dp"
             android:layout_marginEnd="24dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -241,14 +242,16 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
 
+                android:maxLength="15"
+                android:ellipsize="end"
+
+
+                android:background="@drawable/rounded_edittext_bg"
                 android:clickable="false"
+
                 android:cursorVisible="false"
                 android:focusable="false"
                 android:focusableInTouchMode="false"
-
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:background="@drawable/rounded_edittext_bg"
                 android:fontFamily="@font/nunito_medium"
                 android:hint="File name"
                 android:maxLines="1"
@@ -258,18 +261,16 @@
                 android:textColor="@color/Black"
                 android:textColorHint="@color/Black"
                 android:textSize="17dp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/buttonUploadFile"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/buttonUploadFile"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
                 android:backgroundTint="@color/DeepPurple"
                 android:fontFamily="@font/nunito_bold"
                 android:paddingVertical="24dp"
@@ -288,7 +289,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="24dp"
             android:backgroundTint="@color/DeepPurple"
             android:fontFamily="@font/nunito_bold"
@@ -310,7 +311,7 @@
             android:layout_marginStart="32dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="32dp"
-            android:layout_marginBottom="53dp"
+            android:layout_marginBottom="60dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

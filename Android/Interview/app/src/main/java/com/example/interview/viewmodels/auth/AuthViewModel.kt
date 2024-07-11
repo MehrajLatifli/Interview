@@ -29,18 +29,17 @@ class AuthViewModel @Inject constructor(private val authRepository: AuthReposito
     fun register(register: Register) {
         _loading.value = true
 
-        viewModelScope.launch(Dispatchers.IO) {
-            authRepository.registerUser(register).collectLatest { result ->
-                when (result) {
-                    is Resource.Success -> {
-                        _authResult.postValue(true)
-                    }
-                    is Resource.Error -> {
-                        val errorMessage = result.errorResponse?.title ?: "Unknown error"
-                        Log.e("AuthViewModel", "Error during registration: $errorMessage")
-                        _error.postValue(errorMessage)
-                    }
+        viewModelScope.launch {
+            try {
+                val result = authRepository.registerUser(register)
+                if (result is Resource.Success) {
+                    _authResult.postValue(true)
+                } else if (result is Resource.Error) {
+                    _error.postValue(result.message ?: "Unknown error")
                 }
+            } catch (e: Exception) {
+                _error.postValue(e.localizedMessage ?: "Unknown error")
+            } finally {
                 _loading.postValue(false)
             }
         }

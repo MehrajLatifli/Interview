@@ -19,8 +19,6 @@ interface IApiManager {
         @Part("email") email: RequestBody,
         @Part("password") password: RequestBody,
         @Part("phoneNumber") phoneNumber: RequestBody,
-        @Part imagePath: MultipartBody.Part? // Use MultipartBody.Part for the file
+        @Part imagePath: MultipartBody.Part?
     ): Response<Unit>
-
-
 }
