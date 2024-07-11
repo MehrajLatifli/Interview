@@ -17,7 +17,6 @@ class AccountTypeFragment  : BaseFragment<FragmentAccountTypeBinding>(FragmentAc
     private var accountTypeList = arrayListOf(
         AccountType(R.drawable.person_1, "Admin"),
         AccountType(R.drawable.person_2, "HR"),
-        AccountType(R.drawable.person_3, "Custom")
 
     )
 
