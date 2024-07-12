@@ -57,23 +57,38 @@ class RegistrationFragment : BaseFragment<FragmentRegistrationBinding>(FragmentR
 
 
             if (!isPasswordValid(username)) {
-                Toast.makeText(requireContext(), "Username must have at least 8 characters, one uppercase letter, one lowercase letter, one special character, and one number", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    "Username must have at least 8 characters, one uppercase letter, one lowercase letter, one special character, and one number",
+                    Toast.LENGTH_SHORT
+                ).show()
                 return@setOnClickListener
             }
 
             if (!isPasswordValid(password)) {
-                Toast.makeText(requireContext(), "Password must have at least 8 characters, one uppercase letter, one lowercase letter, one special character, and one number", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    "Password must have at least 8 characters, one uppercase letter, one lowercase letter, one special character, and one number",
+                    Toast.LENGTH_SHORT
+                ).show()
                 return@setOnClickListener
             }
 
             if (!isPasswordValid(confirmpassword)) {
-                Toast.makeText(requireContext(), "Confirm password must have at least 8 characters, one uppercase letter, one lowercase letter, one special character, and one number", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    "Confirm password must have at least 8 characters, one uppercase letter, one lowercase letter, one special character, and one number",
+                    Toast.LENGTH_SHORT
+                ).show()
                 return@setOnClickListener
             }
 
-            if(password != confirmpassword)
-            {
-                Toast.makeText(requireContext(), "Password and Confirm Password are not same", Toast.LENGTH_SHORT).show()
+            if (password != confirmpassword) {
+                Toast.makeText(
+                    requireContext(),
+                    "Password and Confirm Password are not same",
+                    Toast.LENGTH_SHORT
+                ).show()
                 return@setOnClickListener
             }
 
@@ -81,6 +96,11 @@ class RegistrationFragment : BaseFragment<FragmentRegistrationBinding>(FragmentR
 
             if (!isEmailValid(email)) {
                 Toast.makeText(requireContext(), "Invalid email format", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if (binding.editText6.text.isNullOrBlank()) {
+                Toast.makeText(requireContext(), "Select images", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
@@ -92,7 +112,13 @@ class RegistrationFragment : BaseFragment<FragmentRegistrationBinding>(FragmentR
                 imagePath = imagePath
             )
 
-            viewModel.register(registerData)
+            if (args.accountType.contains("Admin")) {
+                viewModel.registerAdmin(registerData)
+            }
+
+            if (args.accountType.contains("HR")) {
+                viewModel.registerHR(registerData)
+            }
         }
 
 
@@ -174,7 +200,8 @@ class RegistrationFragment : BaseFragment<FragmentRegistrationBinding>(FragmentR
     }
 
     private fun isEmailValid(email: String): Boolean {
-        return Patterns.EMAIL_ADDRESS.matcher(email).matches()
+        val emailPattern = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\\\.[a-zA-Z]{2,}\$"
+        return email.matches(emailPattern.toRegex())
     }
 
     private fun getFileName(uri: Uri): String? {

@@ -20,7 +20,7 @@ import javax.inject.Inject
 
 class AuthRepository @Inject constructor(private val api: IApiManager) {
 
-    suspend fun registerUser(register: Register) = safeApiRequest {
+    suspend fun registerAdmin(register: Register) = safeApiRequest {
         val usernamePart = register.username?.toRequestBody("text/plain".toMediaType())
             ?: "".toRequestBody("text/plain".toMediaType())
         val emailPart = register.email?.toRequestBody("text/plain".toMediaType())
@@ -35,7 +35,31 @@ class AuthRepository @Inject constructor(private val api: IApiManager) {
             MultipartBody.Part.createFormData("imagePath", it.name, requestFile)
         }
 
-        api.createAccount(
+        api.registerAdmin(
+            username = usernamePart,
+            email = emailPart,
+            password = passwordPart,
+            phoneNumber = phoneNumberPart,
+            imagePath = imagePathPart
+        )
+    }
+
+    suspend fun registerHR(register: Register) = safeApiRequest {
+        val usernamePart = register.username?.toRequestBody("text/plain".toMediaType())
+            ?: "".toRequestBody("text/plain".toMediaType())
+        val emailPart = register.email?.toRequestBody("text/plain".toMediaType())
+            ?: "".toRequestBody("text/plain".toMediaType())
+        val passwordPart = register.password?.toRequestBody("text/plain".toMediaType())
+            ?: "".toRequestBody("text/plain".toMediaType())
+        val phoneNumberPart = register.phoneNumber?.toRequestBody("text/plain".toMediaType())
+            ?: "".toRequestBody("text/plain".toMediaType())
+
+        val imagePathPart = register.imagePath?.let {
+            val requestFile = it.asRequestBody("image/*".toMediaType())
+            MultipartBody.Part.createFormData("imagePath", it.name, requestFile)
+        }
+
+        api.registerHR(
             username = usernamePart,
             email = emailPart,
             password = passwordPart,

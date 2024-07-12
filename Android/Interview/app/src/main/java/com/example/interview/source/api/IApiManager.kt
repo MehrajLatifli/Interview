@@ -14,7 +14,17 @@ interface IApiManager {
 
     @Multipart
     @POST("Auth/registerAdmin")
-    suspend fun createAccount(
+    suspend fun registerAdmin(
+        @Part("username") username: RequestBody,
+        @Part("email") email: RequestBody,
+        @Part("password") password: RequestBody,
+        @Part("phoneNumber") phoneNumber: RequestBody,
+        @Part imagePath: MultipartBody.Part?
+    ): Response<Unit>
+
+    @Multipart
+    @POST("Auth/registerHR")
+    suspend fun registerHR(
         @Part("username") username: RequestBody,
         @Part("email") email: RequestBody,
         @Part("password") password: RequestBody,

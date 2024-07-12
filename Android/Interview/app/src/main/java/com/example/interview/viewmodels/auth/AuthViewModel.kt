@@ -26,12 +26,31 @@ class AuthViewModel @Inject constructor(private val authRepository: AuthReposito
     private val _authResult = MutableLiveData<Boolean>()
     val authResult: LiveData<Boolean> = _authResult
 
-    fun register(register: Register) {
+    fun registerAdmin(register: Register) {
         _loading.value = true
 
         viewModelScope.launch {
             try {
-                val result = authRepository.registerUser(register)
+                val result = authRepository.registerAdmin(register)
+                if (result is Resource.Success) {
+                    _authResult.postValue(true)
+                } else if (result is Resource.Error) {
+                    _error.postValue(result.message ?: "Unknown error")
+                }
+            } catch (e: Exception) {
+                _error.postValue(e.localizedMessage ?: "Unknown error")
+            } finally {
+                _loading.postValue(false)
+            }
+        }
+    }
+
+    fun registerHR(register: Register) {
+        _loading.value = true
+
+        viewModelScope.launch {
+            try {
+                val result = authRepository.registerHR(register)
                 if (result is Resource.Success) {
                     _authResult.postValue(true)
                 } else if (result is Resource.Error) {
