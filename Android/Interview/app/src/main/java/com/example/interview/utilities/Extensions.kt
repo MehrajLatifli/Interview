@@ -33,7 +33,7 @@ fun EditText.setEllipsizedEditTextIfLongBySize(text: String, size: Int) {
 
 
 
-fun ImageView.loadImageWithGlideAndResize(imageId: String, context: Context) {
+fun ImageView.loadImageWithGlideAndResize(imageId: Int, context: Context) {
 
     Glide.with(context)
         .clear(this)

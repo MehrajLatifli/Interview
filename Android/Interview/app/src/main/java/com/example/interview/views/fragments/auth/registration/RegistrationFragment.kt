@@ -1,25 +1,37 @@
 package com.example.interview.views.fragments.auth.registration
 
 import android.app.Activity
+import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.OpenableColumns
 import android.text.InputType
 import android.util.Patterns
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import com.example.interview.R
+import com.example.interview.databinding.CustomregistrationresultdialogBinding
 import com.example.interview.databinding.FragmentRegistrationBinding
 import com.example.interview.models.responses.post.registration.Register
 import com.example.interview.viewmodels.auth.AuthViewModel
 import com.example.interview.views.fragments.base.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
+import com.example.interview.utilities.gone
+import com.example.interview.utilities.loadImageWithGlideAndResize
+import com.example.interview.utilities.visible
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class RegistrationFragment : BaseFragment<FragmentRegistrationBinding>(FragmentRegistrationBinding::inflate) {
@@ -32,6 +44,8 @@ class RegistrationFragment : BaseFragment<FragmentRegistrationBinding>(FragmentR
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
 
         binding.textView.text = "Create an ${args.accountType} account"
 
@@ -56,51 +70,55 @@ class RegistrationFragment : BaseFragment<FragmentRegistrationBinding>(FragmentR
             val imagePath = selectedFile
 
 
-            if (!isPasswordValid(username)) {
-                Toast.makeText(
-                    requireContext(),
-                    "Username must have at least 8 characters, one uppercase letter, one lowercase letter, one special character, and one number",
-                    Toast.LENGTH_SHORT
-                ).show()
-                return@setOnClickListener
-            }
+            if (!isUsernameandPasswordValid(username)) {
 
-            if (!isPasswordValid(password)) {
-                Toast.makeText(
-                    requireContext(),
-                    "Password must have at least 8 characters, one uppercase letter, one lowercase letter, one special character, and one number",
-                    Toast.LENGTH_SHORT
-                ).show()
-                return@setOnClickListener
-            }
 
-            if (!isPasswordValid(confirmpassword)) {
-                Toast.makeText(
-                    requireContext(),
-                    "Confirm password must have at least 8 characters, one uppercase letter, one lowercase letter, one special character, and one number",
-                    Toast.LENGTH_SHORT
-                ).show()
-                return@setOnClickListener
-            }
+                customregistrationresultdialog(requireContext(),"UnSuccessful!","Username must have at least 8 characters, one uppercase letter, one lowercase letter, one special character, and one number",R.color.MellowMelon)
 
-            if (password != confirmpassword) {
-                Toast.makeText(
-                    requireContext(),
-                    "Password and Confirm Password are not same",
-                    Toast.LENGTH_SHORT
-                ).show()
                 return@setOnClickListener
             }
 
 
 
             if (!isEmailValid(email)) {
-                Toast.makeText(requireContext(), "Invalid email format", Toast.LENGTH_SHORT).show()
+                customregistrationresultdialog(requireContext(),"UnSuccessful!","Invalid email format",R.color.MellowMelon)
+
                 return@setOnClickListener
             }
 
+            if (!isUsernameandPasswordValid(password)) {
+
+
+                customregistrationresultdialog(requireContext(),"UnSuccessful!","Password must have at least 8 characters, one uppercase letter, one lowercase letter, one special character, and one number",R.color.MellowMelon)
+
+
+                return@setOnClickListener
+            }
+
+            if (!isUsernameandPasswordValid(confirmpassword)) {
+
+
+
+                customregistrationresultdialog(requireContext(),"UnSuccessful!","Confirm password must have at least 8 characters, one uppercase letter, one lowercase letter, one special character, and one number",R.color.MellowMelon)
+
+
+
+                return@setOnClickListener
+            }
+
+            if (password != confirmpassword) {
+
+
+                customregistrationresultdialog(requireContext(),"UnSuccessful!","Password and Confirm Password are not same",R.color.MellowMelon)
+
+                return@setOnClickListener
+            }
+
+
             if (binding.editText6.text.isNullOrBlank()) {
-                Toast.makeText(requireContext(), "Select images", Toast.LENGTH_SHORT).show()
+
+                customregistrationresultdialog(requireContext(),"UnSuccessful!","Select images",R.color.MellowMelon)
+
                 return@setOnClickListener
             }
 
@@ -131,11 +149,24 @@ class RegistrationFragment : BaseFragment<FragmentRegistrationBinding>(FragmentR
             }
         }
 
-        viewModel.error.observe(viewLifecycleOwner) { errorMessage ->
-            errorMessage?.let {
-                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+        viewModel.authResult.observe(viewLifecycleOwner) { auth ->
+
+            if (auth) {
+
+                customregistrationresultdialog(requireContext(),"Successful!","Please wait a moment, we are preparing for you...",R.color.DeepPurple)
+            } else {
+
             }
         }
+
+        viewModel.error.observe(viewLifecycleOwner) { errorMessage ->
+            if (errorMessage.isNullOrBlank()) {
+            } else {
+
+                customregistrationresultdialog(requireContext(),"UnSuccessful!","${errorMessage.toString()}",R.color.MellowMelon)
+            }
+        }
+
 
         viewModel.authResult.observe(viewLifecycleOwner) { authResult ->
 
@@ -147,6 +178,30 @@ class RegistrationFragment : BaseFragment<FragmentRegistrationBinding>(FragmentR
                 }
             }
         }
+    }
+
+
+    private fun customregistrationresultdialog(context: Context, title:String, text:String, colorId: Int) {
+
+        lifecycleScope.launch(Dispatchers.Main) {
+            val dialogBinding =
+                CustomregistrationresultdialogBinding.inflate(LayoutInflater.from(context))
+            val dialog = AlertDialog.Builder(context).apply {
+                setView(dialogBinding.root)
+            }.create()
+
+            dialogBinding.itemimageView.loadImageWithGlideAndResize(R.drawable.registerstatuse, context)
+            dialogBinding.titleTextView.text = title
+            dialogBinding.titleTextView.setTextColor(ContextCompat.getColor(context, colorId))
+            dialogBinding.textTextView.text = text
+            dialogBinding.textTextView.setTextColor(ContextCompat.getColor(context, colorId))
+
+            dialog.show()
+
+            delay(2000)
+             dialog.cancel()
+        }
+
     }
 
     private fun showPassword(editText: EditText, imageView: ImageView) {
@@ -194,8 +249,8 @@ class RegistrationFragment : BaseFragment<FragmentRegistrationBinding>(FragmentR
         }
     }
 
-    private fun isPasswordValid(password: String): Boolean {
-        val passwordPattern = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z\\d\\s])(?=\\S+\$).{8,}"
+    private fun isUsernameandPasswordValid(password: String): Boolean {
+        val passwordPattern = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[#?!@\$%^&*-_])(?=.*?[0-9]).{8,}\$"
         return password.matches(passwordPattern.toRegex())
     }
 
