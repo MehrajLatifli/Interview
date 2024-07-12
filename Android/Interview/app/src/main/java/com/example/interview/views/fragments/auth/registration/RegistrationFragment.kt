@@ -200,7 +200,7 @@ class RegistrationFragment : BaseFragment<FragmentRegistrationBinding>(FragmentR
     }
 
     private fun isEmailValid(email: String): Boolean {
-        val emailPattern = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\\\.[a-zA-Z]{2,}\$"
+        val emailPattern = "^(?=.{8,100}\$)([a-zA-Z0-9]+[-._+&])*[a-zA-Z0-9]+@([-a-zA-Z0-9]+\\.)+[a-zA-Z]{2,20}\$"
         return email.matches(emailPattern.toRegex())
     }
 
