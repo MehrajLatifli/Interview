@@ -43,10 +43,17 @@
         <argument
             android:name="accountType"
             app:argType="string" />
+        <action
+            android:id="@+id/action_registrationFragment_to_logInFragment"
+            app:destination="@id/logInFragment" />
     </fragment>
     <fragment
         android:id="@+id/logInFragment"
         android:name="com.example.interview.views.fragments.auth.login.LogInFragment"
         android:label="fragment_log_in"
-        tools:layout="@layout/fragment_log_in" />
+        tools:layout="@layout/fragment_log_in" >
+        <action
+            android:id="@+id/action_logInFragment_to_accountTypeFragment"
+            app:destination="@id/accountTypeFragment" />
+    </fragment>
 </navigation>

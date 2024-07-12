@@ -44,8 +44,10 @@ class WalkthroughFragment : BaseFragment<FragmentWalkthroughBinding>(FragmentWal
 
         binding.LogInButton.setOnClickListener{
 
-
+            findNavController().navigate(WalkthroughFragmentDirections.actionWalkthroughFragmentToLogInFragment())
         }
+
+
 
 
     }

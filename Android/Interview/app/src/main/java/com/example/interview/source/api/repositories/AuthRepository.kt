@@ -1,7 +1,9 @@
 package com.example.interview.source.api.repositories
 
 import android.util.Log
+import com.example.interview.models.responses.get.LoginResponse
 import com.example.interview.models.responses.get.error.ErrorResponse
+import com.example.interview.models.responses.post.login.Login
 import com.example.interview.source.api.IApiManager
 import com.example.interview.source.api.Resource
 import com.example.interview.models.responses.post.registration.Register
@@ -68,7 +70,11 @@ class AuthRepository @Inject constructor(private val api: IApiManager) {
         )
     }
 
-
+    suspend fun login(username: String, password: String): Resource<LoginResponse> {
+        return safeApiRequest {
+            api.login(Login(username, password))
+        }
+    }
 
     suspend fun <T> safeApiRequest(request: suspend () -> Response<T>): Resource<T> {
         return withContext(Dispatchers.IO) {

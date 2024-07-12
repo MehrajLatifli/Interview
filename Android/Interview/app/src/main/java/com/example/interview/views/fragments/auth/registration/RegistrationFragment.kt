@@ -17,6 +17,7 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.interview.R
 import com.example.interview.databinding.CustomregistrationresultdialogBinding
@@ -29,6 +30,7 @@ import java.io.File
 import com.example.interview.utilities.gone
 import com.example.interview.utilities.loadImageWithGlideAndResize
 import com.example.interview.utilities.visible
+import com.example.interview.views.fragments.walkthrough.WalkthroughFragmentDirections
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -48,6 +50,12 @@ class RegistrationFragment : BaseFragment<FragmentRegistrationBinding>(FragmentR
 
 
         binding.textView.text = "Create an ${args.accountType} account"
+
+
+
+        binding.accounttextView.setOnClickListener{
+            findNavController().navigate(RegistrationFragmentDirections.actionRegistrationFragmentToLogInFragment())
+        }
 
         binding.imageViewEye.setOnClickListener {
             showPassword(binding.editText3, binding.imageViewEye)
