@@ -4,8 +4,10 @@
         <domain includeSubdomains="true">localhost</domain>
         <domain includeSubdomains="true">127.0.0.1</domain>
         <domain includeSubdomains="true">10.0.2.2</domain>
-        <!-- Add your local network IP here if needed -->
+
         <domain includeSubdomains="true">192.168.0.189</domain>
+        <domain includeSubdomains="true">172.26.112.1</domain>
+        <domain includeSubdomains="true">host.docker.internal</domain>
     </domain-config>
 
 </network-security-config>
