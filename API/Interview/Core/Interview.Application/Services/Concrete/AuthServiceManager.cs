@@ -230,15 +230,16 @@ namespace Interview.Application.Services.Concrete
             if (claimsPrincipal.Identity.IsAuthenticated)
             {
 
-                var list = new List<GetAuthDTOModel>();
+             //   var list = new List<GetAuthDTOModel>();
 
                 var userroles = _mapper.Map<List<UserRoleDTOforGetandGetAll>>(_userRoleReadRepository.GetAll(false));
                 var users = _mapper.Map<List<UserDTOforGetandGetAll>>(_userReadRepository.GetAll(false));
                 var roles = _mapper.Map<List<RoleDTOforGetandGetAll>>(_roleReadRepository.GetAll(false));
-                var roleclaims = _mapper.Map<List<RoleClaimDTOforGetandGetAll>>(_roleClaimReadRepository.GetAll(false));
-                var userclaims = _mapper.Map<List<UserClaimDTOforGetandGetAll>>(_userClaimReadRepository.GetAll(false));
+               var userclaims = _mapper.Map<List<UserClaimDTOforGetandGetAll>>(_userClaimReadRepository.GetAll(false));
 
+                var roleclaims = _mapper.Map<List<RoleClaimDTOforGetandGetAll>>(_roleClaimReadRepository.GetAll(false)).Distinct().ToList();
 
+               
 
                 var currentUser = claimsPrincipal.Identity.Name;
 
@@ -265,35 +266,64 @@ namespace Interview.Application.Services.Concrete
                                     }
 
 
-                                    foreach (var item in userroles.Where(i => i.RoleId == roles.Where(i => i.Name == UserRoles.HR).FirstOrDefault().Id))
+                                    var query = from u in users
+                                                join ur in userroles on u.Id equals ur.UserId
+                                                join r in roles on ur.RoleId equals r.Id
+                                                join rc in roleclaims on r.Id equals rc.RoleId
+                                                select new GetAuthDTOModel
+                                                {
+                                                    Id = u.Id.ToString(),
+                                                    Username = u.UserName,
+                                                    Email = u.Email,
+                                                    PhoneNumber = u.Phonenumber,
+                                                    ImagePath = u.ImagePath,
+                                                    Permitions = new List<PermitionsDTOModel>
+                                                    {
+
+                                  
+                                                        new PermitionsDTOModel
+                                                        {
+
+                                      
+                                                            UserClaims = userclaims
+                                                            .Where(uc => uc.UserId == u.Id)
+                                                            .ToList(),
+
+
+                                                              RoleClaims = (
+                       
+                                                              from ur in userroles
+                                                              join role in roles on ur.RoleId equals role.Id
+                                                              join rc_ in roleclaims on role.Id equals rc_.RoleId
+                                                              where ur.UserId == u.Id
+                                                              select new RoleClaimDTOforGetandGetAll
+                                                              {
+                                                                  Id=rc_.Id,
+                                                                  RoleId= rc_.RoleId,
+                                                                  ClaimType = rc_.ClaimType,
+                                                                  ClaimValue = rc_.ClaimValue
+                                                              }
+                                                              ).TakeLast(1).Distinct().ToList(),
+
+
+                                                            Roles = userroles.Where(ur => ur.UserId == u.Id).Select(ur => roles.FirstOrDefault(role => role.Id == ur.RoleId)).ToList()
+
+                                    
+                                                        }
+
+                                
+                                                    }
+                                                };
+
+
+                                    var hrUsersDto = new List<GetAuthDTOModel>();
+
+
+                                    hrUsersDto = query.ToList();
+
+                                    if (hrUsersDto.Any())
                                     {
-
-                                        var rolesbyUser = userroles.Where(i => i.UserId == item.UserId).ToList().Select(userRole => roles.FirstOrDefault(role => role.Id == userRole.RoleId)).ToList();
-
-                                        list.Add(new GetAuthDTOModel()
-                                        {
-                                            Id = _userReadRepository.GetAll(false).Where(i => i.Id == item.UserId).FirstOrDefault().Id.ToString(),
-                                            Username = _userReadRepository.GetAll(false).Where(i => i.Id == item.UserId).FirstOrDefault().UserName,
-                                            PhoneNumber = _userReadRepository.GetAll(false).Where(i => i.Id == item.UserId).FirstOrDefault().Phonenumber,
-                                            Email = _userReadRepository.GetAll(false).Where(i => i.Id == item.UserId).FirstOrDefault().Email,
-                                            ImagePath = _userReadRepository.GetAll(false).Where(i => i.Id == item.UserId).FirstOrDefault().ImagePath,
-                                            Permitions = new List<PermitionsDTOModel>
-                                            {
-                                                 new PermitionsDTOModel
-                                                 {
-                                                    UserClaims = userclaims.Where(i=>i.UserId==item.UserId).ToList(),
-                                                    RoleClaims = roleclaims.Where(i=>i.RoleId==item.RoleId).ToList(),
-                                                    Roles = rolesbyUser,
-
-                                                 }
-
-                                            }
-                                        });
-                                    }
-
-                                    if (list.Any())
-                                    {
-                                        return list.Distinct(new GetAuthModelComparer()).ToList().OrderBy(i => i.Id).ToList();
+                                        return hrUsersDto.Distinct(new GetAuthModelComparer()).ToList().OrderBy(i => i.Id).ToList();
                                     }
                                     else
                                     {
@@ -955,20 +985,23 @@ namespace Interview.Application.Services.Concrete
             var roleExists = _roleReadRepository.GetAll(false).AsEnumerable().Any(i => i.Name == UserRoles.HR);
 
 
+            await _userWriteRepository.AddAsync(user);
+
+            await _userWriteRepository.SaveAsync();
+
+            var result1 = await _roleWriteRepository.SaveAsync();
+
+            if (result1 == -1)
+            {
+                throw new InvalidOperationException("Failed to create the user.");
+            }
 
 
-          
+            if (!roleExists)
+            {
 
-                await _userWriteRepository.AddAsync(user);
 
-                await _userWriteRepository.SaveAsync();
-
-                var result1 = await _roleWriteRepository.SaveAsync();
-
-                if (result1 == -1)
-                {
-                    throw new InvalidOperationException("Failed to create the user.");
-                }
+            
 
 
 
@@ -990,6 +1023,7 @@ namespace Interview.Application.Services.Concrete
                     throw new InvalidOperationException("Failed to create the role.");
                 }
 
+            }
 
 
 
@@ -1042,26 +1076,31 @@ namespace Interview.Application.Services.Concrete
 
 
 
-            var role = _roleReadRepository.GetAll(false).Where(i => i.Id == _roleReadRepository.GetAll(false).AsEnumerable().Where(i => i.Name == UserRoles.Admin).FirstOrDefault().Id).ToList();
+            var role = _roleReadRepository.GetAll(false).Where(i => i.Id == _roleReadRepository.GetAll(false).AsEnumerable().Where(i => i.Name == UserRoles.HR).FirstOrDefault().Id).ToList();
 
             if (role != null)
             {
 
+                var roleclaims = _mapper.Map<List<RoleClaimDTOforGetandGetAll>>(_roleClaimReadRepository.GetAll(false));
 
-                
-                    roleClaims.Add(new RoleClaim()
+
+
+                roleclaims.Clear();
+
+                roleClaims.Add(new RoleClaim()
                     {
                         ClaimType = "Get",
                         ClaimValue = "GetHRs",
                         RoleId = _roleReadRepository.GetAll(false).AsEnumerable().Where(i => i.Name == UserRoles.HR).FirstOrDefault().Id,
                     });
-                
+
 
 
 
 
 
                 //await _roleManager.AddClaimAsync(role, claim);
+
 
 
                 await _roleClaimWriteRepository.AddRangeAsync(roleClaims);
@@ -1090,6 +1129,13 @@ namespace Interview.Application.Services.Concrete
 
             if (users != null)
             {
+
+
+                var userclaims = _mapper.Map<List<UserClaimDTOforGetandGetAll>>(_userClaimReadRepository.GetAll(false));
+
+
+
+                userclaims.Clear();
 
                 foreach (var item in userAccesses)
                 {
@@ -1153,6 +1199,12 @@ namespace Interview.Application.Services.Concrete
 
                 _ = int.TryParse(_configuration["JWT:RefreshTokenValidityInDays"], out int refreshTokenValidityInDays);
 
+                DateTime utcDateTime = DateTime.UtcNow;
+
+                TimeZoneInfo bakuTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Azerbaijan Standard Time");
+
+                // Convert UTC DateTime to Baku DateTime
+                DateTime bakuDateTime = TimeZoneInfo.ConvertTimeFromUtc(utcDateTime, bakuTimeZone);
 
                 User user_ = new()
                 {
@@ -1164,7 +1216,7 @@ namespace Interview.Application.Services.Concrete
                     ConcurrencyStamp = user.ConcurrencyStamp,
                     ImagePath = user.ImagePath,
                     RefreshToken = refreshToken,
-                    RefreshTokenExpiryTime = DateTime.Now.AddDays(refreshTokenValidityInDays),
+                    RefreshTokenExpiryTime = bakuDateTime.AddDays(refreshTokenValidityInDays),
                 };
 
 
@@ -1232,7 +1284,14 @@ namespace Interview.Application.Services.Concrete
 
             var user = _userReadRepository.GetAll(false).Where(i => i.UserName == username).FirstOrDefault();
 
-            if (user == null || user.RefreshToken != refreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
+            DateTime utcDateTime = DateTime.UtcNow;
+
+            TimeZoneInfo bakuTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Azerbaijan Standard Time");
+
+            // Convert UTC DateTime to Baku DateTime
+            DateTime bakuDateTime = TimeZoneInfo.ConvertTimeFromUtc(utcDateTime, bakuTimeZone);
+
+            if (user == null || user.RefreshToken != refreshToken || user.RefreshTokenExpiryTime <= bakuDateTime)
             {
 
                 throw new BadHttpRequestException("Invalid access token or refresh token");
@@ -1370,12 +1429,19 @@ namespace Interview.Application.Services.Concrete
         private JwtSecurityToken CreateToken(List<Claim> authClaims)
         {
             var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
-            _ = int.TryParse(_configuration["JWT:TokenValidityInMinutes"], out int tokenValidityInMinutes);
+            _ = int.TryParse(_configuration["JWT:TokenValidityInDay"], out int TokenValidityInDay);
+
+            DateTime utcDateTime = DateTime.UtcNow;
+
+            TimeZoneInfo bakuTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Azerbaijan Standard Time");
+
+            // Convert UTC DateTime to Baku DateTime
+            DateTime bakuDateTime = TimeZoneInfo.ConvertTimeFromUtc(utcDateTime, bakuTimeZone);
 
             var token = new JwtSecurityToken(
                 issuer: _configuration["JWT:ValidateIssuer"],
                 audience: _configuration["JWT:ValidateAudience"],
-                expires: DateTime.Now.AddHours(tokenValidityInMinutes),
+                expires: bakuDateTime.AddHours(TokenValidityInDay),
                 claims: authClaims,
                 signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
                 );
