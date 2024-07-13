@@ -1197,7 +1197,7 @@ namespace Interview.Application.Services.Concrete
                 var token = CreateToken(authClaims);
                 var refreshToken = GenerateRefreshToken();
 
-                _ = int.TryParse(_configuration["JWT:RefreshTokenValidityInDays"], out int refreshTokenValidityInDays);
+                _ = int.TryParse(_configuration["JWT:RefreshTokenValidityInHours"], out int refreshTokenValidityInHours);
 
                 DateTime utcDateTime = DateTime.UtcNow;
 
@@ -1216,7 +1216,7 @@ namespace Interview.Application.Services.Concrete
                     ConcurrencyStamp = user.ConcurrencyStamp,
                     ImagePath = user.ImagePath,
                     RefreshToken = refreshToken,
-                    RefreshTokenExpiryTime = bakuDateTime.AddDays(refreshTokenValidityInDays),
+                    RefreshTokenExpiryTime = bakuDateTime.AddDays(refreshTokenValidityInHours),
                 };
 
 
@@ -1429,7 +1429,7 @@ namespace Interview.Application.Services.Concrete
         private JwtSecurityToken CreateToken(List<Claim> authClaims)
         {
             var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
-            _ = int.TryParse(_configuration["JWT:TokenValidityInDay"], out int TokenValidityInDay);
+            _ = int.TryParse(_configuration["JWT:TokenValidityInHour"], out int TokenValidityInHour);
 
             DateTime utcDateTime = DateTime.UtcNow;
 
@@ -1441,7 +1441,7 @@ namespace Interview.Application.Services.Concrete
             var token = new JwtSecurityToken(
                 issuer: _configuration["JWT:ValidateIssuer"],
                 audience: _configuration["JWT:ValidateAudience"],
-                expires: bakuDateTime.AddHours(TokenValidityInDay),
+                expires: bakuDateTime.AddHours(TokenValidityInHour),
                 claims: authClaims,
                 signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
                 );

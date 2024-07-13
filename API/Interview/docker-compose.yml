@@ -9,5 +9,7 @@ services:
     ports:
       - "50000:80"
       - "50005:443"
+    environment:
+      - TZ=Asia/Baku
     # environment:
     # - ASPNETCORE_ENVIRONMENT=Docker
