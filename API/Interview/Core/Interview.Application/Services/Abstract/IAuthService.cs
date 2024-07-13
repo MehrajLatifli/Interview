@@ -69,5 +69,6 @@ namespace Interview.Application.Services.Abstract
 
         //#endregion
 
+
     }
 }

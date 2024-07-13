@@ -107,6 +107,7 @@ namespace Interview.Application.Services.Concrete
 
         }
 
+
         public async Task<GetAuthDTOModel> Profile(ClaimsPrincipal claimsPrincipal)
         {
             if (claimsPrincipal.Identity.IsAuthenticated)
