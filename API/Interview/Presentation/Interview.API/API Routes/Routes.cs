@@ -70,6 +70,8 @@ namespace Interview.API.API_Routes
 
         public const string RandomQuestion2 = "randomQuestion2";
 
+        public const string Profile = "profile";
+
         public const string addUser = "addUser";
         public const string addRole = "addRole";
         public const string addRoleClaim = "addRoleClaim";

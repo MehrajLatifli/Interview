@@ -50,6 +50,7 @@ namespace Interview.API.Controllers.Auth
 
         [HttpGet]
         [Route(Routes.GetAdmins)]
+        [Authorize]
         public async Task<IActionResult> GetAdmins()
         {
             return Ok(await _authservice.GetAdmins(User));
@@ -59,6 +60,7 @@ namespace Interview.API.Controllers.Auth
 
         [HttpGet]
         [Route(Routes.GetHR)]
+        [Authorize]
         public async Task<IActionResult> GetHRs()
         {
             return Ok(await _authservice.GetHRs(User));
@@ -93,6 +95,18 @@ namespace Interview.API.Controllers.Auth
         }
 
 
+        [HttpGet]
+        [Route(Routes.Profile)]
+        [Authorize]
+        public async Task<IActionResult> Profile()
+        {
+            return Ok(await _authservice.Profile(User));
+
+
+
+        }
+
+
         [HttpPost]
         [Route(Routes.Logout)]
         public async Task<IActionResult> Logout(string username)
@@ -116,6 +130,7 @@ namespace Interview.API.Controllers.Auth
 
         [HttpGet]
         [Route(Routes.GetMehtods)]
+        [Authorize]
         public async Task<IActionResult> GetMehtods()
         {
             return Ok(await _authservice.GetMehtods(User));
@@ -126,6 +141,7 @@ namespace Interview.API.Controllers.Auth
 
         [HttpGet]
         [Route(Routes.GetUserAccess)]
+        [Authorize]
         public async Task<IActionResult> GetUserAccess()
         {
             return Ok(await _authservice.GetUserAccess(User));
@@ -136,6 +152,7 @@ namespace Interview.API.Controllers.Auth
 
         [HttpPost]
         [Route(Routes.addUser)]
+        [Authorize]
         public async Task<IActionResult> AddUser([FromForm] RegisterDTO model)
         {
 
@@ -149,6 +166,7 @@ namespace Interview.API.Controllers.Auth
 
         [HttpPost]
         [Route(Routes.addRole)]
+        [Authorize]
         public async Task<IActionResult> AddRole([FromBody] CreateRoleRequestModel model)
         {
             await _authservice.AddRole(model.RoleName, User);
@@ -159,6 +177,7 @@ namespace Interview.API.Controllers.Auth
 
         [HttpPost]
         [Route(Routes.addRoleClaim)]
+        [Authorize]
         public async Task<IActionResult> AddRoleClaim([FromBody] CreateRoleClaimRequestModel model)
         {
             await _authservice.AddRoleClaim(model.RoleId,model.RoleAccessMethodId, User);
@@ -169,6 +188,7 @@ namespace Interview.API.Controllers.Auth
 
         [HttpPost]
         [Route(Routes.addUserClaim)]
+        [Authorize]
         public async Task<IActionResult> AddUserClaim([FromBody] CreateUserClaimRequestModel model)
         {
             await _authservice.AddUserClaim(model.UserId, model.UserAccessId, User);
@@ -179,6 +199,7 @@ namespace Interview.API.Controllers.Auth
 
         [HttpPost]
         [Route(Routes.addUserRole)]
+        [Authorize]
         public async Task<IActionResult> AddUserRole([FromBody] CreateUserRoleRequestModel model)
         {
             await _authservice.AddUserRole(model.UserId, model.RoleId, User);

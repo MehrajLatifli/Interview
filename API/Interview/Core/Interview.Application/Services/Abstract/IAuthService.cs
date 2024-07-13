@@ -32,6 +32,7 @@ namespace Interview.Application.Services.Abstract
 
         public Task RegisterHR(RegisterAdminDTO model, string ConnectionStringAzure);
 
+        public Task<GetAuthDTOModel> Profile(ClaimsPrincipal claimsPrincipal);
 
         //public Task RegisterAdmin(RegisterDTO model, string ConnectionStringAzure);
 

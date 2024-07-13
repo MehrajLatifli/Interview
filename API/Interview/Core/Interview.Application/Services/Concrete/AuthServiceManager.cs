@@ -107,6 +107,74 @@ namespace Interview.Application.Services.Concrete
 
         }
 
+        public async Task<GetAuthDTOModel> Profile(ClaimsPrincipal claimsPrincipal)
+        {
+            if (claimsPrincipal.Identity.IsAuthenticated)
+            {
+                var currentUser = claimsPrincipal.Identity.Name;
+
+                var users = _mapper.Map<List<UserDTOforGetandGetAll>>(_userReadRepository.GetAll(false));
+                var roles = _mapper.Map<List<RoleDTOforGetandGetAll>>(_roleReadRepository.GetAll(false));
+                var userclaims = _mapper.Map<List<UserClaimDTOforGetandGetAll>>(_userClaimReadRepository.GetAll(false));
+                var userroles = _mapper.Map<List<UserRoleDTOforGetandGetAll>>(_userRoleReadRepository.GetAll(false));
+                var roleclaims = _mapper.Map<List<RoleClaimDTOforGetandGetAll>>(_roleClaimReadRepository.GetAll(false)).Distinct().ToList();
+
+                var currentUserDTO = users.FirstOrDefault(u => u.UserName == currentUser);
+                if (currentUserDTO == null)
+                {
+                    throw new NotFoundException("User not found.");
+                }
+
+                var userRolesDTO = userroles.Where(ur => ur.UserId == currentUserDTO.Id).ToList();
+                var userClaimsDTO = userclaims.Where(uc => uc.UserId == currentUserDTO.Id).ToList();
+                var userRoleIds = userRolesDTO.Select(ur => ur.RoleId).ToList();
+                var userRoles = roles.Where(r => userRoleIds.Contains(r.Id)).ToList();
+
+                var permissionsDTO = new List<PermitionsDTOModel>
+        
+                {
+            
+                    new PermitionsDTOModel
+                    {
+                
+                        UserClaims = userClaimsDTO,
+               
+                        RoleClaims = (from ur in userRolesDTO
+                                      join r in roles on ur.RoleId equals r.Id
+                                      join rc in roleclaims on r.Id equals rc.RoleId
+                                      select new RoleClaimDTOforGetandGetAll
+                                      {
+                                          Id = rc.Id,
+                                          RoleId = rc.RoleId,
+                                          ClaimType = rc.ClaimType,
+                                          ClaimValue = rc.ClaimValue
+                                      } ).TakeLast(1).Distinct().ToList(),
+                        
+                        Roles = userRoles
+            
+                    }
+        
+                };
+
+                var userProfile = new GetAuthDTOModel
+                {
+                    Id = currentUserDTO.Id.ToString(),
+                    Username = currentUserDTO.UserName,
+                    Email = currentUserDTO.Email,
+                    PhoneNumber = currentUserDTO.Phonenumber,
+                    ImagePath = currentUserDTO.ImagePath,
+                    Permitions = permissionsDTO
+                };
+
+                return userProfile;
+            }
+            else
+            {
+                throw new UnauthorizedException("Current user is not authenticated.");
+            }
+        }
+
+
 
         public async Task<List<GetAuthDTOModel>> GetAdmins(ClaimsPrincipal claimsPrincipal)
         {
