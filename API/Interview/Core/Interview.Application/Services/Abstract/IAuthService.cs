@@ -49,7 +49,7 @@ namespace Interview.Application.Services.Abstract
 
         //public Task<TokenModel> RefreshToken(TokenModel model);
 
-        //public Task Revoke(string username);
+        public Task Logout(string username);
 
         //public Task RevokeAll();
 

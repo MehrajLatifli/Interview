@@ -1331,6 +1331,25 @@ namespace Interview.Application.Services.Concrete
             return model;
         }
 
+        public async Task Logout(string username)
+        {
+            var user = _userReadRepository.GetAll(false).Where(i => i.UserName == username).FirstOrDefault();
+
+            if (user == null)
+            {
+
+                throw new BadHttpRequestException("Invalid user name");
+
+            }
+
+            user.RefreshToken = null;
+            user.RefreshTokenExpiryTime = null;
+
+            _userWriteRepository.Update(user);
+            await _userWriteRepository.SaveAsync();
+        }
+
+
         public async Task<List<RoleAccessMethodDTO>> MethodsAsync()
         {
 

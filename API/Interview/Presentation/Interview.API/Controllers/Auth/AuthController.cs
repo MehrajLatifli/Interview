@@ -94,6 +94,16 @@ namespace Interview.API.Controllers.Auth
 
 
         [HttpPost]
+        [Route(Routes.Logout)]
+        public async Task<IActionResult> Logout(string username)
+        {
+            await _authservice.Logout(username);
+
+            return NoContent();
+        }
+
+
+        [HttpPost]
         [Route(Routes.Login)]
         public async Task<IActionResult> Login([FromBody] LoginDTO model)
         {
