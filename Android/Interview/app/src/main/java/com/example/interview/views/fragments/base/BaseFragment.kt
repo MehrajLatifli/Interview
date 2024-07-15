@@ -29,4 +29,6 @@ abstract class BaseFragment<T : ViewBinding>(
         _binding = null
     }
 
+
+
 }

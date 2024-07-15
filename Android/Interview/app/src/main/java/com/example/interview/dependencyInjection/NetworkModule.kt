@@ -10,6 +10,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import okhttp3.Dns
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -43,6 +44,9 @@ object NetworkModule {
         apiKeyInterceptor: ApiKeyInterceptor
     ): OkHttpClient {
         return createUnsafeOkHttpClient().newBuilder()
+            .dns(Dns.SYSTEM)
+            .connectTimeout(60, TimeUnit.SECONDS)
+            .readTimeout(60, TimeUnit.SECONDS)
             .addInterceptor(httpLoggingInterceptor)
             .addInterceptor(apiKeyInterceptor)
             .build()

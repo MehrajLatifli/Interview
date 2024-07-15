@@ -103,6 +103,8 @@ class LogInFragment : BaseFragment<FragmentLogInBinding>(FragmentLogInBinding::i
             if (auth) {
 
                 customregistrationresultdialog(requireContext(),"Successful!","Please wait a moment, we are preparing for you...",R.color.DeepPurple)
+            //    findNavController().navigate(LogInFragmentDirections.actionLogInFragmentToHomeFragment())
+                findNavController().navigate(LogInFragmentDirections.actionLogInFragmentToProfileFragment())
             } else {
 
             }
@@ -148,7 +150,7 @@ class LogInFragment : BaseFragment<FragmentLogInBinding>(FragmentLogInBinding::i
             dialog.show()
 
             delay(2000)
-            dialog.cancel()
+            dialog.dismiss()
         }
 
     }

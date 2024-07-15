@@ -57,7 +57,6 @@ android {
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -68,126 +67,93 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
-
-
     val nav_version = "2.7.7"
 
-    // Java language implementation
+    // Navigation
     implementation("androidx.navigation:navigation-fragment:$nav_version")
     implementation("androidx.navigation:navigation-ui:$nav_version")
-
-    // Kotlin
     implementation("androidx.navigation:navigation-fragment-ktx:$nav_version")
     implementation("androidx.navigation:navigation-ui-ktx:$nav_version")
-
-    // Feature module Support
     implementation("androidx.navigation:navigation-dynamic-features-fragment:$nav_version")
-
-    // Testing Navigation
     androidTestImplementation("androidx.navigation:navigation-testing:$nav_version")
-
-    // Jetpack Compose Integration
     implementation("androidx.navigation:navigation-compose:$nav_version")
 
-    //retrofit2
+    // Retrofit
     implementation("com.squareup.retrofit2:retrofit:2.11.0")
     implementation("com.squareup.retrofit2:converter-gson:2.11.0")
 
-    //Gson
+    // Gson
     implementation("com.google.code.gson:gson:2.11.0")
 
+    // Picasso
     implementation("com.squareup.picasso:picasso:2.71828")
 
-    //Glide
+    // Glide
     implementation("com.github.bumptech.glide:glide:4.16.0")
-
-
-
+    kapt("com.github.bumptech.glide:compiler:4.16.0")
+    implementation("com.github.bumptech.glide:okhttp3-integration:4.16.0")
 
     val lifecycle_version = "2.8.2"
     val arch_version = "2.2.0"
 
-    // ViewModel
+    // Lifecycle
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version")
-    // ViewModel utilities for Compose
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycle_version")
-    // LiveData
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version")
-    // Lifecycles only (without ViewModel or LiveData)
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version")
-    // Lifecycle utilities for Compose
     implementation("androidx.lifecycle:lifecycle-runtime-compose:$lifecycle_version")
-
-    // Saved state module for ViewModel
     implementation("androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycle_version")
-
-    // Annotation processor
     kapt("androidx.lifecycle:lifecycle-compiler:$lifecycle_version")
-    // alternately - if using Java8, use the following instead of lifecycle-compiler
     implementation("androidx.lifecycle:lifecycle-common-java8:$lifecycle_version")
-
-    // optional - helpers for implementing LifecycleOwner in a Service
     implementation("androidx.lifecycle:lifecycle-service:$lifecycle_version")
-
-    // optional - ProcessLifecycleOwner provides a lifecycle for the whole application process
     implementation("androidx.lifecycle:lifecycle-process:$lifecycle_version")
-
-    // optional - ReactiveStreams support for LiveData
     implementation("androidx.lifecycle:lifecycle-reactivestreams-ktx:$lifecycle_version")
-
-    // optional - Test helpers for LiveData
     testImplementation("androidx.arch.core:core-testing:$arch_version")
+    testImplementation("androidx.lifecycle:lifecycle-runtime-testing:$lifecycle_version")
 
-    // optional - Test helpers for Lifecycle runtime
-    testImplementation ("androidx.lifecycle:lifecycle-runtime-testing:$lifecycle_version")
-
-
-    //Viewpager2
+    // ViewPager2
     implementation("androidx.viewpager2:viewpager2:1.1.0")
-    implementation(platform("androidx.compose:compose-bom:2024.06.00"))
 
+    // Jetpack Compose
+    implementation(platform("androidx.compose:compose-bom:2024.06.00"))
     implementation("com.tbuonomo:dotsindicator:5.0")
 
-    //Coroutines
+    // Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
 
-
+    // SwipeRefreshLayout
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 
-    //Splash Screen
+    // Splash Screen
     implementation("androidx.core:core-splashscreen:1.0.1")
 
-    //Okhttp3
-    implementation("com.squareup.okhttp3:okhttp:4.12.0")
-    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
+    // OkHttp
+    implementation(platform("com.squareup.okhttp3:okhttp-bom:4.12.0"))
+    implementation("com.squareup.okhttp3:okhttp")
+    implementation("com.squareup.okhttp3:logging-interceptor")
+    implementation("com.squareup.okhttp3:okhttp-urlconnection")
 
-
-    //Dagger-Hilt
+    // Dagger-Hilt
     implementation("com.google.dagger:hilt-android:2.51.1")
     kapt("com.google.dagger:hilt-android-compiler:2.51.1")
 
-
-    //Room-SQLLite
+    // Room-SQLite
     val room_version = "2.6.1"
     implementation("androidx.room:room-runtime:$room_version")
-    annotationProcessor("androidx.room:room-compiler:$room_version")
-    implementation("androidx.room:room-ktx:$room_version")
     kapt("androidx.room:room-compiler:$room_version")
+    implementation("androidx.room:room-ktx:$room_version")
 
-
-    //lottie
+    // Lottie
     implementation("com.airbnb.android:lottie:6.4.1")
 
-    //OkHttp
-    implementation(platform("com.squareup.okhttp3:okhttp-bom:4.12.0"))
-    implementation("com.squareup.okhttp3:okhttp:4.12.0")
-    implementation("com.squareup.okhttp3:okhttp-urlconnection:4.12.0")
+    // Material Components
+    implementation("com.google.android.material:material:1.12.0")
 
-
-
-
+    //coil
+    implementation("io.coil-kt:coil:2.6.0")
 }
+
 
 kapt {
     correctErrorTypes = true

@@ -6,11 +6,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.interview.models.entities.LoginEntity
-import com.example.interview.models.responses.get.LoginResponse
+import com.example.interview.models.responses.get.login.LoginResponse
 import com.example.interview.models.responses.post.login.Login
 import com.example.interview.models.responses.post.registration.Register
 import com.example.interview.source.api.Resource
-import com.example.interview.source.api.repositories.AuthRepository
+import com.example.interview.source.api.repositories.auth.AuthRepository
 import com.example.interview.source.local.mapping.toLoginEntity
 import com.example.interview.source.local.mapping.toLoginResponse
 import com.example.interview.source.local.repositories.EntityRepository
@@ -21,7 +21,6 @@ import com.example.interview.utilities.generateAESKey
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @HiltViewModel

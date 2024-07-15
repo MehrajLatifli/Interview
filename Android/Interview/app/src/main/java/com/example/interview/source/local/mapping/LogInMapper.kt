@@ -1,8 +1,7 @@
 package com.example.interview.source.local.mapping
 
-import androidx.browser.trusted.Token
 import com.example.interview.models.entities.LoginEntity
-import com.example.interview.models.responses.get.LoginResponse
+import com.example.interview.models.responses.get.login.LoginResponse
 
 fun LoginEntity.toLoginResponse(): LoginResponse {
     return LoginResponse(
@@ -13,7 +12,7 @@ fun LoginEntity.toLoginResponse(): LoginResponse {
 }
 
 
-fun LoginResponse.toLoginEntity(username:String,encryptedToken:String): LoginEntity {
+fun LoginResponse.toLoginEntity(username:String, encryptedToken:String): LoginEntity {
     return LoginEntity(
         username = username,
         token = encryptedToken
