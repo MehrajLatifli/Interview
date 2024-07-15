@@ -85,8 +85,6 @@ dependencies {
     // Gson
     implementation("com.google.code.gson:gson:2.11.0")
 
-    // Picasso
-    implementation("com.squareup.picasso:picasso:2.71828")
 
     // Glide
     implementation("com.github.bumptech.glide:glide:4.16.0")
@@ -114,7 +112,7 @@ dependencies {
     // ViewPager2
     implementation("androidx.viewpager2:viewpager2:1.1.0")
 
-    // Jetpack Compose
+    // Dotsindicator
     implementation(platform("androidx.compose:compose-bom:2024.06.00"))
     implementation("com.tbuonomo:dotsindicator:5.0")
 
@@ -144,14 +142,11 @@ dependencies {
     kapt("androidx.room:room-compiler:$room_version")
     implementation("androidx.room:room-ktx:$room_version")
 
-    // Lottie
-    implementation("com.airbnb.android:lottie:6.4.1")
+
 
     // Material Components
     implementation("com.google.android.material:material:1.12.0")
 
-    //coil
-    implementation("io.coil-kt:coil:2.6.0")
 }
 
 

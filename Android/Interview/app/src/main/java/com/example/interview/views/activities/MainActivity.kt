@@ -7,7 +7,6 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
-import coil.Coil
 import com.example.interview.R
 import com.example.interview.databinding.ActivityMainBinding
 import com.example.interview.utilities.gone

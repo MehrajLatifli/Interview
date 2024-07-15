@@ -5,7 +5,6 @@ import com.example.interview.source.api.ApiKeyInterceptor
 import com.example.interview.source.api.IApiManager
 import com.example.interview.utilities.Constants.Base_URL
 import com.example.interview.utilities.createUnsafeOkHttpClient
-import com.squareup.picasso.BuildConfig
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

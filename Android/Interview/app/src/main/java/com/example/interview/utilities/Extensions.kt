@@ -10,8 +10,6 @@ import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
 import androidx.core.net.toUri
-import coil.ImageLoader
-import coil.request.ImageRequest
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
@@ -139,21 +137,6 @@ fun ImageView.loadImageWithGlideAndResizeFromUrl(imageUrl: String, context: Cont
 }
 
 
-fun ImageView.loadUrl(url: String) {
 
-    val imageLoader = ImageLoader.Builder(this.context)
-        .build()
-
-    val request = ImageRequest.Builder(this.context)
-        .crossfade(true)
-        .crossfade(500)
-        .placeholder(R.drawable.registerstatuse)
-        .error(R.drawable.registerstatuse)
-        .data(url)
-        .target(this)
-        .build()
-
-    imageLoader.enqueue(request)
-}
 
 

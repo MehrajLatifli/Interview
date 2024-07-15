@@ -12,8 +12,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import coil.load
-import coil.transform.CircleCropTransformation
 import com.example.interview.R
 import com.example.interview.databinding.CustomregistrationresultdialogBinding
 import com.example.interview.databinding.FragmentProfileBinding
@@ -21,12 +19,10 @@ import com.example.interview.utilities.Constants.API_KEY
 import com.example.interview.utilities.gone
 import com.example.interview.utilities.loadImageWithGlideAndResize
 import com.example.interview.utilities.loadImageWithGlideAndResizeFromUrl
-import com.example.interview.utilities.loadUrl
 import com.example.interview.utilities.visible
 import com.example.interview.viewmodels.profile.ProfileViewModel
 import com.example.interview.views.fragments.auth.login.LogInFragmentDirections
 import com.example.interview.views.fragments.base.BaseFragment
-import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
