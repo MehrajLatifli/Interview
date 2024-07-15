@@ -42,6 +42,8 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
         super.onViewCreated(view, savedInstanceState)
 
 
+        binding.includeProgressbar.progressBar.gone()
+        binding.Maincardview.gone()
 
         viewModel.getprofile()
 
@@ -50,9 +52,13 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
             if (isLoading) {
 
                 binding.includeBottomnav.BottomNavigationView.visible()
+                binding.includeProgressbar.progressBar.visible()
             } else {
-
-
+                lifecycleScope.launch {
+                    binding.includeProgressbar.progressBar.gone()
+                    delay(1000)
+                    binding.Maincardview.visible()
+                }
             }
         }
 
@@ -61,7 +67,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
         viewModel.error.observe(viewLifecycleOwner) { errorMessage ->
 
             if (errorMessage.isNullOrBlank()) {
-                customregistrationresultdialog(requireContext(),"Successful!","Please wait a moment, we are preparing for you...",R.color.DeepPurple)
+
             } else {
 
                 customregistrationresultdialog(requireContext(),"UnSuccessful!","${errorMessage.toString()}",R.color.MellowMelon)
@@ -70,17 +76,13 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
 
 
         viewModel.profiles.observe(viewLifecycleOwner) { items ->
-
-
-
             items.forEach { profile ->
-
-             //   binding.profileimageView.loadUrl(profile.imagePath)
-            binding.profileimageView.loadImageWithGlideAndResizeFromUrl(profile.imagePath, requireContext())
+           binding.profileimageView.loadImageWithGlideAndResizeFromUrl(profile.imagePath, requireContext())
 
 
 
                 binding.usernametextView.text = profile.username
+                binding.emailtextView.text = profile.email
                 Log.e("profile", profile.imagePath.toString())
                 Log.e("profile", profile.username.toString())
             }

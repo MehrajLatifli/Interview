@@ -42,7 +42,8 @@ ORDER BY Timestamp DESC </p>
 
 </br>
 
-<h1> Dockerize </h1>
+<h1> Dockerize -> Use Powershell or Developer Powershell in Visual studio</h1>
+<br/>
 docker build    -f "Your_RootPath\Interview\API\Interview\Presentation\Interview.API\Dockerfile"    -t interview:dev    "Your_RootPath\Interview\API\Interview" 
 <br/>
 <br/>

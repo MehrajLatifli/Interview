@@ -19,6 +19,17 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.example.interview.R
 import java.io.File
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.Response
+import java.io.IOException
+import java.io.InputStream
+
+import android.graphics.BitmapFactory
+import android.os.Handler
+import android.os.Looper
 
 
 fun View.gone() {
@@ -58,23 +69,54 @@ fun ImageView.loadImageWithGlideAndResize(imageId: Int, context: Context) {
         .into(this)
 }
 
+
+fun downloadImage(imageUrl: String, callback: (Bitmap?) -> Unit) {
+    val client = OkHttpClient()
+    val request = Request.Builder().url(imageUrl).build()
+
+    client.newCall(request).enqueue(object : Callback {
+        override fun onFailure(call: Call, e: IOException) {
+            callback(null)
+        }
+
+        override fun onResponse(call: Call, response: Response) {
+            if (response.isSuccessful) {
+                response.body?.byteStream()?.let { inputStream ->
+                    val bitmap = BitmapFactory.decodeStream(inputStream)
+                    callback(bitmap)
+                } ?: callback(null)
+            } else {
+                callback(null)
+            }
+        }
+    })
+
+}
+
+
 fun ImageView.loadImageWithGlideAndResizeFromUrl(imageUrl: String, context: Context) {
     // Define RequestOptions
     val options = RequestOptions()
-        .placeholder(R.color.Transparent) // Use actual placeholder resource ID
-        .error(R.color.MellowMelon) // Use actual error resource ID
-        .override(50, 50) // Optional resizing
+        .placeholder(R.drawable.ic_launcher_background) // Replace with actual drawable resource ID
+        .error(R.drawable.ic_launcher_background) // Replace with actual drawable resource ID
+        .dontAnimate()
+        .override(500,500)
         .diskCacheStrategy(DiskCacheStrategy.ALL)
 
     try {
-        // Build URI if needed
+
+        val replacedUrl = imageUrl.replace("http://host.docker.internal", "http://10.0.2.2")
+
+        // Download the image
 
 
-        Glide.with(context)
+
+        GlideApp.with(context)
             .asBitmap()
-            .load(imageUrl)
+            .load(replacedUrl)
             .apply(options)
-            .into(object : CustomTarget<Bitmap>(width, height) {
+            .centerCrop()
+            .into(object : CustomTarget<Bitmap>() {
                 override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                     setImageBitmap(resource)
                 }
@@ -85,14 +127,14 @@ fun ImageView.loadImageWithGlideAndResizeFromUrl(imageUrl: String, context: Cont
 
                 override fun onLoadFailed(errorDrawable: Drawable?) {
                     setImageDrawable(errorDrawable)
-                    Log.e(
-                        "ImageLoader",
-                        "Failed to load image: $imageUrl"
-                    )
+                    Log.e("ImageLoader1", "Failed to load image: $imageUrl")
                 }
             })
+
+
+
     } catch (e: Exception) {
-        Log.e("ImageLoader", "Exception loading image", e)
+        Log.e("ImageLoader3", "Exception loading image", e)
     }
 }
 

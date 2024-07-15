@@ -32,6 +32,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 
 @AndroidEntryPoint
@@ -99,14 +100,25 @@ class LogInFragment : BaseFragment<FragmentLogInBinding>(FragmentLogInBinding::i
         }
 
         viewModel.authResult.observe(viewLifecycleOwner) { auth ->
+            lifecycleScope.launch {
 
-            if (auth) {
+                if (auth) {
 
-                customregistrationresultdialog(requireContext(),"Successful!","Please wait a moment, we are preparing for you...",R.color.DeepPurple)
-            //    findNavController().navigate(LogInFragmentDirections.actionLogInFragmentToHomeFragment())
-                findNavController().navigate(LogInFragmentDirections.actionLogInFragmentToProfileFragment())
-            } else {
+                    customregistrationresultdialog(
+                        requireContext(),
+                        "Successful!",
+                        "Please wait a moment, we are preparing for you...",
+                        R.color.DeepPurple
+                    )
+                    //    findNavController().navigate(LogInFragmentDirections.actionLogInFragmentToHomeFragment())
 
+                        delay(2500)
+
+                        findNavController().navigate(LogInFragmentDirections.actionLogInFragmentToProfileFragment())
+
+                } else {
+
+                }
             }
         }
 

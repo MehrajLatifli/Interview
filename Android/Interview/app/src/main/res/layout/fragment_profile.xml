@@ -8,9 +8,26 @@
     tools:context=".views.fragments.profile.ProfileFragment">
 
 
+    <include
+        android:id="@+id/include_progressbar"
+        style="?android:attr/progressBarStyle"
+        layout="@layout/include_progressbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="16dp"
+        android:elevation="10dp"
+        android:translationZ="10dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Maincardview" />
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/backgroundimagecardview"
+        android:id="@+id/Maincardview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -24,7 +41,6 @@
         app:layout_constraintTop_toTopOf="parent">
 
 
-
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/imageConstraintLayout"
             android:layout_width="match_parent"
@@ -34,7 +50,7 @@
                 android:id="@+id/imagecardview"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:layout_marginStart="24dp"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="24dp"
                 android:layout_marginBottom="24dp"
                 app:cardCornerRadius="50dp"
@@ -56,19 +72,33 @@
                 android:id="@+id/usernametextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
+                android:layout_marginStart="16dp"
                 android:background="@color/Transparent"
                 android:elevation="100dp"
+                android:fontFamily="@font/nunito_bold"
                 android:paddingHorizontal="10dp"
                 android:paddingVertical="10dp"
-                android:fontFamily="@font/nunito_bold"
                 android:textColor="@color/White"
-                android:textSize="20sp"
-                app:layout_constraintBottom_toBottomOf="@+id/imagecardview"
+                android:textSize="16sp"
                 app:layout_constraintStart_toEndOf="@+id/imagecardview"
                 app:layout_constraintTop_toTopOf="@+id/imagecardview" />
+
+            <TextView
+                android:id="@+id/emailtextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginBottom="6dp"
+                android:background="@color/Transparent"
+                android:elevation="100dp"
+                android:fontFamily="@font/nunito_bold"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="10dp"
+                android:textColor="@color/White"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="@+id/imagecardview"
+                app:layout_constraintStart_toEndOf="@+id/imagecardview"
+                app:layout_constraintTop_toBottomOf="@+id/usernametextView" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

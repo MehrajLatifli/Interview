@@ -49,6 +49,8 @@ using Interview.Application.Mapper.DTO.UserDTO;
 using Interview.Application.Mapper.DTO.RoleClaimDTO;
 using Interview.Application.Mapper.DTO.UserClaimDTO;
 using Interview.Domain.Entities.Others;
+using Azure.Storage.Blobs.Models;
+using Azure.Storage.Blobs;
 
 namespace Interview.Application.Services.Concrete
 {
@@ -712,19 +714,28 @@ namespace Interview.Application.Services.Concrete
             }
 
             string containerName = "profile-images";
+            string blobName = entity.Username + "_" + Guid.NewGuid() + Path.GetExtension(entity.ImagePath.FileName);
 
-            string blobName = entity.Username + "_" + Guid.NewGuid().ToString() + Path.GetExtension(entity.ImagePath.FileName);
-
-            Azure.Storage.Blobs.BlobServiceClient blobServiceClient = new Azure.Storage.Blobs.BlobServiceClient(connectionString);
-            Azure.Storage.Blobs.BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(containerName);
-
-            await containerClient.CreateIfNotExistsAsync(Azure.Storage.Blobs.Models.PublicAccessType.Blob);
-
-            Azure.Storage.Blobs.BlobClient blobClient = containerClient.GetBlobClient(blobName);
-
-            using (Stream stream = entity.ImagePath.OpenReadStream())
+            // Set content type and disposition based on file extension
+            var blobHttpHeaders = new BlobHttpHeaders
             {
-                await blobClient.UploadAsync(stream, true);
+                ContentType = GetContentType(Path.GetExtension(entity.ImagePath.FileName)),
+                ContentDisposition = "inline" // Ensures the image is viewable in the browser
+            };
+
+            // Create a BlobServiceClient and get a reference to the container
+            var blobServiceClient = new BlobServiceClient(connectionString);
+            var containerClient = blobServiceClient.GetBlobContainerClient(containerName);
+            await containerClient.CreateIfNotExistsAsync(PublicAccessType.Blob);
+
+            // Get a reference to the blob and upload the image with headers
+            var blobClient = containerClient.GetBlobClient(blobName);
+            using (var stream = entity.ImagePath.OpenReadStream())
+            {
+                await blobClient.UploadAsync(stream, new BlobUploadOptions
+                {
+                    HttpHeaders = blobHttpHeaders
+                });
             }
 
             string imageUrl = blobClient.Uri.ToString();
@@ -761,6 +772,17 @@ namespace Interview.Application.Services.Concrete
 
         }
 
+        private string GetContentType(string extension)
+        {
+            return extension.ToLower() switch
+            {
+                ".png" => "image/png",
+                ".jpg" or ".jpeg" => "image/jpeg",
+                ".gif" => "image/gif",
+                _ => "application/octet-stream"
+            };
+        }
+
         public async Task RegisterAdmin(RegisterAdminDTO model, string ConnectionStringAzure)
         {
             var userAccesses = await UserAccessAsync();
@@ -788,19 +810,28 @@ namespace Interview.Application.Services.Concrete
             }
 
             string containerName = "profile-images";
+            string blobName = entity.Username + "_" + Guid.NewGuid() + Path.GetExtension(entity.ImagePath.FileName);
 
-            string blobName = entity.Username + "_" + Guid.NewGuid().ToString() + Path.GetExtension(entity.ImagePath.FileName);
-
-            Azure.Storage.Blobs.BlobServiceClient blobServiceClient = new Azure.Storage.Blobs.BlobServiceClient(connectionString);
-            Azure.Storage.Blobs.BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(containerName);
-
-            await containerClient.CreateIfNotExistsAsync(Azure.Storage.Blobs.Models.PublicAccessType.Blob);
-
-            Azure.Storage.Blobs.BlobClient blobClient = containerClient.GetBlobClient(blobName);
-
-            using (Stream stream = entity.ImagePath.OpenReadStream())
+            // Set content type and disposition based on file extension
+            var blobHttpHeaders = new BlobHttpHeaders
             {
-                await blobClient.UploadAsync(stream, true);
+                ContentType = GetContentType(Path.GetExtension(entity.ImagePath.FileName)),
+                ContentDisposition = "inline" // Ensures the image is viewable in the browser
+            };
+
+            // Create a BlobServiceClient and get a reference to the container
+            var blobServiceClient = new BlobServiceClient(connectionString);
+            var containerClient = blobServiceClient.GetBlobContainerClient(containerName);
+            await containerClient.CreateIfNotExistsAsync(PublicAccessType.Blob);
+
+            // Get a reference to the blob and upload the image with headers
+            var blobClient = containerClient.GetBlobClient(blobName);
+            using (var stream = entity.ImagePath.OpenReadStream())
+            {
+                await blobClient.UploadAsync(stream, new BlobUploadOptions
+                {
+                    HttpHeaders = blobHttpHeaders
+                });
             }
 
             string imageUrl = blobClient.Uri.ToString();
@@ -1021,19 +1052,28 @@ namespace Interview.Application.Services.Concrete
             }
 
             string containerName = "profile-images";
+            string blobName = entity.Username + "_" + Guid.NewGuid() + Path.GetExtension(entity.ImagePath.FileName);
 
-            string blobName = entity.Username + "_" + Guid.NewGuid().ToString() + Path.GetExtension(entity.ImagePath.FileName);
-
-            Azure.Storage.Blobs.BlobServiceClient blobServiceClient = new Azure.Storage.Blobs.BlobServiceClient(connectionString);
-            Azure.Storage.Blobs.BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(containerName);
-
-            await containerClient.CreateIfNotExistsAsync(Azure.Storage.Blobs.Models.PublicAccessType.Blob);
-
-            Azure.Storage.Blobs.BlobClient blobClient = containerClient.GetBlobClient(blobName);
-
-            using (Stream stream = entity.ImagePath.OpenReadStream())
+            // Set content type and disposition based on file extension
+            var blobHttpHeaders = new BlobHttpHeaders
             {
-                await blobClient.UploadAsync(stream, true);
+                ContentType = GetContentType(Path.GetExtension(entity.ImagePath.FileName)),
+                ContentDisposition = "inline" // Ensures the image is viewable in the browser
+            };
+
+            // Create a BlobServiceClient and get a reference to the container
+            var blobServiceClient = new BlobServiceClient(connectionString);
+            var containerClient = blobServiceClient.GetBlobContainerClient(containerName);
+            await containerClient.CreateIfNotExistsAsync(PublicAccessType.Blob);
+
+            // Get a reference to the blob and upload the image with headers
+            var blobClient = containerClient.GetBlobClient(blobName);
+            using (var stream = entity.ImagePath.OpenReadStream())
+            {
+                await blobClient.UploadAsync(stream, new BlobUploadOptions
+                {
+                    HttpHeaders = blobHttpHeaders
+                });
             }
 
             string imageUrl = blobClient.Uri.ToString();
