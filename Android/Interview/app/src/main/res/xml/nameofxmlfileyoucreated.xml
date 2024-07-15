@@ -10,5 +10,4 @@
         <domain includeSubdomains="true">host.docker.internal</domain>
     </domain-config>
 
-
 </network-security-config>
