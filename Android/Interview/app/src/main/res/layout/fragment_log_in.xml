@@ -7,6 +7,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".views.fragments.auth.login.LogInFragment">
 
+    <include
+        android:id="@+id/include_progressbar"
+        layout="@layout/include_progressbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/headerConstraintLayout"
         android:layout_width="0dp"
@@ -146,6 +158,7 @@
             android:backgroundTint="@color/DeepPurple"
             android:fontFamily="@font/nunito_bold"
             android:paddingLeft="60dp"
+            android:textColor="@color/White"
             android:paddingTop="18dp"
             android:paddingRight="60dp"
             android:paddingBottom="18dp"

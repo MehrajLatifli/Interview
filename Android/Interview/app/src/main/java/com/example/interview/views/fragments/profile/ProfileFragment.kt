@@ -46,6 +46,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
         binding.NestedScrollView.gone()
         binding.LogOutButton.gone()
 
+
         viewModel.getprofile()
 
 
@@ -77,6 +78,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
 
 
 
+
                 findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToLogInFragment())
             }
 
@@ -84,6 +86,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
         }
 
     }
+
 
 
     private fun observeData() {

@@ -1,19 +1,22 @@
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<com.google.android.material.card.MaterialCardView android:id="@+id/materialCardView"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:layout_marginStart="5dp"
+    android:layout_marginTop="5dp"
+    android:layout_marginEnd="5dp"
+    android:layout_marginBottom="10dp"
+    app:cardCornerRadius="25dp"
+    app:cardElevation="5dp"
+    app:strokeWidth="5dp"
+    app:strokeColor="@color/LavenderTonic"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/customDialogConstraintLayout"
-        android:layout_width="0dp"
+        android:id="@+id/ConstraintLayout_1"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/rounded_corner_background"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
+        android:background="@color/White">
 
         <ImageView
             android:id="@+id/itemimageView"
@@ -34,16 +37,16 @@
             android:layout_marginTop="16dp"
             android:layout_marginEnd="24dp"
             android:ems="10"
+            android:fontFamily="@font/nunito_bold"
+            android:gravity="center"
             android:inputType="text"
             android:paddingLeft="5dp"
-            android:gravity="center"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintVertical_bias="0.5"
-            android:fontFamily="@font/nunito_bold"
             android:textSize="24sp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/itemimageView" />
+            app:layout_constraintTop_toBottomOf="@+id/itemimageView"
+            app:layout_constraintVertical_bias="0.5" />
 
         <TextView
             android:id="@+id/textTextView"
@@ -53,17 +56,18 @@
             android:layout_marginTop="16dp"
             android:layout_marginEnd="24dp"
             android:ellipsize="end"
+            android:paddingHorizontal="10dp"
+            android:fontFamily="@font/nunito_bold"
+            android:gravity="center"
             android:inputType="textMultiLine"
             android:maxLength="1000"
             android:paddingLeft="5dp"
-            android:gravity="center"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintVertical_bias="0.5"
-            android:fontFamily="@font/nunito_regular"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/titleTextView" />
+            app:layout_constraintTop_toBottomOf="@+id/titleTextView"
+            app:layout_constraintVertical_bias="0.5" />
 
         <include
             android:id="@+id/include_progressbar"
@@ -83,6 +87,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textTextView" />
 
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>

@@ -45,10 +45,12 @@ class ProfileViewModel  @Inject constructor(private val profileRepository: Profi
 
         viewModelScope.launch {
 
+            Log.e("profiles API_kEY", API_KEY)
             delay(2000)
             profileRepository.getprofile().collectLatest { response: Resource<ProfileResponse> ->
 
-                Log.e("profiles API_kEY", API_KEY)
+
+
                 when (response) {
                     is Resource.Success -> {
                         delay(200)

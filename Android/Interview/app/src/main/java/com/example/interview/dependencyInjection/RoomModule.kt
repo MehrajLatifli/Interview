@@ -19,7 +19,7 @@ object RoomModule {
             application.applicationContext,
             LoginDatabase::class.java,
             "LogIn_db"
-        ).build()
+        ).fallbackToDestructiveMigration().build()
     }
 
     @Provides

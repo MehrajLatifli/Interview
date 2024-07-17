@@ -8,6 +8,8 @@
         <domain includeSubdomains="true">192.168.0.189</domain>
         <domain includeSubdomains="true">172.26.112.1</domain>
         <domain includeSubdomains="true">host.docker.internal</domain>
+        <domain includeSubdomains="true">192.168.0.175</domain>
+
     </domain-config>
 
 </network-security-config>

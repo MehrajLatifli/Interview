@@ -22,9 +22,13 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.delay
 
 @HiltViewModel
-class AuthViewModel @Inject constructor(private val authRepository: AuthRepository, private val repoEntity: EntityRepository) : ViewModel() {
+class AuthViewModel @Inject constructor(
+    private val authRepository: AuthRepository,
+    private val repoEntity: EntityRepository
+) : ViewModel() {
 
     private val _loginResponses = MutableLiveData<List<LoginResponse>>()
     val loginResponses: LiveData<List<LoginResponse>> = _loginResponses
@@ -40,26 +44,27 @@ class AuthViewModel @Inject constructor(private val authRepository: AuthReposito
 
     val secretKey = generateAESKey()
 
-    var encryptedText: String? = null
-    var hash: String? = null
-    var decryptedText: String? = null
+    var _encryptedText = MutableLiveData<String>()
+    val encryptedText: LiveData<String> = _encryptedText
 
+    var _decryptedText = MutableLiveData<String>()
+    val decryptedText: LiveData<String> = _decryptedText
+
+    var _hash = MutableLiveData<String>()
+    val hash: LiveData<String> = _hash
 
     fun registerAdmin(register: Register) {
         _loading.value = true
 
         viewModelScope.launch {
-
-                val result = authRepository.registerAdmin(register)
-                if (result is Resource.Success) {
-                    _authResult.postValue(true)
-                } else if (result is Resource.Error) {
-                    _loading.postValue(false)
-                    _error.postValue(result.message ?: "Unknown error")
-                    _authResult.postValue(false)
-
-                }
-
+            val result = authRepository.registerAdmin(register)
+            if (result is Resource.Success) {
+                _authResult.postValue(true)
+            } else if (result is Resource.Error) {
+                _loading.postValue(false)
+                _error.postValue(result.message ?: "Unknown error")
+                _authResult.postValue(false)
+            }
         }
     }
 
@@ -74,53 +79,53 @@ class AuthViewModel @Inject constructor(private val authRepository: AuthReposito
                 _loading.postValue(false)
                 _error.postValue(result.message ?: "Unknown error")
                 _authResult.postValue(false)
-
             }
         }
     }
 
-    fun login(login: Login) {
+    fun login(login: Login, onApiKeyGenerated: (String) -> Unit) {
         _loading.value = true
 
         viewModelScope.launch {
+            delay(2000)
             val result = authRepository.login(login.username, login.password)
             if (result is Resource.Success) {
                 val token = result.data?.token
                 val refreshToken = result.data?.refreshToken
                 val expiration = result.data?.expiration
                 Log.d("Login", "Token: $token, Refresh Token: $refreshToken, Expiration: $expiration")
-                _authResult.postValue(true)
-
 
                 val itemResponse = result.data
                 if (itemResponse != null) {
                     _loginResponses.value = listOf(itemResponse)
                     Log.e("_loginResponses", _loginResponses.value.toString())
 
+                    delay(2000)
                     val (encryptedToken, hashResult) = encryptWithAsync(itemResponse.token, secretKey)
 
-                    encryptedText = encryptedToken
-                    hash = hashResult
+                    _encryptedText.value = encryptedToken
+                    _hash.value = hashResult
 
-                    val entity = itemResponse.toLoginEntity(login.username,encryptedToken)
+                    val entity = itemResponse.toLoginEntity(login.username, encryptedToken)
+                    Log.e("entity", entity.toString())
 
-                   var response = entity.toLoginResponse()
-                    decryptedText = decryptWithAsync(response.token!!, hash!!, secretKey)
+                    val response = entity.toLoginResponse()
+                    _decryptedText.value = decryptWithAsync(response.token!!, _hash.value!!, secretKey)!!
 
-                    decryptedText.let {
-                        API_KEY=it!!
-                        Log.e("Token","${it}")
-                    }
+                    API_KEY = _decryptedText.value!!
+                    Log.e("Token", "${API_KEY}")
 
+                    _authResult.postValue(true)
 
                     deleteAllEntity()
                     saveEntity(entity)
+
+                    onApiKeyGenerated(API_KEY)
                 } else {
-                    _error.value = "No weather found"
+                    _error.value = "No token found"
                     _loginResponses.value = emptyList()
                     Log.e("APIFailed", _error.value.toString())
                 }
-
             } else if (result is Resource.Error) {
                 _loading.postValue(false)
                 _error.postValue(result.message ?: "Unknown error")
@@ -134,7 +139,7 @@ class AuthViewModel @Inject constructor(private val authRepository: AuthReposito
             try {
                 repoEntity.addWeatherEntity(entity)
             } catch (e: Exception) {
-                Log.e("DatabaseError", "Error adding weather entity: ${e.message}")
+                Log.e("DatabaseError", "Error adding login entity: ${e.message}")
             }
         }
     }
@@ -144,9 +149,8 @@ class AuthViewModel @Inject constructor(private val authRepository: AuthReposito
             try {
                 repoEntity.deleteAllUser()
             } catch (e: Exception) {
-                Log.e("DatabaseError", "Error delete weather entity: ${e.message}")
+                Log.e("DatabaseError", "Error delete login entity: ${e.message}")
             }
         }
     }
-
 }

@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.OpenableColumns
 import android.text.InputType
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -24,7 +25,9 @@ import com.example.interview.databinding.CustomregistrationresultdialogBinding
 import com.example.interview.databinding.FragmentLogInBinding
 import com.example.interview.models.responses.post.login.Login
 import com.example.interview.models.responses.post.registration.Register
+import com.example.interview.utilities.gone
 import com.example.interview.utilities.loadImageWithGlideAndResize
+import com.example.interview.utilities.visible
 import com.example.interview.viewmodels.auth.AuthViewModel
 import com.example.interview.views.fragments.auth.registration.RegistrationFragmentDirections
 import com.example.interview.views.fragments.base.BaseFragment
@@ -42,6 +45,8 @@ class LogInFragment : BaseFragment<FragmentLogInBinding>(FragmentLogInBinding::i
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.includeProgressbar.progressBar.gone()
 
 
         binding.imageViewEye.setOnClickListener {
@@ -85,7 +90,26 @@ class LogInFragment : BaseFragment<FragmentLogInBinding>(FragmentLogInBinding::i
                 password = password,
             )
 
-                viewModel.login(login)
+            viewModel.login(login) { apiKey ->
+                saveApiKey(apiKey)
+            }
+
+            if (    getUserAuth()==false) {
+                lifecycleScope.launch {
+                    delay(1000)
+                    binding.mainConstraintLayout.gone()
+                    binding.includeProgressbar.progressBar.visible()
+                    delay(1000)
+                }
+            } else {
+                lifecycleScope.launch {
+                    binding.includeProgressbar.progressBar.gone()
+                    binding.mainConstraintLayout.gone()
+                    delay(1000)
+                }
+            }
+
+
 
         }
 
@@ -143,7 +167,21 @@ class LogInFragment : BaseFragment<FragmentLogInBinding>(FragmentLogInBinding::i
                 }
             }
         }
+
+        viewModel.loginResponses.observe(viewLifecycleOwner) { entities ->
+            // Update your UI with the list of entities
+            Log.d("Database", "Login entities: $entities")
+            // e.g., display in a RecyclerView or other UI components
+
+            entities.forEach {
+
+            }
+
+
+        }
     }
+
+
 
 
     private fun customregistrationresultdialog(context: Context, title:String, text:String, colorId: Int) {
@@ -198,6 +236,22 @@ class LogInFragment : BaseFragment<FragmentLogInBinding>(FragmentLogInBinding::i
         sp.edit().putBoolean("isAuth", true).apply()
     }
 
+    private fun getUserAuth(): Boolean {
+        val sp = requireActivity().getSharedPreferences("authresult_local", Context.MODE_PRIVATE)
+        return sp.getBoolean("isAuth", false)
+    }
 
+    private fun loadApiKey(): String? {
+        val sharedPreferences = requireActivity().getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+        return sharedPreferences.getString("api_key", null)
+    }
+
+    private fun saveApiKey(key: String) {
+        val sharedPreferences = requireActivity().getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+        with(sharedPreferences.edit()) {
+            putString("api_key", key)
+            apply()
+        }
+    }
 
 }
