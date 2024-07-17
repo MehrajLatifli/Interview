@@ -18,6 +18,6 @@ class HomeFragment  : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::inf
         super.onViewCreated(view, savedInstanceState)
 
 
-        binding.includeBottomnav.BottomNavigationView.visible()
+
     }
 }

@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.OpenableColumns
 import android.text.InputType
+import android.util.Log
 import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
@@ -30,6 +31,7 @@ import java.io.File
 import com.example.interview.utilities.gone
 import com.example.interview.utilities.loadImageWithGlideAndResize
 import com.example.interview.utilities.visible
+import com.example.interview.views.fragments.profile.ProfileFragmentDirections
 import com.example.interview.views.fragments.walkthrough.WalkthroughFragmentDirections
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -145,6 +147,11 @@ class RegistrationFragment : BaseFragment<FragmentRegistrationBinding>(FragmentR
             if (args.accountType.contains("HR")) {
                 viewModel.registerHR(registerData)
             }
+            else{
+                customregistrationresultdialog(requireContext(),"UnSuccessful!","Cannot registration",R.color.MellowMelon)
+
+                return@setOnClickListener
+            }
         }
 
 
@@ -158,12 +165,23 @@ class RegistrationFragment : BaseFragment<FragmentRegistrationBinding>(FragmentR
         }
 
         viewModel.authResult.observe(viewLifecycleOwner) { auth ->
+            lifecycleScope.launch {
+                if (auth) {
 
-            if (auth) {
+                    customregistrationresultdialog(
+                        requireContext(),
+                        "Successful!",
+                        "Please wait a moment, we are preparing for you...",
+                        R.color.DeepPurple
+                    )
 
-                customregistrationresultdialog(requireContext(),"Successful!","Please wait a moment, we are preparing for you...",R.color.DeepPurple)
-            } else {
+                    delay(500)
 
+                    findNavController().navigate(RegistrationFragmentDirections.actionRegistrationFragmentToLogInFragment())
+
+                } else {
+
+                }
             }
         }
 
@@ -171,7 +189,8 @@ class RegistrationFragment : BaseFragment<FragmentRegistrationBinding>(FragmentR
             if (errorMessage.isNullOrBlank()) {
             } else {
 
-                customregistrationresultdialog(requireContext(),"UnSuccessful!","${errorMessage.toString()}",R.color.MellowMelon)
+                Log.e("AuthViewModel", errorMessage)
+                //customregistrationresultdialog(requireContext(),"UnSuccessful!","${errorMessage.toString()}",R.color.MellowMelon)
             }
         }
 
@@ -187,6 +206,7 @@ class RegistrationFragment : BaseFragment<FragmentRegistrationBinding>(FragmentR
             }
         }
     }
+
 
 
     private fun customregistrationresultdialog(context: Context, title:String, text:String, colorId: Int) {

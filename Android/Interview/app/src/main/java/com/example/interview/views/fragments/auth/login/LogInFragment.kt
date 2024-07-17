@@ -136,6 +136,8 @@ class LogInFragment : BaseFragment<FragmentLogInBinding>(FragmentLogInBinding::i
             authResult?.let {
                 if (it) {
 
+                    setUserAuth()
+
                 } else {
 
                 }
@@ -190,6 +192,11 @@ class LogInFragment : BaseFragment<FragmentLogInBinding>(FragmentLogInBinding::i
     }
 
 
+    private fun setUserAuth() {
+        val sp = requireActivity().getSharedPreferences("authresult_local", Context.MODE_PRIVATE)
+
+        sp.edit().putBoolean("isAuth", true).apply()
+    }
 
 
 

@@ -31,6 +31,12 @@ class ProfileRepository  @Inject constructor(private val api: IApiManager) {
 
     }
 
+    suspend fun logout(currentusername: String)=safeApiRequest {
+            api.logout(currentusername)
+
+    }
+
+
     suspend fun <T> safeApiRequest(request: suspend () -> Response<T>) = flow<Resource<T>> {
         try {
             val response = request.invoke()

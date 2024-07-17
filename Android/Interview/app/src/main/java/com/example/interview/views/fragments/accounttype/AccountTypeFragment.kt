@@ -1,5 +1,6 @@
 package com.example.interview.views.fragments.accounttype
 
+import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.lifecycleScope
@@ -9,7 +10,8 @@ import com.example.interview.databinding.FragmentAccountTypeBinding
 import com.example.interview.models.localadapdermodels.accounttype.AccountType
 import com.example.interview.utilities.gone
 import com.example.interview.utilities.visible
-import com.example.interview.views.adapters.accounttype.AccountTypeAdapder
+import com.example.interview.views.adapters.accounttype.AccountTypeAdapter
+import com.example.interview.views.fragments.auth.login.LogInFragmentDirections
 
 import com.example.interview.views.fragments.base.BaseFragment
 import kotlinx.coroutines.delay
@@ -25,13 +27,17 @@ class AccountTypeFragment  : BaseFragment<FragmentAccountTypeBinding>(FragmentAc
 
     )
 
-    private val accountTypeAdapder = AccountTypeAdapder()
+    private val accountTypeAdapder = AccountTypeAdapter()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
 
+
+
         binding.includeProgressbar.progressBar.gone()
+
+
 
         binding.rvAccounttype.adapter = accountTypeAdapder
 
@@ -59,5 +65,9 @@ class AccountTypeFragment  : BaseFragment<FragmentAccountTypeBinding>(FragmentAc
             }
         }
 
+
+
     }
+
+
 }

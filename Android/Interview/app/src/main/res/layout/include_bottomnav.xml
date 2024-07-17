@@ -3,20 +3,24 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
+    android:background="@color/White"
     android:layout_height="match_parent">
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/BottomNavigationView"
-        android:visibility="gone"
-        android:background="@color/White"
+        android:visibility="visible"
+        android:background="@color/Transparent"
         app:labelVisibilityMode="unlabeled"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:itemIconTint="@color/DeepPurple"
-        app:itemTextColor="@color/DeepPurple"
+        app:itemIconTint="@drawable/bottom_nav_color"
+        app:tabBackground="@drawable/bottom_nav_color"
+        app:itemActiveIndicatorStyle="@color/MellowMelon"
+        app:itemRippleColor="@color/MellowMelon"
+        app:itemTextColor="@color/White"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:menu="@menu/bottom_menu" />
+        app:menu="@menu/bottom_nav" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

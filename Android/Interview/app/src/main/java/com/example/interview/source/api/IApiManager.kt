@@ -12,6 +12,7 @@ import retrofit2.http.Headers
 import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
+import retrofit2.http.Query
 
 interface IApiManager {
 
@@ -46,5 +47,8 @@ interface IApiManager {
     suspend fun getprofile(
     ):Response<ProfileResponse>
 
+
+    @POST("Auth/logout")
+    suspend fun logout(@Query ("username") username: String): Response<String>
 
 }

@@ -24,10 +24,10 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>(FragmentSplashBinding
 
     private fun navigateScreen() {
         lifecycleScope.launch {
-            val isAuth = getAuth()
+            val isAuth = getUserAuth()
             delay(3000)
             if (isAuth) {
-               // findNavController().navigate(SplashFragmentDirections.actionSplashFragmentToHomeFragment())
+                findNavController().navigate(SplashFragmentDirections.actionSplashFragmentToHomeFragment())
             } else {
                 findNavController().navigate(SplashFragmentDirections.actionSplashFragmentToWalkthroughFragment())
             }
@@ -35,9 +35,10 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>(FragmentSplashBinding
         }
     }
 
-    private fun getAuth(): Boolean {
-        val sp = requireActivity().getSharedPreferences("auth_local", Context.MODE_PRIVATE)
 
+
+    private fun getUserAuth(): Boolean {
+        val sp = requireActivity().getSharedPreferences("authresult_local", Context.MODE_PRIVATE)
         return sp.getBoolean("isAuth", false)
     }
 

@@ -1,5 +1,6 @@
 package com.example.interview.views.fragments.walkthrough
 
+import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.findNavController
@@ -37,6 +38,8 @@ class WalkthroughFragment : BaseFragment<FragmentWalkthroughBinding>(FragmentWal
         dotsIndicator.attachTo(viewPager)
 
 
+
+
         binding.RegistrationButton.setOnClickListener{
 
             findNavController().navigate(WalkthroughFragmentDirections.actionWalkthroughFragmentToAccountTypeFragment())
@@ -50,5 +53,8 @@ class WalkthroughFragment : BaseFragment<FragmentWalkthroughBinding>(FragmentWal
 
 
 
+
     }
+
+
 }
