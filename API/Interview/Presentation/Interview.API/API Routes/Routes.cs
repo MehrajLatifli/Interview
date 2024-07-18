@@ -82,7 +82,7 @@ namespace Interview.API.API_Routes
         public const string RegisterUser = "RegisterUser";
         public const string Login = "login";
         public const string Logout = "logout";
-        public const string RefreshToken = "refresh-token";
+        public const string RefreshToken = "refreshtoken";
         public const string RevokeUsername = "revoke/{username}";
         public const string RevokeAll = "revoke-all";
         public const string UpdateProfile = "updateProfile";

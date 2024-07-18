@@ -112,36 +112,38 @@ namespace Interview.Application.Services.Concrete
 
         public async Task<GetAuthDTOModel> Profile(ClaimsPrincipal claimsPrincipal)
         {
-            if (claimsPrincipal.Identity.IsAuthenticated)
+            if (!_userReadRepository.GetAll(false).AsEnumerable().Any(i => i.RefreshToken.IsNullOrEmpty() && i.UserName==claimsPrincipal.Identity.Name))
             {
-                var currentUser = claimsPrincipal.Identity.Name;
-
-                var users = _mapper.Map<List<UserDTOforGetandGetAll>>(_userReadRepository.GetAll(false));
-                var roles = _mapper.Map<List<RoleDTOforGetandGetAll>>(_roleReadRepository.GetAll(false));
-                var userclaims = _mapper.Map<List<UserClaimDTOforGetandGetAll>>(_userClaimReadRepository.GetAll(false));
-                var userroles = _mapper.Map<List<UserRoleDTOforGetandGetAll>>(_userRoleReadRepository.GetAll(false));
-                var roleclaims = _mapper.Map<List<RoleClaimDTOforGetandGetAll>>(_roleClaimReadRepository.GetAll(false)).Distinct().ToList();
-
-                var currentUserDTO = users.FirstOrDefault(u => u.UserName == currentUser);
-                if (currentUserDTO == null)
+                if (claimsPrincipal.Identity.IsAuthenticated)
                 {
-                    throw new NotFoundException("User not found.");
-                }
+                    var currentUser = claimsPrincipal.Identity.Name;
 
-                var userRolesDTO = userroles.Where(ur => ur.UserId == currentUserDTO.Id).ToList();
-                var userClaimsDTO = userclaims.Where(uc => uc.UserId == currentUserDTO.Id).ToList();
-                var userRoleIds = userRolesDTO.Select(ur => ur.RoleId).ToList();
-                var userRoles = roles.Where(r => userRoleIds.Contains(r.Id)).ToList();
+                    var users = _mapper.Map<List<UserDTOforGetandGetAll>>(_userReadRepository.GetAll(false));
+                    var roles = _mapper.Map<List<RoleDTOforGetandGetAll>>(_roleReadRepository.GetAll(false));
+                    var userclaims = _mapper.Map<List<UserClaimDTOforGetandGetAll>>(_userClaimReadRepository.GetAll(false));
+                    var userroles = _mapper.Map<List<UserRoleDTOforGetandGetAll>>(_userRoleReadRepository.GetAll(false));
+                    var roleclaims = _mapper.Map<List<RoleClaimDTOforGetandGetAll>>(_roleClaimReadRepository.GetAll(false)).Distinct().ToList();
 
-                var permissionsDTO = new List<PermitionsDTOModel>
-        
+                    var currentUserDTO = users.FirstOrDefault(u => u.UserName == currentUser);
+                    if (currentUserDTO == null)
+                    {
+                        throw new NotFoundException("User not found.");
+                    }
+
+                    var userRolesDTO = userroles.Where(ur => ur.UserId == currentUserDTO.Id).ToList();
+                    var userClaimsDTO = userclaims.Where(uc => uc.UserId == currentUserDTO.Id).ToList();
+                    var userRoleIds = userRolesDTO.Select(ur => ur.RoleId).ToList();
+                    var userRoles = roles.Where(r => userRoleIds.Contains(r.Id)).ToList();
+
+                    var permissionsDTO = new List<PermitionsDTOModel>
+
                 {
-            
+
                     new PermitionsDTOModel
                     {
-                
+
                         UserClaims = userClaimsDTO,
-               
+
                         RoleClaims = (from ur in userRolesDTO
                                       join r in roles on ur.RoleId equals r.Id
                                       join rc in roleclaims on r.Id equals rc.RoleId
@@ -152,24 +154,29 @@ namespace Interview.Application.Services.Concrete
                                           ClaimType = rc.ClaimType,
                                           ClaimValue = rc.ClaimValue
                                       } ).TakeLast(1).Distinct().ToList(),
-                        
+
                         Roles = userRoles
-            
+
                     }
-        
+
                 };
 
-                var userProfile = new GetAuthDTOModel
+                    var userProfile = new GetAuthDTOModel
+                    {
+                        Id = currentUserDTO.Id.ToString(),
+                        Username = currentUserDTO.UserName,
+                        Email = currentUserDTO.Email,
+                        PhoneNumber = currentUserDTO.Phonenumber,
+                        ImagePath = currentUserDTO.ImagePath,
+                        Permitions = permissionsDTO
+                    };
+
+                    return userProfile;
+                }
+                else
                 {
-                    Id = currentUserDTO.Id.ToString(),
-                    Username = currentUserDTO.UserName,
-                    Email = currentUserDTO.Email,
-                    PhoneNumber = currentUserDTO.Phonenumber,
-                    ImagePath = currentUserDTO.ImagePath,
-                    Permitions = permissionsDTO
-                };
-
-                return userProfile;
+                    throw new UnauthorizedException("Current user is not authenticated.");
+                }
             }
             else
             {
@@ -181,58 +188,60 @@ namespace Interview.Application.Services.Concrete
 
         public async Task<List<GetAuthDTOModel>> GetAdmins(ClaimsPrincipal claimsPrincipal)
         {
-            if (claimsPrincipal.Identity.IsAuthenticated)
+            if (!_userReadRepository.GetAll(false).AsEnumerable().Any(i => i.RefreshToken.IsNullOrEmpty() && i.UserName == claimsPrincipal.Identity.Name))
             {
-
-                var list = new List<GetAuthDTOModel>();
-
-                var userroles = _mapper.Map<List<UserRoleDTOforGetandGetAll>>(_userRoleReadRepository.GetAll(false));
-                var users = _mapper.Map<List<UserDTOforGetandGetAll>>(_userReadRepository.GetAll(false));
-                var roles = _mapper.Map<List<RoleDTOforGetandGetAll>>(_roleReadRepository.GetAll(false));
-                var roleclaims = _mapper.Map<List<RoleClaimDTOforGetandGetAll>>(_roleClaimReadRepository.GetAll(false));
-                var userclaims = _mapper.Map<List<UserClaimDTOforGetandGetAll>>(_userClaimReadRepository.GetAll(false));
-
-
-                var currentUser = claimsPrincipal.Identity.Name;
-
-                if (users.Any(i => i.UserName == currentUser))
+                if (claimsPrincipal.Identity.IsAuthenticated)
                 {
-                    var hascrateRole = roles.FirstOrDefault(i => i.Name == UserRoles.Admin);
 
-                    if (hascrateRole == null)
+                    var list = new List<GetAuthDTOModel>();
+
+                    var userroles = _mapper.Map<List<UserRoleDTOforGetandGetAll>>(_userRoleReadRepository.GetAll(false));
+                    var users = _mapper.Map<List<UserDTOforGetandGetAll>>(_userReadRepository.GetAll(false));
+                    var roles = _mapper.Map<List<RoleDTOforGetandGetAll>>(_roleReadRepository.GetAll(false));
+                    var roleclaims = _mapper.Map<List<RoleClaimDTOforGetandGetAll>>(_roleClaimReadRepository.GetAll(false));
+                    var userclaims = _mapper.Map<List<UserClaimDTOforGetandGetAll>>(_userClaimReadRepository.GetAll(false));
+
+
+                    var currentUser = claimsPrincipal.Identity.Name;
+
+                    if (users.Any(i => i.UserName == currentUser))
                     {
-                        throw new NotFoundException("No such role has been created.");
-                    }
+                        var hascrateRole = roles.FirstOrDefault(i => i.Name == UserRoles.Admin);
 
-                    if (roles.Any(i => i.Name == UserRoles.Admin))
-                    {
-
-
-                        if (userroles.Any(i => i.UserId == users.Where(i => i.UserName == currentUser).FirstOrDefault().Id && (i.RoleId == roles.Where(i => i.Name == UserRoles.Admin).FirstOrDefault().Id)))
+                        if (hascrateRole == null)
                         {
-                            if (userclaims.Any(i => (i.ClaimType == UserAccess.Read_ClaimType || i.ClaimType == UserAccess.AllAccess_ClaimType) && (i.UserId == users.Where(i => i.UserName == currentUser).FirstOrDefault().Id)))
+                            throw new NotFoundException("No such role has been created.");
+                        }
+
+                        if (roles.Any(i => i.Name == UserRoles.Admin))
+                        {
+
+
+                            if (userroles.Any(i => i.UserId == users.Where(i => i.UserName == currentUser).FirstOrDefault().Id && (i.RoleId == roles.Where(i => i.Name == UserRoles.Admin).FirstOrDefault().Id)))
                             {
-                                if (roleclaims.Any(i => i.ClaimType == RoleAccessMethodType.Get_Method && i.ClaimValue == RoleAccessMethod.GetAdmins_Method && i.RoleId == roles.Where(i => i.Name == UserRoles.Admin).FirstOrDefault().Id))
+                                if (userclaims.Any(i => (i.ClaimType == UserAccess.Read_ClaimType || i.ClaimType == UserAccess.AllAccess_ClaimType) && (i.UserId == users.Where(i => i.UserName == currentUser).FirstOrDefault().Id)))
                                 {
-                                    if (roles.FirstOrDefault(i => i.Name == UserRoles.Admin) == null)
+                                    if (roleclaims.Any(i => i.ClaimType == RoleAccessMethodType.Get_Method && i.ClaimValue == RoleAccessMethod.GetAdmins_Method && i.RoleId == roles.Where(i => i.Name == UserRoles.Admin).FirstOrDefault().Id))
                                     {
-                                        throw new ForbiddenException("No such role exists");
-                                    }
-
-
-                                    foreach (var item in userroles.Where(i => i.RoleId == roles.Where(i => i.Name == UserRoles.Admin).FirstOrDefault().Id))
-                                    {
-
-                                        var rolesbyUser = userroles.Where(i => i.UserId == item.UserId).ToList().Select(userRole => roles.FirstOrDefault(role => role.Id == userRole.RoleId)).ToList();
-
-                                        list.Add(new GetAuthDTOModel()
+                                        if (roles.FirstOrDefault(i => i.Name == UserRoles.Admin) == null)
                                         {
-                                            Id = _userReadRepository.GetAll(false).Where(i => i.Id == item.UserId).FirstOrDefault().Id.ToString(),
-                                            Username = _userReadRepository.GetAll(false).Where(i => i.Id == item.UserId).FirstOrDefault().UserName,
-                                            PhoneNumber = _userReadRepository.GetAll(false).Where(i => i.Id == item.UserId).FirstOrDefault().Phonenumber,
-                                            Email = _userReadRepository.GetAll(false).Where(i => i.Id == item.UserId).FirstOrDefault().Email,
-                                            ImagePath = _userReadRepository.GetAll(false).Where(i => i.Id == item.UserId).FirstOrDefault().ImagePath,
-                                            Permitions = new List<PermitionsDTOModel>
+                                            throw new ForbiddenException("No such role exists");
+                                        }
+
+
+                                        foreach (var item in userroles.Where(i => i.RoleId == roles.Where(i => i.Name == UserRoles.Admin).FirstOrDefault().Id))
+                                        {
+
+                                            var rolesbyUser = userroles.Where(i => i.UserId == item.UserId).ToList().Select(userRole => roles.FirstOrDefault(role => role.Id == userRole.RoleId)).ToList();
+
+                                            list.Add(new GetAuthDTOModel()
+                                            {
+                                                Id = _userReadRepository.GetAll(false).Where(i => i.Id == item.UserId).FirstOrDefault().Id.ToString(),
+                                                Username = _userReadRepository.GetAll(false).Where(i => i.Id == item.UserId).FirstOrDefault().UserName,
+                                                PhoneNumber = _userReadRepository.GetAll(false).Where(i => i.Id == item.UserId).FirstOrDefault().Phonenumber,
+                                                Email = _userReadRepository.GetAll(false).Where(i => i.Id == item.UserId).FirstOrDefault().Email,
+                                                ImagePath = _userReadRepository.GetAll(false).Where(i => i.Id == item.UserId).FirstOrDefault().ImagePath,
+                                                Permitions = new List<PermitionsDTOModel>
                                             {
                                                  new PermitionsDTOModel
                                                  {
@@ -244,50 +253,55 @@ namespace Interview.Application.Services.Concrete
 
                                             }
 
-                                        
-                                        });
-                                    }
 
-                                    if (list.Any())
-                                    {
-                                        return list.Distinct(new GetAuthModelComparer()).ToList().OrderBy(i => i.Id).ToList();
+                                            });
+                                        }
+
+                                        if (list.Any())
+                                        {
+                                            return list.Distinct(new GetAuthModelComparer()).ToList().OrderBy(i => i.Id).ToList();
+                                        }
+                                        else
+                                        {
+                                            throw new NotFoundException("No users found!");
+                                        }
                                     }
                                     else
                                     {
-                                        throw new NotFoundException("No users found!");
+                                        throw new ForbiddenException("You cannot access due to role permissions.");
                                     }
                                 }
                                 else
                                 {
-                                    throw new ForbiddenException("You cannot access due to role permissions.");
+                                    throw new ForbiddenException("You cannot access due to user permissions.");
                                 }
+
+
+
+
                             }
                             else
                             {
-                                throw new ForbiddenException("You cannot access due to user permissions.");
+                                throw new ForbiddenException("You cannot log in due to a UserRole mismatch.");
                             }
-
-
-
-
                         }
                         else
                         {
-                            throw new ForbiddenException("You cannot log in due to a UserRole mismatch.");
+                            throw new ForbiddenException("Access is denied with the user's existing role.");
                         }
                     }
                     else
                     {
-                        throw new ForbiddenException("Access is denied with the user's existing role.");
+                        throw new ForbiddenException("You cannot access");
                     }
+
+
+
                 }
                 else
                 {
-                    throw new ForbiddenException("You cannot access");
+                    throw new UnauthorizedException("Current user is not authenticated.");
                 }
-
-
-
             }
             else
             {
@@ -298,24 +312,26 @@ namespace Interview.Application.Services.Concrete
 
         public async Task<List<GetAuthDTOModel>> GetHRs(ClaimsPrincipal claimsPrincipal)
         {
-            if (claimsPrincipal.Identity.IsAuthenticated)
+            if (!_userReadRepository.GetAll(false).AsEnumerable().Any(i => i.RefreshToken.IsNullOrEmpty() && i.UserName == claimsPrincipal.Identity.Name))
             {
-
-             //   var list = new List<GetAuthDTOModel>();
-
-                var userroles = _mapper.Map<List<UserRoleDTOforGetandGetAll>>(_userRoleReadRepository.GetAll(false));
-                var users = _mapper.Map<List<UserDTOforGetandGetAll>>(_userReadRepository.GetAll(false));
-                var roles = _mapper.Map<List<RoleDTOforGetandGetAll>>(_roleReadRepository.GetAll(false));
-               var userclaims = _mapper.Map<List<UserClaimDTOforGetandGetAll>>(_userClaimReadRepository.GetAll(false));
-
-                var roleclaims = _mapper.Map<List<RoleClaimDTOforGetandGetAll>>(_roleClaimReadRepository.GetAll(false)).Distinct().ToList();
-
-               
-
-                var currentUser = claimsPrincipal.Identity.Name;
-
-                if (users.Any(i => i.UserName == currentUser))
+                if (claimsPrincipal.Identity.IsAuthenticated)
                 {
+
+                    //   var list = new List<GetAuthDTOModel>();
+
+                    var userroles = _mapper.Map<List<UserRoleDTOforGetandGetAll>>(_userRoleReadRepository.GetAll(false));
+                    var users = _mapper.Map<List<UserDTOforGetandGetAll>>(_userReadRepository.GetAll(false));
+                    var roles = _mapper.Map<List<RoleDTOforGetandGetAll>>(_roleReadRepository.GetAll(false));
+                    var userclaims = _mapper.Map<List<UserClaimDTOforGetandGetAll>>(_userClaimReadRepository.GetAll(false));
+
+                    var roleclaims = _mapper.Map<List<RoleClaimDTOforGetandGetAll>>(_roleClaimReadRepository.GetAll(false)).Distinct().ToList();
+
+
+
+                    var currentUser = claimsPrincipal.Identity.Name;
+
+                    if (users.Any(i => i.UserName == currentUser))
+                    {
                         var hascrateRole = roles.FirstOrDefault(i => i.Name == UserRoles.HR);
 
                         if (hascrateRole == null)
@@ -323,46 +339,46 @@ namespace Interview.Application.Services.Concrete
                             throw new NotFoundException("No such role has been created.");
                         }
 
-                    if (roles.Any(i => i.Name == UserRoles.HR || i.Name == UserRoles.Admin))
-                    {
-                        if (userroles.Any(i => i.UserId == users.Where(i => i.UserName == currentUser).FirstOrDefault().Id && (i.RoleId == roles.Where(i => i.Name == UserRoles.HR).FirstOrDefault().Id || i.RoleId == roles.Where(i => i.Name == UserRoles.Admin).FirstOrDefault().Id)))
+                        if (roles.Any(i => i.Name == UserRoles.HR || i.Name == UserRoles.Admin))
                         {
-                            if (userclaims.Any(i => (i.ClaimType == UserAccess.Read_ClaimType || i.ClaimType == UserAccess.AllAccess_ClaimType) && (i.UserId == users.Where(i => i.UserName == currentUser).FirstOrDefault().Id)))
+                            if (userroles.Any(i => i.UserId == users.Where(i => i.UserName == currentUser).FirstOrDefault().Id && (i.RoleId == roles.Where(i => i.Name == UserRoles.HR).FirstOrDefault().Id || i.RoleId == roles.Where(i => i.Name == UserRoles.Admin).FirstOrDefault().Id)))
                             {
-                                if (roleclaims.Any(i => i.ClaimType == RoleAccessMethodType.Get_Method && i.ClaimValue == RoleAccessMethod.GetHR_Method && i.RoleId == roles.Where(i => i.Name == UserRoles.HR).FirstOrDefault().Id))
+                                if (userclaims.Any(i => (i.ClaimType == UserAccess.Read_ClaimType || i.ClaimType == UserAccess.AllAccess_ClaimType) && (i.UserId == users.Where(i => i.UserName == currentUser).FirstOrDefault().Id)))
                                 {
-                                    if (roles.FirstOrDefault(i => i.Name == UserRoles.HR) == null || roles.FirstOrDefault(i => i.Name == UserRoles.Admin) == null)
+                                    if (roleclaims.Any(i => i.ClaimType == RoleAccessMethodType.Get_Method && i.ClaimValue == RoleAccessMethod.GetHR_Method && i.RoleId == roles.Where(i => i.Name == UserRoles.HR).FirstOrDefault().Id))
                                     {
-                                        throw new ForbiddenException("No such role exists");
-                                    }
+                                        if (roles.FirstOrDefault(i => i.Name == UserRoles.HR) == null || roles.FirstOrDefault(i => i.Name == UserRoles.Admin) == null)
+                                        {
+                                            throw new ForbiddenException("No such role exists");
+                                        }
 
 
-                                    var query = from u in users
-                                                join ur in userroles on u.Id equals ur.UserId
-                                                join r in roles on ur.RoleId equals r.Id
-                                                join rc in roleclaims on r.Id equals rc.RoleId
-                                                select new GetAuthDTOModel
-                                                {
-                                                    Id = u.Id.ToString(),
-                                                    Username = u.UserName,
-                                                    Email = u.Email,
-                                                    PhoneNumber = u.Phonenumber,
-                                                    ImagePath = u.ImagePath,
-                                                    Permitions = new List<PermitionsDTOModel>
+                                        var query = from u in users
+                                                    join ur in userroles on u.Id equals ur.UserId
+                                                    join r in roles on ur.RoleId equals r.Id
+                                                    join rc in roleclaims on r.Id equals rc.RoleId
+                                                    select new GetAuthDTOModel
+                                                    {
+                                                        Id = u.Id.ToString(),
+                                                        Username = u.UserName,
+                                                        Email = u.Email,
+                                                        PhoneNumber = u.Phonenumber,
+                                                        ImagePath = u.ImagePath,
+                                                        Permitions = new List<PermitionsDTOModel>
                                                     {
 
-                                  
+
                                                         new PermitionsDTOModel
                                                         {
 
-                                      
+
                                                             UserClaims = userclaims
                                                             .Where(uc => uc.UserId == u.Id)
                                                             .ToList(),
 
 
                                                               RoleClaims = (
-                       
+
                                                               from ur in userroles
                                                               join role in roles on ur.RoleId equals role.Id
                                                               join rc_ in roleclaims on role.Id equals rc_.RoleId
@@ -379,59 +395,65 @@ namespace Interview.Application.Services.Concrete
 
                                                             Roles = userroles.Where(ur => ur.UserId == u.Id).Select(ur => roles.FirstOrDefault(role => role.Id == ur.RoleId)).ToList()
 
-                                    
+
                                                         }
 
-                                
+
                                                     }
-                                                };
+                                                    };
 
 
-                                    var hrUsersDto = new List<GetAuthDTOModel>();
+                                        var hrUsersDto = new List<GetAuthDTOModel>();
 
 
-                                    hrUsersDto = query.ToList();
+                                        hrUsersDto = query.ToList();
 
-                                    if (hrUsersDto.Any())
-                                    {
-                                        return hrUsersDto.Distinct(new GetAuthModelComparer()).ToList().OrderBy(i => i.Id).ToList();
+                                        if (hrUsersDto.Any())
+                                        {
+                                            return hrUsersDto.Distinct(new GetAuthModelComparer()).ToList().OrderBy(i => i.Id).ToList();
+                                        }
+                                        else
+                                        {
+                                            throw new NotFoundException("No users found!");
+                                        }
                                     }
                                     else
                                     {
-                                        throw new NotFoundException("No users found!");
+                                        throw new ForbiddenException("You cannot access due to role permissions.");
                                     }
                                 }
                                 else
                                 {
-                                    throw new ForbiddenException("You cannot access due to role permissions.");
+                                    throw new ForbiddenException("You cannot access due to user permissions.");
                                 }
+
+
+
+
                             }
                             else
                             {
-                                throw new ForbiddenException("You cannot access due to user permissions.");
+                                throw new ForbiddenException("You cannot log in due to a UserRole mismatch.");
                             }
-
-
-
-
                         }
                         else
                         {
-                            throw new ForbiddenException("You cannot log in due to a UserRole mismatch.");
+                            throw new ForbiddenException("Access is denied with the user's existing role.");
                         }
                     }
                     else
                     {
-                        throw new ForbiddenException("Access is denied with the user's existing role.");
+                        throw new ForbiddenException("You cannot access");
                     }
+
+
+
                 }
+
                 else
                 {
-                    throw new ForbiddenException("You cannot access");
+                    throw new UnauthorizedException("Current user is not authenticated.");
                 }
-
-
-
             }
             else
             {
@@ -768,6 +790,67 @@ namespace Interview.Application.Services.Concrete
 
             TimeZone localZone = TimeZone.CurrentTimeZone;
             DateTime localTime = localZone.ToLocalTime(DateTime.UtcNow);
+
+
+        }
+
+
+        public async Task<TokenModel> RefreshToken(TokenModel tokenModel, ClaimsPrincipal claimsPrincipal)
+        {
+            if (claimsPrincipal.Identity.IsAuthenticated)
+            {
+                if (tokenModel is null)
+                {
+
+                    throw new BadHttpRequestException("Invalid client request1");
+
+                }
+
+                string? accessToken = tokenModel.AccessToken;
+                string? refreshToken = tokenModel.RefreshToken;
+
+                var principal = GetPrincipalFromExpiredToken(accessToken);
+                if (principal == null)
+                {
+
+                    throw new BadHttpRequestException("Invalid access token or refresh token");
+
+                }
+
+                string username = principal.Identity.Name;
+
+
+                var user = await _userReadRepository.GetSingleAsync(i => i.UserName == username);
+
+                if (user == null || user.RefreshToken != refreshToken)
+                {
+
+                    throw new BadHttpRequestException("Invalid access token or refresh token");
+
+                }
+
+                var newAccessToken = CreateToken(principal.Claims.ToList());
+                var newRefreshToken = GenerateRefreshToken();
+
+                user.RefreshToken = newRefreshToken;
+                _userWriteRepository.Update(user);
+
+                await _userWriteRepository.SaveAsync();
+
+                TokenModel model = new TokenModel
+                {
+                    AccessToken = new JwtSecurityTokenHandler().WriteToken(newAccessToken),
+                    RefreshToken = newRefreshToken
+                };
+
+                return model;
+
+            }
+            else
+            {
+                throw new UnauthorizedException("Current user is not authenticated.");
+            }
+     
 
 
         }
@@ -1440,9 +1523,9 @@ namespace Interview.Application.Services.Concrete
             return model;
         }
 
-        public async Task Logout(string username)
+        public async Task Logout(ClaimsPrincipal claimsPrincipal)
         {
-            var user = _userReadRepository.GetAll(false).Where(i => i.UserName == username).FirstOrDefault();
+            var user = _userReadRepository.GetAll(false).Where(i => i.UserName == claimsPrincipal.Identity.Name).FirstOrDefault();
 
             if (user == null)
             {
@@ -1456,6 +1539,23 @@ namespace Interview.Application.Services.Concrete
 
             _userWriteRepository.Update(user);
             await _userWriteRepository.SaveAsync();
+
+
+            _memoryCache.Remove($"UserProfile_{user.Id}");
+
+            _userWriteRepository.Update(user);
+            await _userWriteRepository.SaveAsync();
+
+            //var identity = claimsPrincipal.Identity as ClaimsIdentity;
+
+            //if (claimsPrincipal.Identity?.IsAuthenticated ?? false)
+            //{
+
+            //    var a = Enumerable.Empty<Claim>();
+
+            //    claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(a, null));
+            //}
+
         }
 
 

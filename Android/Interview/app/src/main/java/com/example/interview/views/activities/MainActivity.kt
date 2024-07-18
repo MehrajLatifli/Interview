@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity() {
         // Observe navigation changes
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.homeFragment, R.id.profileFragment, R.id.setting, R.id.operations -> {
+                R.id.homeFragment, R.id.profileFragment, R.id.setting, R.id.operationFragment -> {
                     binding.includeBottomnav.BottomNavigationView.visible()
                 }
                 else -> {

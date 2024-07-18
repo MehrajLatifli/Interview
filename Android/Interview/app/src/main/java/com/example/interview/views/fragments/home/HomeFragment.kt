@@ -20,7 +20,7 @@ class HomeFragment  : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::inf
         super.onViewCreated(view, savedInstanceState)
 
 
-        API_KEY=loadApiKey(requireContext()).toString()
+       // API_KEY=loadApiKey(requireContext()).toString()
 
 
     }

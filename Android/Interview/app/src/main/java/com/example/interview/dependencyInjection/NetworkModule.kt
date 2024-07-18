@@ -1,13 +1,15 @@
 package com.example.interview.dependencyInjection
 
-
+import android.content.Context
 import com.example.interview.source.api.ApiKeyInterceptor
+import com.example.interview.source.api.ApiKeyProvider
 import com.example.interview.source.api.IApiManager
 import com.example.interview.utilities.Constants.Base_URL
 import com.example.interview.utilities.createUnsafeOkHttpClient
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.Dns
 import okhttp3.OkHttpClient
@@ -23,15 +25,20 @@ object NetworkModule {
 
     @Singleton
     @Provides
-    fun provideApiInterceptor(): ApiKeyInterceptor {
-        return ApiKeyInterceptor()
+    fun provideApiKeyProvider(@ApplicationContext context: Context): ApiKeyProvider {
+        return ApiKeyProvider(context)
+    }
+
+    @Singleton
+    @Provides
+    fun provideApiInterceptor(apiKeyProvider: ApiKeyProvider): ApiKeyInterceptor {
+        return ApiKeyInterceptor(apiKeyProvider)
     }
 
     @Singleton
     @Provides
     fun provideHttpLoggerInterceptor(): HttpLoggingInterceptor {
         val httpLoggingInterceptor = HttpLoggingInterceptor()
-
         httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
         return httpLoggingInterceptor
     }

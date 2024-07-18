@@ -109,9 +109,9 @@ namespace Interview.API.Controllers.Auth
 
         [HttpPost]
         [Route(Routes.Logout)]
-        public async Task<IActionResult> Logout(string username)
+        public async Task<IActionResult> Logout()
         {
-            await _authservice.Logout(username);
+            await _authservice.Logout(User);
 
             return NoContent();
         }
@@ -124,6 +124,15 @@ namespace Interview.API.Controllers.Auth
 
 
             return Ok(await _authservice.Login(model));
+
+        }
+
+        [HttpPost]
+        [Route(Routes.RefreshToken)]
+        public async Task<IActionResult> RefreshToken(TokenModel tokenModel)
+        {
+            Console.WriteLine(tokenModel);
+            return Ok(await _authservice.RefreshToken(tokenModel, User));
 
         }
 

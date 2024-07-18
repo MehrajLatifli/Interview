@@ -164,5 +164,6 @@ class AccountTypeAdapter : BaseAdapter<AccountType, AccountTypeAdapter.AccountTy
                 )
             }
         }
+
     }
 }

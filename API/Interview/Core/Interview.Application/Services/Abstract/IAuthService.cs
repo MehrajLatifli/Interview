@@ -48,9 +48,9 @@ namespace Interview.Application.Services.Abstract
 
         //public Task Logout();
 
-        //public Task<TokenModel> RefreshToken(TokenModel model);
+        public Task<TokenModel> RefreshToken(TokenModel model, ClaimsPrincipal claimsPrincipal);
 
-        public Task Logout(string username);
+        public Task Logout(ClaimsPrincipal claimsPrincipal);
 
         //public Task RevokeAll();
 

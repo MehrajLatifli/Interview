@@ -81,8 +81,8 @@
             app:destination="@id/logInFragment" />
     </fragment>
     <fragment
-        android:id="@+id/operationTypeFragment"
-        android:name="com.example.interview.views.fragments.operationtype.OperationFragment"
-        android:label="fragment_operation_type"
-        tools:layout="@layout/fragment_operation_type" />
+        android:id="@+id/operationFragment"
+        android:name="com.example.interview.views.fragments.operation.OperationFragment"
+        android:label="fragment_operation"
+        tools:layout="@layout/fragment_operation" />
 </navigation>

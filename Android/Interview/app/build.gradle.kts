@@ -67,6 +67,8 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
+    implementation("androidx.recyclerview:recyclerview:1.3.2")
+
     val nav_version = "2.7.7"
 
     // Navigation
@@ -142,10 +144,19 @@ dependencies {
     kapt("androidx.room:room-compiler:$room_version")
     implementation("androidx.room:room-ktx:$room_version")
 
-
-
     // Material Components
     implementation("com.google.android.material:material:1.12.0")
+
+    val work_version = "2.9.0"
+
+    //WorkManager
+    
+    implementation("androidx.work:work-runtime:$work_version")
+    implementation("androidx.work:work-runtime-ktx:$work_version")
+    implementation("androidx.work:work-rxjava2:$work_version")
+    implementation("androidx.work:work-gcm:$work_version")
+    androidTestImplementation("androidx.work:work-testing:$work_version")
+    implementation("androidx.work:work-multiprocess:$work_version")
 
 }
 

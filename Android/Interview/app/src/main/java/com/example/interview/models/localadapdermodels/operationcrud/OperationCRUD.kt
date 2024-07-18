@@ -1,4 +1,7 @@
 package com.example.interview.models.localadapdermodels.operationcrud
 
-class OperationCRUD {
-}
+data class OperationCRUD (
+
+    val text: String,
+    val image: Int
+)
