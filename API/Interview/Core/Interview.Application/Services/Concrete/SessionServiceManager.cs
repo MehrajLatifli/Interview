@@ -9,6 +9,7 @@ using Interview.Application.Services.Abstract;
 using Interview.Domain.Entities.IdentityAuth;
 using Interview.Domain.Entities.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 
 namespace Interview.Application.Services.Concrete
@@ -25,8 +26,8 @@ namespace Interview.Application.Services.Concrete
         private readonly IVacancyWriteRepository _vacancyWriteRepository;
         private readonly IVacancyReadRepository _vacancyReadRepository;
 
-        private readonly ICandidateWriteRepository  _candidateWriteRepository;
-        private readonly ICandidateReadRepository  _candidateReadRepository;
+        private readonly ICandidateWriteRepository _candidateWriteRepository;
+        private readonly ICandidateReadRepository _candidateReadRepository;
 
         private readonly ISessionQuestionWriteRepository _sessionQuestionWriteRepository;
         private readonly ISessionQuestionReadRepository _sessionQuestionReadRepository;
@@ -70,161 +71,233 @@ namespace Interview.Application.Services.Concrete
 
         #region Session service manager
 
-        public async Task SessionCreate(SessionDTOforCreate model, ClaimsPrincipal User)
+        public async Task SessionCreate(SessionDTOforCreate model, ClaimsPrincipal claimsPrincipal)
         {
 
-
-
-            var entity = _mapper.Map<Session>(model);
-
-
-            var existing1 = await _vacancyReadRepository.GetByIdAsync(model.VacancyId.ToString(), false);
-            var existing2 = await _candidateReadRepository.GetByIdAsync(model.CandidateId.ToString(), false);
-
-            if (existing1 is null)
+            if (!_userReadRepository.GetAll(false).AsEnumerable().Any(i => string.IsNullOrEmpty(i.RefreshToken) && i.UserName == claimsPrincipal.Identity.Name))
             {
-                throw new NotFoundException("Vacancy not found");
-
-            }
-
-            if (existing2 is null)
-            {
-                throw new NotFoundException("Candidate not found");
-
-            }
-
-            var username = User.Identity.Name;
-
-           
-
-                entity = new Session
+                if (claimsPrincipal.Identity.IsAuthenticated)
                 {
 
-                    EndValue = entity.EndValue,
-                    StartDate = entity.StartDate,
-                    EndDate = entity.EndDate,
-                    VacancyId = model.VacancyId,
-                    CandidateId = model.CandidateId,
-                    UserId = _userReadRepository.GetAll(false).AsEnumerable().Where(i => i.UserName == username).FirstOrDefault().Id,
+
+                    var entity = _mapper.Map<Session>(model);
 
 
-                };
+                    var existing1 = await _vacancyReadRepository.GetByIdAsync(model.VacancyId.ToString(), false);
+                    var existing2 = await _candidateReadRepository.GetByIdAsync(model.CandidateId.ToString(), false);
 
+                    if (existing1 is null)
+                    {
+                        throw new NotFoundException("Vacancy not found");
 
-                await _sessionWriteRepository.AddAsync(entity);
+                    }
 
-                await _sessionWriteRepository.SaveAsync();
-            
-        }
+                    if (existing2 is null)
+                    {
+                        throw new NotFoundException("Candidate not found");
 
-        public async Task<List<SessionDTOforGetandGetAll>> GetSession()
-        {
-            List<SessionDTOforGetandGetAll> datas = null;
+                    }
 
-            await Task.Run(() =>
-            {
-                datas = _mapper.Map<List<SessionDTOforGetandGetAll>>(_sessionReadRepository.GetAll(false));
-            });
-
-            if (datas.Count <= 0)
-            {
-                throw new NotFoundException("Session not found");
-            }
-
-            return datas;
-        }
-
-        public async Task<SessionDTOforGetandGetAll> GetSessionById(int id)
-        {
-            SessionDTOforGetandGetAll item = null;
-
-
-            item = _mapper.Map<SessionDTOforGetandGetAll>(await _sessionReadRepository.GetByIdAsync(id.ToString(), false));
-
-
-            if (item == null)
-            {
-                throw new NotFoundException("Session not found");
-            }
-
-            return item;
-        }
-
-        public async Task SessionUpdate(SessionDTOforUpdate model)
-        {
+                    var username = claimsPrincipal.Identity.Name;
 
 
 
+                    entity = new Session
+                    {
 
-            await Task.Run(() =>
-            {
-                if (!_mapper.Map<List<SessionDTOforGetandGetAll>>(_sessionReadRepository.GetAll(false)).Any(i => i.Id == model.Id))
-                {
-                    throw new NotFoundException("Session not found");
+                        EndValue = entity.EndValue,
+                        StartDate = entity.StartDate,
+                        EndDate = entity.EndDate,
+                        VacancyId = model.VacancyId,
+                        CandidateId = model.CandidateId,
+                        UserId = _userReadRepository.GetAll(false).AsEnumerable().Where(i => i.UserName == username).FirstOrDefault().Id,
+
+
+                    };
+
+
+                    await _sessionWriteRepository.AddAsync(entity);
+
+                    await _sessionWriteRepository.SaveAsync();
                 }
-            });
-
-
-  
-
-
-            var  sessionQuery = from sq in _mapper.Map<List<SessionQuestionDTOforGetandGetAll>>(_sessionQuestionReadRepository.GetAll(false))
-                            join q in _mapper.Map<List<QuestionDTOforGetandGetAll>>(_questionReadRepository.GetAll(false)) on sq.QuestionId equals q.Id
-                            join s in _mapper.Map<List<SessionDTOforGetandGetAll>>(_sessionReadRepository.GetAll(false)) on sq.SessionId equals s.Id
-                            join l in _mapper.Map<List<LevelDTOforGetandGetAll>>(_levelReadRepository.GetAll(false)) on q.LevelId equals l.Id
-                            where s.Id == model.Id
-                            select new 
-                            {
-                                SessionId = model.Id,
-                                EndValue = l.Coefficient * sq.Value,
-                                SessionEndDate = model.EndDate,
-                            
-                            };
-
-
-
-          
-
-            var totalEndValue = sessionQuery.ToList().Sum(session => session.EndValue);
-
-            var entity = _mapper.Map<Session>(model);
-
-
-
-            entity = new Session
-            {
-                Id = model.Id,
-                EndValue = totalEndValue,
-                StartDate = _mapper.Map<SessionDTOforGetandGetAll>(await _sessionReadRepository.GetByIdAsync(model.Id.ToString(), false)).StartDate,
-                EndDate = model.EndDate,
-                VacancyId = _sessionReadRepository.GetAll(false).Where(i => i.Id == model.Id).FirstOrDefault().VacancyId,
-                CandidateId = _sessionReadRepository.GetAll(false).Where(i => i.Id == model.Id).FirstOrDefault().CandidateId,
-                UserId= _sessionReadRepository.GetAll(false).Where(i => i.Id == model.Id).FirstOrDefault().UserId,
-
-
-            };
-
-            _sessionWriteRepository.Update(entity);
-            await _sessionWriteRepository.SaveAsync();
-
-        }
-
-        public async Task<SessionDTOforGetandGetAll> DeleteSessionById(int id)
-        {
-
-            if (_sessionReadRepository.GetAll().Any(i => i.Id == Convert.ToInt32(id)))
-            {
-
-                await _sessionWriteRepository.RemoveByIdAsync(id.ToString());
-                await _sessionWriteRepository.SaveAsync();
-
-                return null;
-
+                else
+                {
+                    throw new UnauthorizedException("Current user is not authenticated.");
+                }
             }
-
             else
             {
-                throw new NotFoundException("Session not found");
+                throw new UnauthorizedException("Current user is not authenticated.");
+            }
+        }
+
+        public async Task<List<SessionDTOforGetandGetAll>> GetSession(ClaimsPrincipal claimsPrincipal)
+        {
+
+            if (!_userReadRepository.GetAll(false).AsEnumerable().Any(i => string.IsNullOrEmpty(i.RefreshToken) && i.UserName == claimsPrincipal.Identity.Name))
+            {
+                if (claimsPrincipal.Identity.IsAuthenticated)
+                {
+                    List<SessionDTOforGetandGetAll> datas = null;
+
+                    await Task.Run(() =>
+                    {
+                        datas = _mapper.Map<List<SessionDTOforGetandGetAll>>(_sessionReadRepository.GetAll(false));
+                    });
+
+                    if (datas.Count <= 0)
+                    {
+                        throw new NotFoundException("Session not found");
+                    }
+
+                    return datas;
+                }
+                else
+                {
+                    throw new UnauthorizedException("Current user is not authenticated.");
+                }
+            }
+            else
+            {
+                throw new UnauthorizedException("Current user is not authenticated.");
+            }
+        }
+
+        public async Task<SessionDTOforGetandGetAll> GetSessionById(int id, ClaimsPrincipal claimsPrincipal)
+        {
+
+            if (!_userReadRepository.GetAll(false).AsEnumerable().Any(i => string.IsNullOrEmpty(i.RefreshToken) && i.UserName == claimsPrincipal.Identity.Name))
+            {
+                if (claimsPrincipal.Identity.IsAuthenticated)
+                {
+                    SessionDTOforGetandGetAll item = null;
+
+
+                    item = _mapper.Map<SessionDTOforGetandGetAll>(await _sessionReadRepository.GetByIdAsync(id.ToString(), false));
+
+
+                    if (item == null)
+                    {
+                        throw new NotFoundException("Session not found");
+                    }
+
+                    return item;
+                }
+                else
+                {
+                    throw new UnauthorizedException("Current user is not authenticated.");
+                }
+            }
+            else
+            {
+                throw new UnauthorizedException("Current user is not authenticated.");
+            }
+        }
+
+        public async Task SessionUpdate(SessionDTOforUpdate model, ClaimsPrincipal claimsPrincipal)
+        {
+
+            if (!_userReadRepository.GetAll(false).AsEnumerable().Any(i => string.IsNullOrEmpty(i.RefreshToken) && i.UserName == claimsPrincipal.Identity.Name))
+            {
+                if (claimsPrincipal.Identity.IsAuthenticated)
+                {
+
+
+
+                    await Task.Run(() =>{
+
+                          if (!_mapper.Map<List<SessionDTOforGetandGetAll>>(_sessionReadRepository.GetAll(false)).Any(i => i.Id == model.Id))
+                           {
+                            throw new NotFoundException("Session not found");
+                           }
+                    });
+
+
+
+
+
+                    var sessionQuery = from sq in _mapper.Map<List<SessionQuestionDTOforGetandGetAll>>(_sessionQuestionReadRepository.GetAll(false))
+                                       join q in _mapper.Map<List<QuestionDTOforGetandGetAll>>(_questionReadRepository.GetAll(false)) on sq.QuestionId equals q.Id
+                                       join s in _mapper.Map<List<SessionDTOforGetandGetAll>>(_sessionReadRepository.GetAll(false)) on sq.SessionId equals s.Id
+                                       join l in _mapper.Map<List<LevelDTOforGetandGetAll>>(_levelReadRepository.GetAll(false)) on q.LevelId equals l.Id
+                                       where s.Id == model.Id
+                                       select new
+                                       {
+                                           SessionId = model.Id,
+                                           EndValue = l.Coefficient * sq.Value,
+                                           SessionEndDate = model.EndDate,
+
+                                       };
+
+
+
+
+
+                    var totalEndValue = sessionQuery.ToList().Sum(session => session.EndValue);
+
+                    var entity = _mapper.Map<Session>(model);
+
+
+
+                    entity = new Session
+                    {
+                        Id = model.Id,
+                        EndValue = totalEndValue,
+                        StartDate = _mapper.Map<SessionDTOforGetandGetAll>(await _sessionReadRepository.GetByIdAsync(model.Id.ToString(), false)).StartDate,
+                        EndDate = model.EndDate,
+                        VacancyId = _sessionReadRepository.GetAll(false).Where(i => i.Id == model.Id).FirstOrDefault().VacancyId,
+                        CandidateId = _sessionReadRepository.GetAll(false).Where(i => i.Id == model.Id).FirstOrDefault().CandidateId,
+                        UserId = _sessionReadRepository.GetAll(false).Where(i => i.Id == model.Id).FirstOrDefault().UserId,
+
+
+                    };
+
+                    _sessionWriteRepository.Update(entity);
+                    await _sessionWriteRepository.SaveAsync();
+                }
+                else
+                {
+                    throw new UnauthorizedException("Current user is not authenticated.");
+                }
+            }
+            else
+            {
+                throw new UnauthorizedException("Current user is not authenticated.");
+            }
+
+        }
+
+        public async Task<SessionDTOforGetandGetAll> DeleteSessionById(int id, ClaimsPrincipal claimsPrincipal)
+        {
+
+            if (!_userReadRepository.GetAll(false).AsEnumerable().Any(i => string.IsNullOrEmpty(i.RefreshToken) && i.UserName == claimsPrincipal.Identity.Name))
+            {
+                if (claimsPrincipal.Identity.IsAuthenticated)
+                {
+
+                    if (_sessionReadRepository.GetAll().Any(i => i.Id == Convert.ToInt32(id)))
+                    {
+
+                        await _sessionWriteRepository.RemoveByIdAsync(id.ToString());
+                        await _sessionWriteRepository.SaveAsync();
+
+                        return null;
+
+                    }
+
+                    else
+                    {
+                        throw new NotFoundException("Session not found");
+                    }
+                }
+                else
+                {
+                    throw new UnauthorizedException("Current user is not authenticated.");
+                }
+            }
+            else
+            {
+                throw new UnauthorizedException("Current user is not authenticated.");
             }
         }
 

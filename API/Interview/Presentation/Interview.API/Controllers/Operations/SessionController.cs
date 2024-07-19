@@ -35,7 +35,7 @@ namespace Interview.API.Controllers.Operations
         public async Task<IActionResult> GetSessionById(int id)
         {
 
-            var data = await _sessionService.GetSessionById(id);
+            var data = await _sessionService.GetSessionById(id, User);
 
             return Ok(data);
 
@@ -46,7 +46,7 @@ namespace Interview.API.Controllers.Operations
         public async Task<IActionResult> GetSession()
         {
 
-            var data = await _sessionService.GetSession();
+            var data = await _sessionService.GetSession(User);
 
 
             return Ok(data);
@@ -70,7 +70,7 @@ namespace Interview.API.Controllers.Operations
         {
 
 
-            await _sessionService.SessionUpdate(model);
+            await _sessionService.SessionUpdate(model, User);
 
 
             return Ok(new Response { Status = "Success", Message = "The Session updated successfully!" });
@@ -85,7 +85,7 @@ namespace Interview.API.Controllers.Operations
         public async Task<IActionResult> SessionDelete(int id)
         {
 
-            await _sessionService.DeleteSessionById(id);
+            await _sessionService.DeleteSessionById(id, User);
 
             return Ok(new Response { Status = "Success", Message = "The Session deleted successfully!" });
         }

@@ -35,7 +35,7 @@ namespace Interview.API.Controllers.Operations
         public async Task<IActionResult> GetCategoryById(int id)
         {
 
-            var data = await _categoryService.GetCategoryById(id);
+            var data = await _categoryService.GetCategoryById(id, User);
 
             return Ok(data);
 
@@ -46,7 +46,7 @@ namespace Interview.API.Controllers.Operations
         public async Task<IActionResult> GetCategory()
         {
 
-            var data = await _categoryService.GetCategory();
+            var data = await _categoryService.GetCategory(User);
 
 
             return Ok(data);
@@ -58,7 +58,7 @@ namespace Interview.API.Controllers.Operations
         public async Task<IActionResult> CategoryCreate([FromBody] CategoryDTOforCreate model)
         {
 
-            await _categoryService.CategoryCreate(model);
+            await _categoryService.CategoryCreate(model, User);
 
             return Ok(new Response { Status = "Success", Message = "The Category created successfully!" });
 
@@ -70,7 +70,7 @@ namespace Interview.API.Controllers.Operations
         {
 
 
-            await _categoryService.CategoryUpdate(model);
+            await _categoryService.CategoryUpdate(model, User);
 
 
             return Ok(new Response { Status = "Success", Message = "The Category updated successfully!" });
@@ -85,7 +85,7 @@ namespace Interview.API.Controllers.Operations
         public async Task<IActionResult> DeleteCategoryById(int id)
         {
 
-            await _categoryService.DeleteCategoryById(id);
+            await _categoryService.DeleteCategoryById(id, User);
 
             return Ok(new Response { Status = "Success", Message = "The Category deleted successfully!" });
         }

@@ -34,7 +34,7 @@ namespace Interview.API.Controllers.Operations
         public async Task<IActionResult> GetVacancyById(int id)
         {
 
-            var data = await _vacancyService.GetVacancyById(id);
+            var data = await _vacancyService.GetVacancyById(id, User);
 
             return Ok(data);
 
@@ -45,7 +45,7 @@ namespace Interview.API.Controllers.Operations
         public async Task<IActionResult> GetVacancy()
         {
 
-            var data = await _vacancyService.GetVacancy();
+            var data = await _vacancyService.GetVacancy(User);
 
 
             return Ok(data);
@@ -57,7 +57,7 @@ namespace Interview.API.Controllers.Operations
         public async Task<IActionResult> VacancyCreate([FromBody] VacancyDTOforCreate model)
         {
 
-            await _vacancyService.VacancyCreate(model);
+            await _vacancyService.VacancyCreate(model, User);
 
             return Ok(new Response { Status = "Success", Message = "The Vacancy created successfully!" });
 
@@ -69,7 +69,7 @@ namespace Interview.API.Controllers.Operations
         {
 
 
-            await _vacancyService.VacancyUpdate(model);
+            await _vacancyService.VacancyUpdate(model, User);
 
 
             return Ok(new Response { Status = "Success", Message = "The Vacancy updated successfully!" });
@@ -84,7 +84,7 @@ namespace Interview.API.Controllers.Operations
         public async Task<IActionResult> VacancyDelete(int id)
         {
 
-            await _vacancyService.DeleteVacancyById(id);
+            await _vacancyService.DeleteVacancyById(id, User);
 
             return Ok(new Response { Status = "Success", Message = "The Vacancy deleted successfully!" });
         }

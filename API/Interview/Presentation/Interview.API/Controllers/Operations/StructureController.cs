@@ -31,7 +31,7 @@ namespace Interview.API.Controllers.Operations
         public async Task<IActionResult> GetStructureById(int id)
         {
 
-            var data = await _structureService.GetStructureById(id);
+            var data = await _structureService.GetStructureById(id, User);
 
             return Ok(data);
 
@@ -42,7 +42,7 @@ namespace Interview.API.Controllers.Operations
         public async Task<IActionResult> GetStructure()
         {
 
-            var data = await _structureService.GetStructure();
+            var data = await _structureService.GetStructure(User);
 
 
             return Ok(data);
@@ -54,7 +54,7 @@ namespace Interview.API.Controllers.Operations
         public async Task<IActionResult> StructureCreate([FromBody] StructureDTOforCreate model)
         {
 
-            await _structureService.StructureCreate(model);
+            await _structureService.StructureCreate(model,User);
 
             return Ok(new Response { Status = "Success", Message = "The Structure created successfully!" });
 
@@ -66,7 +66,7 @@ namespace Interview.API.Controllers.Operations
         {
 
 
-            await _structureService.StructureUpdate(model);
+            await _structureService.StructureUpdate(model, User);
 
 
             return Ok(new Response { Status = "Success", Message = "The Structure updated successfully!" });
@@ -81,7 +81,7 @@ namespace Interview.API.Controllers.Operations
         public async Task<IActionResult> StructureDelete(int id)
         {
 
-            await _structureService.DeleteStructureById(id);
+            await _structureService.DeleteStructureById(id, User);
 
             return Ok(new Response { Status = "Success", Message = "The Structure deleted successfully!" });
         }

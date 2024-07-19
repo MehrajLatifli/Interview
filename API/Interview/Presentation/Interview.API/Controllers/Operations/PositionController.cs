@@ -31,7 +31,7 @@ namespace Interview.API.Controllers.Operations
         public async Task<IActionResult> GetPositionById(int id)
         {
 
-            var data = await _positionService.GetPositionById(id);
+            var data = await _positionService.GetPositionById(id, User);
 
             return Ok(data);
 
@@ -42,7 +42,7 @@ namespace Interview.API.Controllers.Operations
         public async Task<IActionResult> GetPosition()
         {
 
-            var data = await _positionService.GetPosition();
+            var data = await _positionService.GetPosition(User);
 
 
             return Ok(data);
@@ -54,7 +54,7 @@ namespace Interview.API.Controllers.Operations
         public async Task<IActionResult> PositionCreate([FromBody] PositionDTOforCreate model)
         {
 
-            await _positionService.PositionCreate(model);
+            await _positionService.PositionCreate(model, User);
 
             return Ok(new Response { Status = "Success", Message = "The Position created successfully!" });
 
@@ -66,7 +66,7 @@ namespace Interview.API.Controllers.Operations
         {
 
 
-            await _positionService.PositionUpdate(model);
+            await _positionService.PositionUpdate(model, User);
 
 
             return Ok(new Response { Status = "Success", Message = "The Position updated successfully!" });
@@ -81,7 +81,7 @@ namespace Interview.API.Controllers.Operations
         public async Task<IActionResult> PositionDelete(int id)
         {
 
-            await _positionService.DeletePositionById(id);
+            await _positionService.DeletePositionById(id, User);
 
             return Ok(new Response { Status = "Success", Message = "The Position deleted successfully!" });
         }

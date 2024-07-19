@@ -1,4 +1,5 @@
 ﻿using Interview.Application.Mapper.DTO.StructureTypeDTO;
+using System.Security.Claims;
 
 namespace Interview.Application.Services.Abstract
 {
@@ -6,15 +7,15 @@ namespace Interview.Application.Services.Abstract
     {
         #region StructureType service
 
-        public Task StructureTypeCreate(StructureTypeDTOforCreate model);
+        public Task StructureTypeCreate(StructureTypeDTOforCreate model, ClaimsPrincipal claimsPrincipal);
 
-        public Task<List<StructureTypeDTOforGetandGetAll>> GetStructureType();
+        public Task<List<StructureTypeDTOforGetandGetAll>> GetStructureType(ClaimsPrincipal claimsPrincipal);
 
-        public Task<StructureTypeDTOforGetandGetAll> GetStructureTypeById(int id);
+        public Task<StructureTypeDTOforGetandGetAll> GetStructureTypeById(int id, ClaimsPrincipal claimsPrincipal);
 
-        public Task StructureTypeUpdate(StructureTypeDTOforUpdate model);
+        public Task StructureTypeUpdate(StructureTypeDTOforUpdate model , ClaimsPrincipal claimsPrincipal);
 
-        public Task<StructureTypeDTOforGetandGetAll> DeleteStructureTypeById(int id);
+        public Task<StructureTypeDTOforGetandGetAll> DeleteStructureTypeById(int id, ClaimsPrincipal claimsPrincipal);
 
         #endregion
     }

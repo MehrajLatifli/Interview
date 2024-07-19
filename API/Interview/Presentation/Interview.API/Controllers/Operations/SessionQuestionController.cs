@@ -37,7 +37,7 @@ namespace Interview.API.Controllers.Operations
         public async Task<IActionResult> GetSessionQuestionById(int id)
         {
 
-            var data = await _sessionQuestionService.GetSessionQuestionById(id);
+            var data = await _sessionQuestionService.GetSessionQuestionById(id, User);
 
             return Ok(data);
 
@@ -49,7 +49,7 @@ namespace Interview.API.Controllers.Operations
         public async Task<IActionResult> GetSessionQuestion()
         {
 
-            var data = await _sessionQuestionService.GetSessionQuestion();
+            var data = await _sessionQuestionService.GetSessionQuestion(User);
 
 
             return Ok(data);
@@ -62,7 +62,7 @@ namespace Interview.API.Controllers.Operations
         public async Task<IActionResult> GetSessionQuestionBySessionId(int sessionId)
         {
 
-            var data = await _sessionQuestionService.GetSessionQuestionBySessionId(sessionId);
+            var data = await _sessionQuestionService.GetSessionQuestionBySessionId(sessionId, User);
 
             return Ok(data);
 
@@ -73,7 +73,7 @@ namespace Interview.API.Controllers.Operations
         public async Task<IActionResult> SessionQuestionCreate([FromBody] SessionQuestionDTOforCreate model)
         {
 
-            await _sessionQuestionService.SessionQuestionCreate(model);
+            await _sessionQuestionService.SessionQuestionCreate(model, User);
 
             return Ok(new Response { Status = "Success", Message = "The SessionQuestion created successfully!" });
 
@@ -85,7 +85,7 @@ namespace Interview.API.Controllers.Operations
         {
 
 
-            await _sessionQuestionService.SessionQuestionUpdate(model);
+            await _sessionQuestionService.SessionQuestionUpdate(model, User);
 
 
             return Ok(new Response { Status = "Success", Message = "The SessionQuestion updated successfully!" });
@@ -100,7 +100,7 @@ namespace Interview.API.Controllers.Operations
         public async Task<IActionResult> SessionQuestionDelete(int id)
         {
 
-            await _sessionQuestionService.DeleteSessionQuestionById(id);
+            await _sessionQuestionService.DeleteSessionQuestionById(id, User);
 
             return Ok(new Response { Status = "Success", Message = "The SessionQuestion deleted successfully!" });
         }
@@ -110,7 +110,7 @@ namespace Interview.API.Controllers.Operations
         public async Task<IActionResult> GetRandomQuestion([FromQuery] RandomQuestionRequestModel request)
         {
 
-            var data = await _sessionQuestionService.GetRandomQuestion(request);
+            var data = await _sessionQuestionService.GetRandomQuestion(request, User);
 
 
             return Ok(data);
@@ -121,7 +121,7 @@ namespace Interview.API.Controllers.Operations
         public async Task<IActionResult> GetRandomQuestion2([FromQuery] RandomQuestionRequestModel2 request)
         {
 
-            var data = await _sessionQuestionService.GetRandomQuestion2(request);
+            var data = await _sessionQuestionService.GetRandomQuestion2(request, User);
 
 
             return Ok(data);
@@ -133,7 +133,7 @@ namespace Interview.API.Controllers.Operations
         public async Task<IActionResult> GetAllQuestionByVacancyId([FromQuery] QuestionByPageRequestModel model)
         {
 
-            var data = await _sessionQuestionService.GetAllQuestionByPage(model);
+            var data = await _sessionQuestionService.GetAllQuestionByPage(model , User);
 
 
             return Ok(data);

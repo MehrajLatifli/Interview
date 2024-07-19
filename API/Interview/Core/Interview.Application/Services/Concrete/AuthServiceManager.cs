@@ -112,7 +112,7 @@ namespace Interview.Application.Services.Concrete
 
         public async Task<GetAuthDTOModel> Profile(ClaimsPrincipal claimsPrincipal)
         {
-            if (!_userReadRepository.GetAll(false).AsEnumerable().Any(i => i.RefreshToken.IsNullOrEmpty() && i.UserName==claimsPrincipal.Identity.Name))
+          if (!_userReadRepository.GetAll(false).AsEnumerable().Any(i => string.IsNullOrEmpty(i.RefreshToken) && i.UserName == claimsPrincipal.Identity.Name))
             {
                 if (claimsPrincipal.Identity.IsAuthenticated)
                 {
@@ -136,11 +136,12 @@ namespace Interview.Application.Services.Concrete
                     var userRoles = roles.Where(r => userRoleIds.Contains(r.Id)).ToList();
 
                     var permissionsDTO = new List<PermitionsDTOModel>
-
-                {
-
-                    new PermitionsDTOModel
                     {
+
+                  
+                        new PermitionsDTOModel
+                    
+                        {
 
                         UserClaims = userClaimsDTO,
 
@@ -157,9 +158,9 @@ namespace Interview.Application.Services.Concrete
 
                         Roles = userRoles
 
-                    }
+                         }
 
-                };
+                    };
 
                     var userProfile = new GetAuthDTOModel
                     {
@@ -188,7 +189,7 @@ namespace Interview.Application.Services.Concrete
 
         public async Task<List<GetAuthDTOModel>> GetAdmins(ClaimsPrincipal claimsPrincipal)
         {
-            if (!_userReadRepository.GetAll(false).AsEnumerable().Any(i => i.RefreshToken.IsNullOrEmpty() && i.UserName == claimsPrincipal.Identity.Name))
+          if (!_userReadRepository.GetAll(false).AsEnumerable().Any(i => string.IsNullOrEmpty(i.RefreshToken) && i.UserName == claimsPrincipal.Identity.Name))
             {
                 if (claimsPrincipal.Identity.IsAuthenticated)
                 {
@@ -312,7 +313,7 @@ namespace Interview.Application.Services.Concrete
 
         public async Task<List<GetAuthDTOModel>> GetHRs(ClaimsPrincipal claimsPrincipal)
         {
-            if (!_userReadRepository.GetAll(false).AsEnumerable().Any(i => i.RefreshToken.IsNullOrEmpty() && i.UserName == claimsPrincipal.Identity.Name))
+          if (!_userReadRepository.GetAll(false).AsEnumerable().Any(i => string.IsNullOrEmpty(i.RefreshToken) && i.UserName == claimsPrincipal.Identity.Name))
             {
                 if (claimsPrincipal.Identity.IsAuthenticated)
                 {

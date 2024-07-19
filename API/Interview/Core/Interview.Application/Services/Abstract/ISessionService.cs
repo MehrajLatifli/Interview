@@ -9,13 +9,13 @@ namespace Interview.Application.Services.Abstract
 
         public Task SessionCreate(SessionDTOforCreate model, ClaimsPrincipal User);
 
-        public Task<List<SessionDTOforGetandGetAll>> GetSession();
+        public Task<List<SessionDTOforGetandGetAll>> GetSession(ClaimsPrincipal claimsPrincipal);
 
-        public Task<SessionDTOforGetandGetAll> GetSessionById(int id);
+        public Task<SessionDTOforGetandGetAll> GetSessionById(int id, ClaimsPrincipal claimsPrincipal);
 
-        public Task SessionUpdate(SessionDTOforUpdate model);
+        public Task SessionUpdate(SessionDTOforUpdate model, ClaimsPrincipal claimsPrincipal);
 
-        public Task<SessionDTOforGetandGetAll> DeleteSessionById(int id);
+        public Task<SessionDTOforGetandGetAll> DeleteSessionById(int id, ClaimsPrincipal claimsPrincipal);
 
 
 

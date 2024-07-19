@@ -36,7 +36,7 @@ namespace Interview.API.Controllers.Operations
         public async Task<IActionResult> GetCandidateDocumentById(int id)
         {
 
-            var data = await _candidateDocumentService.GetCandidateDocumentById(id);
+            var data = await _candidateDocumentService.GetCandidateDocumentById(id,User);
 
             return Ok(data);
 
@@ -47,7 +47,7 @@ namespace Interview.API.Controllers.Operations
         public async Task<IActionResult> GetCandidateDocument()
         {
 
-            var data = await _candidateDocumentService.GetCandidateDocument();
+            var data = await _candidateDocumentService.GetCandidateDocument(User);
 
 
             return Ok(data);
@@ -60,7 +60,7 @@ namespace Interview.API.Controllers.Operations
         public async Task<IActionResult> CandidateDocumentCreate([FromForm] CandidateDocumentDTOforCreate model)
         {
 
-            await _candidateDocumentService.CandidateDocumentCreate(model, ServiceExtension.ConnectionStringAzure);
+            await _candidateDocumentService.CandidateDocumentCreate(model, ServiceExtension.ConnectionStringAzure, User);
 
             return Ok(new Response { Status = "Success", Message = "The CandidateDocument created successfully!" });
 
@@ -73,7 +73,7 @@ namespace Interview.API.Controllers.Operations
         {
 
 
-            await _candidateDocumentService.CandidateDocumentUpdate(model, ServiceExtension.ConnectionStringAzure);
+            await _candidateDocumentService.CandidateDocumentUpdate(model, ServiceExtension.ConnectionStringAzure, User);
 
 
             return Ok(new Response { Status = "Success", Message = "The CandidateDocument updated successfully!" });
@@ -88,7 +88,7 @@ namespace Interview.API.Controllers.Operations
         public async Task<IActionResult> CandidateDocumentDelete(int id)
         {
 
-            await _candidateDocumentService.DeleteCandidateDocumentById(id);
+            await _candidateDocumentService.DeleteCandidateDocumentById(id, User);
 
             return Ok(new Response { Status = "Success", Message = "The CandidateDocument deleted successfully!" });
         }

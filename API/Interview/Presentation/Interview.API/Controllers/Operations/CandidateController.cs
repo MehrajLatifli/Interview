@@ -35,7 +35,7 @@ namespace Interview.API.Controllers.Operations
         public async Task<IActionResult> GetCandidateById(int id)
         {
 
-            var data = await _candidateService.GetCandidateById(id);
+            var data = await _candidateService.GetCandidateById(id, User);
 
             return Ok(data);
 
@@ -46,7 +46,7 @@ namespace Interview.API.Controllers.Operations
         public async Task<IActionResult> GetCandidate()
         {
 
-            var data = await _candidateService.GetCandidate();
+            var data = await _candidateService.GetCandidate(User);
 
 
             return Ok(data);
@@ -58,7 +58,7 @@ namespace Interview.API.Controllers.Operations
         public async Task<IActionResult> CandidateCreate([FromBody] CandidateDTOforCreate model)
         {
 
-            await _candidateService.CandidateCreate(model);
+            await _candidateService.CandidateCreate(model, User);
 
             return Ok(new Response { Status = "Success", Message = "The Candidate created successfully!" });
 
@@ -71,7 +71,7 @@ namespace Interview.API.Controllers.Operations
         {
 
 
-            await _candidateService.CandidateUpdate(model);
+            await _candidateService.CandidateUpdate(model, User);
 
 
             return Ok(new Response { Status = "Success", Message = "The Candidate updated successfully!" });
@@ -86,7 +86,7 @@ namespace Interview.API.Controllers.Operations
         public async Task<IActionResult> CandidateDelete(int id)
         {
 
-            await _candidateService.DeleteCandidateById(id);
+            await _candidateService.DeleteCandidateById(id, User);
 
             return Ok(new Response { Status = "Success", Message = "The Candidate deleted successfully!" });
         }

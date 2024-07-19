@@ -36,7 +36,7 @@ namespace Interview.API.Controllers.Operations
         public async Task<IActionResult> GetQuestionById(int id)
         {
 
-            var data = await _questionService.GetQuestionById(id);
+            var data = await _questionService.GetQuestionById(id, User);
 
             return Ok(data);
 
@@ -47,7 +47,7 @@ namespace Interview.API.Controllers.Operations
         public async Task<IActionResult> GetQuestion()
         {
 
-            var data = await _questionService.GetQuestion();
+            var data = await _questionService.GetQuestion(User);
 
 
             return Ok(data);
@@ -60,7 +60,7 @@ namespace Interview.API.Controllers.Operations
         public async Task<IActionResult> QuestionCreate([FromBody] QuestionDTOforCreate model)
         {
 
-            await _questionService.QuestionCreate(model);
+            await _questionService.QuestionCreate(model, User);
 
             return Ok(new Response { Status = "Success", Message = "The Question created successfully!" });
 
@@ -72,7 +72,7 @@ namespace Interview.API.Controllers.Operations
         {
 
 
-            await _questionService.QuestionUpdate(model);
+            await _questionService.QuestionUpdate(model, User);
 
 
             return Ok(new Response { Status = "Success", Message = "The Question updated successfully!" });
@@ -87,7 +87,7 @@ namespace Interview.API.Controllers.Operations
         public async Task<IActionResult> QuestionDelete(int id)
         {
 
-            await _questionService.DeleteQuestionById(id);
+            await _questionService.DeleteQuestionById(id, User);
 
             return Ok(new Response { Status = "Success", Message = "The Question deleted successfully!" });
         }

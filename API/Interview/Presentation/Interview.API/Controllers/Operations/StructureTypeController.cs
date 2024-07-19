@@ -34,7 +34,7 @@ namespace Interview.API.Controllers.Operations
         public async Task<IActionResult> GetStructureTypeById(int id)
         {
 
-            var data = await _structureTypeService.GetStructureTypeById(id);
+            var data = await _structureTypeService.GetStructureTypeById(id, User);
 
             return Ok(data);
 
@@ -45,7 +45,7 @@ namespace Interview.API.Controllers.Operations
         public async Task<IActionResult> GetStructureType()
         {
 
-            var data = await _structureTypeService.GetStructureType();
+            var data = await _structureTypeService.GetStructureType(User);
 
 
             return Ok(data);
@@ -58,7 +58,7 @@ namespace Interview.API.Controllers.Operations
         public async Task<IActionResult> StructureTypeCreate([FromBody] StructureTypeDTOforCreate model)
         {
 
-            await _structureTypeService.StructureTypeCreate(model);
+            await _structureTypeService.StructureTypeCreate(model, User);
 
             return Ok(new Response { Status = "Success", Message = "The StructureType created successfully!" });
 
@@ -71,7 +71,7 @@ namespace Interview.API.Controllers.Operations
         {
 
 
-            await _structureTypeService.StructureTypeUpdate(model);
+            await _structureTypeService.StructureTypeUpdate(model, User);
 
 
             return Ok(new Response { Status = "Success", Message = "The StructureType updated successfully!" });
@@ -86,7 +86,7 @@ namespace Interview.API.Controllers.Operations
         public async Task<IActionResult> StructureTypeDelete(int id)
         {
 
-            await _structureTypeService.DeleteStructureTypeById(id);
+            await _structureTypeService.DeleteStructureTypeById(id, User);
 
             return Ok(new Response { Status = "Success", Message = "The StructureType deleted successfully!" });
         }

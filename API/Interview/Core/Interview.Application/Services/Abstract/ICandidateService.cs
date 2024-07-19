@@ -1,4 +1,5 @@
 ﻿using Interview.Application.Mapper.DTO.CandidateDTO;
+using System.Security.Claims;
 
 namespace Interview.Application.Services.Abstract
 {
@@ -6,15 +7,15 @@ namespace Interview.Application.Services.Abstract
     {
         #region Candidate service
 
-        public Task CandidateCreate(CandidateDTOforCreate model);
+        public Task CandidateCreate(CandidateDTOforCreate model, ClaimsPrincipal claimsPrincipal);
 
-        public Task<List<CandidateDTOforGetandGetAll>> GetCandidate();
+        public Task<List<CandidateDTOforGetandGetAll>> GetCandidate(ClaimsPrincipal claimsPrincipal);
 
-        public Task<CandidateDTOforGetandGetAll> GetCandidateById(int id);
+        public Task<CandidateDTOforGetandGetAll> GetCandidateById(int id, ClaimsPrincipal claimsPrincipal);
 
-        public Task CandidateUpdate(CandidateDTOforUpdate model);
+        public Task CandidateUpdate(CandidateDTOforUpdate model, ClaimsPrincipal claimsPrincipal);
 
-        public Task<CandidateDTOforGetandGetAll> DeleteCandidateById(int id);
+        public Task<CandidateDTOforGetandGetAll> DeleteCandidateById(int id, ClaimsPrincipal claimsPrincipal);
 
         #endregion
     }

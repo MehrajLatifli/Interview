@@ -36,7 +36,7 @@ namespace Interview.API.Controllers.Operations
         public async Task<IActionResult> GetLevelById(int id)
         {
 
-            var data = await _levelService.GetLevelById(id);
+            var data = await _levelService.GetLevelById(id, User);
 
             return Ok(data);
 
@@ -47,7 +47,7 @@ namespace Interview.API.Controllers.Operations
         public async Task<IActionResult> GetLevel()
         {
 
-            var data = await _levelService.GetLevel();
+            var data = await _levelService.GetLevel(User);
 
 
             return Ok(data);
@@ -60,7 +60,7 @@ namespace Interview.API.Controllers.Operations
         public async Task<IActionResult> LevelCreate([FromBody] LevelDTOforCreate model)
         {
 
-            await _levelService.LevelCreate(model);
+            await _levelService.LevelCreate(model, User);
 
             return Ok(new Response { Status = "Success", Message = "The Level created successfully!" });
 
@@ -72,7 +72,7 @@ namespace Interview.API.Controllers.Operations
         {
 
 
-            await _levelService.LevelUpdate(model);
+            await _levelService.LevelUpdate(model, User);
 
 
             return Ok(new Response { Status = "Success", Message = "The Level updated successfully!" });
@@ -87,7 +87,7 @@ namespace Interview.API.Controllers.Operations
         public async Task<IActionResult> LevelDelete(int id)
         {
 
-            await _levelService.DeleteLevelById(id);
+            await _levelService.DeleteLevelById(id, User);
 
             return Ok(new Response { Status = "Success", Message = "The Level deleted successfully!" });
         }

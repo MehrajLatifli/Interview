@@ -1,4 +1,5 @@
 ﻿using Interview.Application.Mapper.DTO.CategoryDTO;
+using System.Security.Claims;
 
 namespace Interview.Application.Services.Abstract
 {
@@ -6,15 +7,15 @@ namespace Interview.Application.Services.Abstract
     {
         #region Category service
 
-        public Task CategoryCreate(CategoryDTOforCreate model);
+        public Task CategoryCreate(CategoryDTOforCreate model, ClaimsPrincipal claimsPrincipal);
 
-        public Task<List<CategoryDTOforGetandGetAll>> GetCategory();
+        public Task<List<CategoryDTOforGetandGetAll>> GetCategory(ClaimsPrincipal claimsPrincipal);
 
-        public Task<CategoryDTOforGetandGetAll> GetCategoryById(int id);
+        public Task<CategoryDTOforGetandGetAll> GetCategoryById(int id, ClaimsPrincipal claimsPrincipal);
 
-        public Task CategoryUpdate(CategoryDTOforUpdate model);
+        public Task CategoryUpdate(CategoryDTOforUpdate model, ClaimsPrincipal claimsPrincipal);
 
-        public Task<CategoryDTOforGetandGetAll> DeleteCategoryById(int id);
+        public Task<CategoryDTOforGetandGetAll> DeleteCategoryById(int id, ClaimsPrincipal claimsPrincipal);
 
         #endregion
     }
