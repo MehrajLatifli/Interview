@@ -15,6 +15,7 @@ import com.example.interview.source.local.mapping.toLoginEntity
 import com.example.interview.source.local.mapping.toLoginResponse
 import com.example.interview.source.local.repositories.EntityRepository
 import com.example.interview.utilities.Constants.API_KEY
+import com.example.interview.utilities.Constants.RefreshToken
 import com.example.interview.utilities.decryptWithAsync
 import com.example.interview.utilities.encryptWithAsync
 import com.example.interview.utilities.generateAESKey
@@ -53,6 +54,7 @@ class AuthViewModel @Inject constructor(
     var _hash = MutableLiveData<String>()
     val hash: LiveData<String> = _hash
 
+
     fun registerAdmin(register: Register) {
         _loading.value = true
 
@@ -83,44 +85,41 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    fun login(login: Login, onApiKeyGenerated: (String) -> Unit) {
+
+
+
+    fun login(login: Login, onCredentialsGenerated: (apiKey: String, refreshToken: String) -> Unit) {
         _loading.value = true
 
         viewModelScope.launch {
             delay(2000)
             val result = authRepository.login(login.username, login.password)
             if (result is Resource.Success) {
-                val token = result.data?.token
-                val refreshToken = result.data?.refreshToken
-                val expiration = result.data?.expiration
-                Log.d("Login", "Token: $token, Refresh Token: $refreshToken, Expiration: $expiration")
-
                 val itemResponse = result.data
                 if (itemResponse != null) {
-                    _loginResponses.value = listOf(itemResponse)
-                    Log.e("_loginResponses", _loginResponses.value.toString())
-
-                    delay(2000)
-                    val (encryptedToken, hashResult) = encryptWithAsync(itemResponse.token, secretKey)
+                    val (encryptedToken, hashResult) = encryptWithAsync(
+                        itemResponse.token,
+                        secretKey
+                    )
 
                     _encryptedText.value = encryptedToken
                     _hash.value = hashResult
 
                     val entity = itemResponse.toLoginEntity(login.username, encryptedToken)
-                    Log.e("entity", entity.toString())
-
                     val response = entity.toLoginResponse()
-                    _decryptedText.value = decryptWithAsync(response.token!!, _hash.value!!, secretKey)!!
+
+                    _decryptedText.value =
+                        decryptWithAsync(response.token!!, _hash.value!!, secretKey)!!
 
                     API_KEY = _decryptedText.value!!
-                    Log.e("Token", "${API_KEY}")
+                    RefreshToken = itemResponse.refreshToken
 
                     _authResult.postValue(true)
 
                     deleteAllEntity()
                     saveEntity(entity)
 
-                    onApiKeyGenerated(API_KEY)
+                    onCredentialsGenerated(API_KEY, RefreshToken)
                 } else {
                     _error.value = "No token found"
                     _loginResponses.value = emptyList()
@@ -133,7 +132,6 @@ class AuthViewModel @Inject constructor(
             }
         }
     }
-
     private fun saveEntity(entity: LoginEntity) {
         viewModelScope.launch(Dispatchers.IO) {
             try {

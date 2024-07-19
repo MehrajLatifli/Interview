@@ -6,7 +6,9 @@
         <domain includeSubdomains="true">10.0.2.2</domain>
 
         <domain includeSubdomains="true">192.168.0.189</domain>
+        <domain includeSubdomains="true">192.168.22.189</domain>
         <domain includeSubdomains="true">172.26.112.1</domain>
+        <domain includeSubdomains="true">172.25.112.1</domain>
         <domain includeSubdomains="true">host.docker.internal</domain>
         <domain includeSubdomains="true">192.168.0.175</domain>
 

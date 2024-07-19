@@ -9,6 +9,7 @@ import com.example.interview.models.responses.get.login.LoginResponse
 import com.example.interview.models.responses.get.profile.ProfileResponse
 import com.example.interview.models.responses.get.profile.Role
 import com.example.interview.models.responses.get.profile.UserClaim
+import com.example.interview.source.api.RefreshTokenDetector
 import com.example.interview.source.api.Resource
 import com.example.interview.source.api.repositories.auth.AuthRepository
 import com.example.interview.source.api.repositories.profile.ProfileRepository
@@ -39,6 +40,8 @@ class ProfileViewModel  @Inject constructor(private val profileRepository: Profi
 
     private val _roles = MutableLiveData<List<Role>>()
     val roles: LiveData<List<Role>> = _roles
+
+
 
     fun getprofile() {
         _loading.value = true
@@ -94,15 +97,15 @@ class ProfileViewModel  @Inject constructor(private val profileRepository: Profi
     }
 
 
-    fun logout(currentuser: String) {
+    fun logout() {
         _loading.value = true
 
         viewModelScope.launch {
 
             delay(200)
-            profileRepository.logout(currentuser).collectLatest { response: Resource<String> ->
+            profileRepository.logout().collectLatest { response: Resource<Unit> ->
 
-                Log.e("logout", "Current user: $currentuser")
+                Log.e("logout", "Current user")
 
                 deleteAllEntity()
             }

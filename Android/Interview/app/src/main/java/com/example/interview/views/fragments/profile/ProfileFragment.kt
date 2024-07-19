@@ -32,6 +32,7 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBinding::inflate) {
 
+
     private val viewModel by viewModels<ProfileViewModel>()
 
     private val userClaimAdapder = UserClaimAdapder()
@@ -64,7 +65,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
 
 
 
-            viewModel.logout(binding.usernametextView.text.toString())
+            viewModel.logout()
 
             lifecycleScope.launch {
                 delay(250)

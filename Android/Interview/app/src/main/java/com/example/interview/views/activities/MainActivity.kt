@@ -6,14 +6,21 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
+import androidx.work.*
 import com.example.interview.R
 import com.example.interview.databinding.ActivityMainBinding
+import com.example.interview.source.api.RefreshTokenDetector
 import com.example.interview.utilities.gone
 import com.example.interview.utilities.visible
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+
+    @Inject
+    lateinit var refreshTokenDetector: RefreshTokenDetector
 
     lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
@@ -31,7 +38,7 @@ class MainActivity : AppCompatActivity() {
         navController = navHostFragment.navController
         NavigationUI.setupWithNavController(binding.includeBottomnav.BottomNavigationView, navController)
 
-        // Observe navigation changes
+
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
                 R.id.homeFragment, R.id.profileFragment, R.id.setting, R.id.operationFragment -> {
@@ -42,5 +49,15 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+
+        refreshTokenDetector.startTokenRefreshing()
+
+
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        refreshTokenDetector.stop()
     }
 }

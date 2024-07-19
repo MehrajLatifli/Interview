@@ -2,7 +2,9 @@ package com.example.interview.source.api
 
 import com.example.interview.models.responses.get.login.LoginResponse
 import com.example.interview.models.responses.get.profile.ProfileResponse
+import com.example.interview.models.responses.get.token.TokenResponse
 import com.example.interview.models.responses.post.login.Login
+import com.example.interview.models.responses.post.token.RefreshTokenRequest
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
@@ -49,6 +51,11 @@ interface IApiManager {
 
 
     @POST("Auth/logout")
-    suspend fun logout(@Query ("username") username: String): Response<String>
+    suspend fun logout(): Response<Unit>
+
+    @POST("Auth/refreshToken")
+    suspend fun refreshToken(@Body refreshTokenRequest: RefreshTokenRequest): Response<TokenResponse>
+
+
 
 }

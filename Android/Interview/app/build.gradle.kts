@@ -157,6 +157,12 @@ dependencies {
     implementation("androidx.work:work-gcm:$work_version")
     androidTestImplementation("androidx.work:work-testing:$work_version")
     implementation("androidx.work:work-multiprocess:$work_version")
+    implementation("androidx.hilt:hilt-work:1.0.0")
+    // When using Kotlin.
+    kapt("androidx.hilt:hilt-compiler:1.0.0")
+    // When using Java.
+    annotationProcessor("androidx.hilt:hilt-compiler:1.0.0")
+
 
 }
 

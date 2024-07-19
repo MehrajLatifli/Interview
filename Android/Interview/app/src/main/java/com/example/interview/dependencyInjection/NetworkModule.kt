@@ -4,6 +4,7 @@ import android.content.Context
 import com.example.interview.source.api.ApiKeyInterceptor
 import com.example.interview.source.api.ApiKeyProvider
 import com.example.interview.source.api.IApiManager
+import com.example.interview.source.api.RefreshTokenDetector
 import com.example.interview.utilities.Constants.Base_URL
 import com.example.interview.utilities.createUnsafeOkHttpClient
 import dagger.Module
@@ -72,5 +73,11 @@ object NetworkModule {
     @Provides
     fun provideIApiManager(retrofit: Retrofit): IApiManager {
         return retrofit.create(IApiManager::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideRefreshTokenDetector(apiManager: IApiManager, @ApplicationContext  context: Context): RefreshTokenDetector {
+        return RefreshTokenDetector(apiManager, context)
     }
 }

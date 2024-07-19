@@ -25,6 +25,7 @@ import com.example.interview.databinding.CustomregistrationresultdialogBinding
 import com.example.interview.databinding.FragmentLogInBinding
 import com.example.interview.models.responses.post.login.Login
 import com.example.interview.models.responses.post.registration.Register
+import com.example.interview.source.api.RefreshTokenDetector
 import com.example.interview.utilities.gone
 import com.example.interview.utilities.loadImageWithGlideAndResize
 import com.example.interview.utilities.visible
@@ -37,14 +38,19 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class LogInFragment : BaseFragment<FragmentLogInBinding>(FragmentLogInBinding::inflate)  {
+
 
     private val viewModel by viewModels<AuthViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
+
 
         binding.includeProgressbar.progressBar.gone()
 
@@ -90,8 +96,8 @@ class LogInFragment : BaseFragment<FragmentLogInBinding>(FragmentLogInBinding::i
                 password = password,
             )
 
-            viewModel.login(login) { apiKey ->
-                saveApiKey(apiKey)
+            viewModel.login(login) { apiKey, refreshToken ->
+                saveCredentials(apiKey, refreshToken)
             }
 
             if (    getUserAuth()==false) {
@@ -105,6 +111,7 @@ class LogInFragment : BaseFragment<FragmentLogInBinding>(FragmentLogInBinding::i
                 lifecycleScope.launch {
                     binding.includeProgressbar.progressBar.gone()
                     binding.mainConstraintLayout.gone()
+
                     delay(1000)
                 }
             }
@@ -141,6 +148,10 @@ class LogInFragment : BaseFragment<FragmentLogInBinding>(FragmentLogInBinding::i
                         findNavController().navigate(LogInFragmentDirections.actionLogInFragmentToProfileFragment())
 
                 } else {
+
+                    delay(2500)
+
+                    findNavController().navigate(LogInFragmentDirections.actionLogInFragmentToWalkthroughFragment())
 
                 }
             }
@@ -241,9 +252,20 @@ class LogInFragment : BaseFragment<FragmentLogInBinding>(FragmentLogInBinding::i
         return sp.getBoolean("isAuth", false)
     }
 
-    private fun loadApiKey(): String? {
+
+
+    private fun saveCredentials(apiKey: String, refreshToken: String) {
+        saveApiKey(apiKey)
+        saveRefreshToken(refreshToken)
+        setUserAuth()
+    }
+
+    private fun saveRefreshToken(token: String) {
         val sharedPreferences = requireActivity().getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
-        return sharedPreferences.getString("api_key", null)
+        with(sharedPreferences.edit()) {
+            putString("refresh_token", token)
+            apply()
+        }
     }
 
     private fun saveApiKey(key: String) {

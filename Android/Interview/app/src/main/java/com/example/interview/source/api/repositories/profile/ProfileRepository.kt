@@ -6,6 +6,7 @@ import com.example.interview.models.responses.get.login.LoginResponse
 import com.example.interview.models.responses.get.profile.ProfileResponse
 import com.example.interview.models.responses.post.login.Login
 import com.example.interview.models.responses.post.registration.Register
+import com.example.interview.models.responses.post.token.RefreshTokenRequest
 import com.example.interview.source.api.IApiManager
 import com.example.interview.source.api.Resource
 import com.google.gson.Gson
@@ -31,10 +32,12 @@ class ProfileRepository  @Inject constructor(private val api: IApiManager) {
 
     }
 
-    suspend fun logout(currentusername: String)=safeApiRequest {
-            api.logout(currentusername)
+    suspend fun logout()=safeApiRequest {
+            api.logout()
 
     }
+
+
 
 
     suspend fun <T> safeApiRequest(request: suspend () -> Response<T>) = flow<Resource<T>> {
