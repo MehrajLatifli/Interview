@@ -1091,10 +1091,6 @@ namespace Interview.Application.Services.Concrete
                                 randomList.AddRange(await SelectRandomItems(hardList, Convert.ToInt32(Math.Round(Convert.ToDouble(model.QuestionCount) * 20 / 100, MidpointRounding.AwayFromZero)), rnd, "difficult", claimsPrincipal));
 
 
-
-
-
-
                                 await Task.Run(() =>
                                 {
                                     if (randomList.Count > model.QuestionCount)
