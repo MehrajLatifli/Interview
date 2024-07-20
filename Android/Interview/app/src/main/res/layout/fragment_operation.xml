@@ -36,7 +36,7 @@
         android:clipToPadding="false"
         android:fillViewport="true"
         android:paddingRight="0dp"
-        android:scrollbarThumbVertical="@drawable/scrollview_thumb"
+        android:scrollbarThumbVertical="@drawable/scrollview_thumb_vertical"
         android:scrollbarTrackVertical="@drawable/scrollview_traack_vertical"
         android:scrollbars="vertical"
         app:layout_constraintBottom_toBottomOf="parent"

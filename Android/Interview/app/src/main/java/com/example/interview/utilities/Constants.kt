@@ -5,7 +5,7 @@ import java.net.URL
 
 object Constants {
     private const val PRODUCTION_URL = "https://192.168.22.189:50005/api/v1/"
-    private const val BACKUP_URL = "https://172.25.128.1:50005/api/v1/"
+    private const val BACKUP_URL = "https://192.168.22.6:50005/api/v1/"
     var Base_URL: String
     var API_KEY = ""
     var RefreshToken = ""

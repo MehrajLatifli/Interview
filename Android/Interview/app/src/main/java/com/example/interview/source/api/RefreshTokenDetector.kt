@@ -28,7 +28,7 @@ class RefreshTokenDetector @Inject constructor(private val apiManager: IApiManag
             while (isActive) {
 
                 if(getUserAuth()==true) {
-                delay(10 * 1000) // Every 10 seconds
+                delay(25*60* 1000)
                 refreshToken()
                 }
                 else

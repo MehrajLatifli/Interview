@@ -57,5 +57,23 @@ interface IApiManager {
     suspend fun refreshToken(@Body refreshTokenRequest: RefreshTokenRequest): Response<TokenResponse>
 
 
+    @Multipart
+    @POST("CandidateDocument/candidatedocument")
+    suspend fun registerCandidatedocument(
+        @Part("surname") surname: RequestBody,
+        @Part("name") name: RequestBody,
+        @Part("patronymic") patronymic: RequestBody,
+        @Part("phoneNumber") phonenumber: RequestBody,
+        @Part("email ") email : RequestBody,
+        @Part cv: MultipartBody.Part?,
+        @Part("address ") address : RequestBody,
+    ): Response<Unit>
+
+    @Multipart
+    @POST("Candidate/candidate")
+    suspend fun registerCandidate(
+        @Part("CandidateDocumentId") candidateDocumentId: RequestBody
+    ): Response<Unit>
+
 
 }

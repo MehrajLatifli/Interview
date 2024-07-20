@@ -10,17 +10,17 @@ import com.example.interview.databinding.ItemOperationtypeBinding
 import com.example.interview.models.localadapdermodels.operationtype.OperationType
 import com.example.interview.views.adapters.base.BaseAdapter
 import com.example.interview.views.adapters.operationcrud.OperationCRUDAdapter
-import com.google.android.material.animation.AnimationUtils
-
+import com.example.interview.views.fragments.candidate.CandidateCreateFragment
 
 class OperationTypeAdapder : BaseAdapter<OperationType, OperationTypeAdapder.OperationTypeViewHolder>() {
+
+    var itemClickHandler: ((selectedItemText: String, operationTypeText: String) -> Unit)? = null
 
     inner class OperationTypeViewHolder(val itemBinding: ItemOperationtypeBinding) :
         RecyclerView.ViewHolder(itemBinding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OperationTypeViewHolder {
-        val binding =
-            ItemOperationtypeBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = ItemOperationtypeBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return OperationTypeViewHolder(binding)
     }
 
@@ -30,15 +30,10 @@ class OperationTypeAdapder : BaseAdapter<OperationType, OperationTypeAdapder.Ope
         holder.itemBinding.itemtextView.text = item.text
         holder.itemBinding.itemimageView.setImageResource(item.image)
 
-
-
-
-        val adapter = OperationCRUDAdapter().apply {
-            updateList(item.operationCRUDs)
-            onClickItem = { selectedItemText ->
-                // Handle item click if necessary
-            }
+        val adapter = OperationCRUDAdapter { selectedItemText ->
+            itemClickHandler?.invoke(selectedItemText, item.text)
         }
+
         holder.itemBinding.rvOperationCRUD.adapter = adapter
         holder.itemBinding.rvOperationCRUD.layoutManager = LinearLayoutManager(
             holder.itemView.context,
@@ -47,211 +42,22 @@ class OperationTypeAdapder : BaseAdapter<OperationType, OperationTypeAdapder.Ope
         )
         adapter.updateList(item.operationCRUDs)
 
-        when (item.text) {
-            "Candidate" -> {
-                holder.itemBinding.leftContainer.setBackgroundColor(
-                    ContextCompat.getColor(
-                        holder.itemView.context,
-                        R.color.ThickBlue
-                    )
-                )
-
-                holder.itemBinding.imagecardview.setCardBackgroundColor(
-                    ContextCompat.getColor(
-                        holder.itemView.context,
-                        R.color.Indigo
-                    )
-                )
-
-                holder.itemBinding.mainMaterialCardView.setStrokeColor(
-                    ContextCompat.getColor(
-                        holder.itemView.context,
-                        R.color.ThickBlue
-                    )
-                )
-
-                holder.itemBinding.itemtextView.setTextColor(
-                    ContextCompat.getColor(
-                        holder.itemView.context,
-                        R.color.ThickBlue
-                    )
-                )
-            }
-            "Category" -> {
-                holder.itemBinding.leftContainer.setBackgroundColor(
-                    ContextCompat.getColor(
-                        holder.itemView.context,
-                        R.color.ComingUpRoses
-                    )
-                )
-
-                holder.itemBinding.imagecardview.setCardBackgroundColor(
-                    ContextCompat.getColor(
-                        holder.itemView.context,
-                        R.color.PinkDazzle
-                    )
-                )
-
-                holder.itemBinding.mainMaterialCardView.setStrokeColor(
-                    ContextCompat.getColor(
-                        holder.itemView.context,
-                        R.color.ComingUpRoses
-                    )
-                )
-
-                holder.itemBinding.itemtextView.setTextColor(
-                    ContextCompat.getColor(
-                        holder.itemView.context,
-                        R.color.ComingUpRoses
-                    )
-                )
-            }
-            "Structure" -> {
-                holder.itemBinding.leftContainer.setBackgroundColor(
-                    ContextCompat.getColor(
-                        holder.itemView.context,
-                        R.color.Patrice
-                    )
-                )
-
-                holder.itemBinding.imagecardview.setCardBackgroundColor(
-                    ContextCompat.getColor(
-                        holder.itemView.context,
-                        R.color.FoulGreen
-                    )
-                )
-
-                holder.itemBinding.mainMaterialCardView.setStrokeColor(
-                    ContextCompat.getColor(
-                        holder.itemView.context,
-                        R.color.Patrice
-                    )
-                )
-
-                holder.itemBinding.itemtextView.setTextColor(
-                    ContextCompat.getColor(
-                        holder.itemView.context,
-                        R.color.Patrice
-                    )
-                )
-            }
-            "Level" -> {
-                holder.itemBinding.leftContainer.setBackgroundColor(
-                    ContextCompat.getColor(
-                        holder.itemView.context,
-                        R.color.TulipTree
-                    )
-                )
-
-                holder.itemBinding.imagecardview.setCardBackgroundColor(
-                    ContextCompat.getColor(
-                        holder.itemView.context,
-                        R.color.AlamedaOchre
-                    )
-                )
-
-                holder.itemBinding.mainMaterialCardView.setStrokeColor(
-                    ContextCompat.getColor(
-                        holder.itemView.context,
-                        R.color.TulipTree
-                    )
-                )
-
-                holder.itemBinding.itemtextView.setTextColor(
-                    ContextCompat.getColor(
-                        holder.itemView.context,
-                        R.color.AlamedaOchre
-                    )
-                )
-            }
-            "Position" -> {
-                holder.itemBinding.leftContainer.setBackgroundColor(
-                    ContextCompat.getColor(
-                        holder.itemView.context,
-                        R.color.ThickBlue
-                    )
-                )
-
-                holder.itemBinding.imagecardview.setCardBackgroundColor(
-                    ContextCompat.getColor(
-                        holder.itemView.context,
-                        R.color.Indigo
-                    )
-                )
-
-                holder.itemBinding.mainMaterialCardView.setStrokeColor(
-                    ContextCompat.getColor(
-                        holder.itemView.context,
-                        R.color.ThickBlue
-                    )
-                )
-
-                holder.itemBinding.itemtextView.setTextColor(
-                    ContextCompat.getColor(
-                        holder.itemView.context,
-                        R.color.ThickBlue
-                    )
-                )
-            }
-            "Vacancy" -> {
-                holder.itemBinding.leftContainer.setBackgroundColor(
-                    ContextCompat.getColor(
-                        holder.itemView.context,
-                        R.color.ComingUpRoses
-                    )
-                )
-
-                holder.itemBinding.imagecardview.setCardBackgroundColor(
-                    ContextCompat.getColor(
-                        holder.itemView.context,
-                        R.color.PinkDazzle
-                    )
-                )
-
-                holder.itemBinding.mainMaterialCardView.setStrokeColor(
-                    ContextCompat.getColor(
-                        holder.itemView.context,
-                        R.color.ComingUpRoses
-                    )
-                )
-
-                holder.itemBinding.itemtextView.setTextColor(
-                    ContextCompat.getColor(
-                        holder.itemView.context,
-                        R.color.ComingUpRoses
-                    )
-                )
-            }
-            "Question" -> {
-                holder.itemBinding.leftContainer.setBackgroundColor(
-                    ContextCompat.getColor(
-                        holder.itemView.context,
-                        R.color.Patrice
-                    )
-                )
-
-                holder.itemBinding.imagecardview.setCardBackgroundColor(
-                    ContextCompat.getColor(
-                        holder.itemView.context,
-                        R.color.FoulGreen
-                    )
-                )
-
-                holder.itemBinding.mainMaterialCardView.setStrokeColor(
-                    ContextCompat.getColor(
-                        holder.itemView.context,
-                        R.color.Patrice
-                    )
-                )
-
-                holder.itemBinding.itemtextView.setTextColor(
-                    ContextCompat.getColor(
-                        holder.itemView.context,
-                        R.color.Patrice
-                    )
-                )
-            }
+        // Set color based on item.text
+        val context = holder.itemView.context
+        val (bgColor, cardColor, textColor) = when (item.text) {
+            "Candidate" -> Triple(R.color.ThickBlue, R.color.Indigo, R.color.ThickBlue)
+            "Category" -> Triple(R.color.ComingUpRoses, R.color.PinkDazzle, R.color.ComingUpRoses)
+            "Structure" -> Triple(R.color.Patrice, R.color.FoulGreen, R.color.Patrice)
+            "Level" -> Triple(R.color.TulipTree, R.color.AlamedaOchre, R.color.TulipTree)
+            "Position" -> Triple(R.color.ThickBlue, R.color.Indigo, R.color.ThickBlue)
+            "Vacancy" -> Triple(R.color.ComingUpRoses, R.color.PinkDazzle, R.color.ComingUpRoses)
+            "Question" -> Triple(R.color.Patrice, R.color.FoulGreen, R.color.Patrice)
+            else -> Triple(R.color.Transparent, R.color.Transparent, R.color.Transparent)
         }
 
+        holder.itemBinding.leftContainer.setBackgroundColor(ContextCompat.getColor(context, bgColor))
+        holder.itemBinding.imagecardview.setCardBackgroundColor(ContextCompat.getColor(context, cardColor))
+        holder.itemBinding.mainMaterialCardView.setStrokeColor(ContextCompat.getColor(context, bgColor))
+        holder.itemBinding.itemtextView.setTextColor(ContextCompat.getColor(context, textColor))
     }
 }

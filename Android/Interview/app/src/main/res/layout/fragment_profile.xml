@@ -92,7 +92,7 @@
         android:clipToPadding="false"
         android:fillViewport="true"
         android:paddingRight="0dp"
-        android:scrollbarThumbVertical="@drawable/scrollview_thumb"
+        android:scrollbarThumbVertical="@drawable/scrollview_thumb_vertical"
         android:scrollbarTrackVertical="@drawable/scrollview_traack_vertical"
         android:scrollbars="vertical"
         app:layout_constraintBottom_toTopOf="@+id/LogOutButton"
@@ -174,13 +174,12 @@
         android:textSize="16dp"
         android:paddingVertical="10dp"
         app:cornerRadius="25dp"
-        app:layout_constraintBottom_toTopOf="@+id/include_bottomnav"
+        app:layout_constraintBottom_toTopOf="@+id/TextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <include
-        android:id="@+id/include_bottomnav"
-        layout="@layout/include_bottomnav"
+    <TextView
+        android:id="@+id/TextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:elevation="10dp"

@@ -87,5 +87,14 @@
         android:id="@+id/operationFragment"
         android:name="com.example.interview.views.fragments.operation.OperationFragment"
         android:label="fragment_operation"
-        tools:layout="@layout/fragment_operation" />
+        tools:layout="@layout/fragment_operation" >
+        <action
+            android:id="@+id/action_operationFragment_to_candidateCreateFragment"
+            app:destination="@id/candidateCreateFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/candidateCreateFragment"
+        android:name="com.example.interview.views.fragments.candidate.CandidateCreateFragment"
+        android:label="fragment_candidate_create"
+        tools:layout="@layout/fragment_candidate_create" />
 </navigation>
