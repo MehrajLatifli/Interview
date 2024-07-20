@@ -25,11 +25,12 @@ namespace Interview.Application.Services.Concrete
         private readonly ICandidateDocumentReadRepository _candidateDocumentReadRepository;
         private readonly IUserReadRepository _userReadRepository;
 
-        public CandidateDocumentServiceManager(IMapper mapper, ICandidateDocumentWriteRepository candidateDocumentWriteRepository, ICandidateDocumentReadRepository candidateDocumentReadRepository)
+        public CandidateDocumentServiceManager(IMapper mapper, ICandidateDocumentWriteRepository candidateDocumentWriteRepository, ICandidateDocumentReadRepository candidateDocumentReadRepository, IUserReadRepository userReadRepository)
         {
             _mapper = mapper;
             _candidateDocumentWriteRepository = candidateDocumentWriteRepository;
             _candidateDocumentReadRepository = candidateDocumentReadRepository;
+            _userReadRepository = userReadRepository;
         }
 
 
@@ -52,20 +53,29 @@ namespace Interview.Application.Services.Concrete
                         connectionString = azuriteConnectionString;
                     }
 
-                    string containerName = "cv-files";
+                    string containerName = "profile-images";
+                    string blobName = model.Name + "_" + Guid.NewGuid() + Path.GetExtension(model.Cv.FileName);
 
-                    string blobName = model.Name + "_" + model.Email + "_" + Guid.NewGuid().ToString() + Path.GetExtension(model.Cv.FileName);
+                    // Set content type and disposition based on file extension
+                    var blobHttpHeaders = new BlobHttpHeaders
+                    {
+                        ContentType = GetContentType(Path.GetExtension(model.Cv.FileName)),
+                        ContentDisposition = "inline" // Ensures the image is viewable in the browser
+                    };
 
-                    BlobServiceClient blobServiceClient = new BlobServiceClient(connectionString);
-                    BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(containerName);
-
+                    // Create a BlobServiceClient and get a reference to the container
+                    var blobServiceClient = new BlobServiceClient(connectionString);
+                    var containerClient = blobServiceClient.GetBlobContainerClient(containerName);
                     await containerClient.CreateIfNotExistsAsync(PublicAccessType.Blob);
 
-                    BlobClient blobClient = containerClient.GetBlobClient(blobName);
-
-                    using (Stream stream = model.Cv.OpenReadStream())
+                    // Get a reference to the blob and upload the image with headers
+                    var blobClient = containerClient.GetBlobClient(blobName);
+                    using (var stream = model.Cv.OpenReadStream())
                     {
-                        await blobClient.UploadAsync(stream, true);
+                        await blobClient.UploadAsync(stream, new BlobUploadOptions
+                        {
+                            HttpHeaders = blobHttpHeaders
+                        });
                     }
 
                     string Url = blobClient.Uri.ToString();
@@ -98,6 +108,18 @@ namespace Interview.Application.Services.Concrete
             {
                 throw new UnauthorizedException("Current user is not authenticated.");
             }
+        }
+
+        private string GetContentType(string extension)
+        {
+            return extension.ToLower() switch
+            {
+                ".doc" => "application/msword",
+                ".pdf" => "application/pdf",
+                ".epub" => "application/epub+zip",
+                ".docx" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                _ => "application/octet-stream"
+            };
         }
 
         public async Task<List<CandidateDocumentDTOforGetandGetAll>> GetCandidateDocument(ClaimsPrincipal claimsPrincipal)
