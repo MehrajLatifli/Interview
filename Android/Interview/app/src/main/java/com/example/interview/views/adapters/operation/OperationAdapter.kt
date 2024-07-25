@@ -1,11 +1,11 @@
-package com.example.interview.views.adapters.operationcrud
+package com.example.interview.views.adapters.operation
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.interview.R
-import com.example.interview.databinding.ItemOperationcrudBinding
+import com.example.interview.databinding.ItemOperationBinding
 import com.example.interview.models.localadapdermodels.operationcrud.Operation
 import com.example.interview.views.adapters.base.BaseAdapter
 
@@ -13,12 +13,12 @@ class OperationAdapter(
     private val onClickItem: (String) -> Unit
 ) : BaseAdapter<Operation, OperationAdapter.OperationCRUDViewHolder>() {
 
-    inner class OperationCRUDViewHolder(val itemBinding: ItemOperationcrudBinding) :
+    inner class OperationCRUDViewHolder(val itemBinding: ItemOperationBinding) :
         RecyclerView.ViewHolder(itemBinding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OperationCRUDViewHolder {
         val binding =
-            ItemOperationcrudBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            ItemOperationBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return OperationCRUDViewHolder(binding)
     }
 

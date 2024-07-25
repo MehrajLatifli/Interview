@@ -1,60 +1,110 @@
 package com.example.interview.views.fragments.candidate
 
+import android.app.AlertDialog
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.example.interview.R
+import com.example.interview.databinding.CustomregistrationresultdialogBinding
+import com.example.interview.databinding.FragmentCandidateReadBinding
+import com.example.interview.databinding.FragmentHomeBinding
+import com.example.interview.utilities.gone
+import com.example.interview.utilities.loadImageWithGlideAndResize
+import com.example.interview.utilities.visible
+import com.example.interview.viewmodels.candidate.CandidateViewModel
+import com.example.interview.views.adapters.candidate.CandidateAdapter
+import com.example.interview.views.fragments.base.BaseFragment
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [CandidateReadFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class CandidateReadFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+@AndroidEntryPoint
+class CandidateReadFragment  : BaseFragment<FragmentCandidateReadBinding>(FragmentCandidateReadBinding::inflate) {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+    private val viewModel by viewModels<CandidateViewModel>()
+
+    var candidateAdapter = CandidateAdapter()
+
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+
+
+        binding.rvCandidates.adapter=candidateAdapter
+
+        viewModel.getAllCandidateDocuments()
+
+
+        candidateAdapter.onClickItem = { id ->
+
+            viewModel.deleteCandidateDocumentById(id)
+        }
+
+
+        observeData()
+
+
+    }
+
+    private fun observeData() {
+        viewModel.loading.observe(viewLifecycleOwner) { isLoading ->
+
+            if (isLoading) {
+                binding.includeProgressbar.progressBar.visible()
+                binding.NestedScrollView.gone()
+            } else {
+                binding.includeProgressbar.progressBar.gone()
+                binding.NestedScrollView.visible()
+            }
+        }
+
+        viewModel.candidateDocuments.observe(viewLifecycleOwner) { item ->
+
+                candidateAdapter.updateList(item)
+
+        }
+
+
+
+        viewModel.error.observe(viewLifecycleOwner) { errorMessage ->
+            if (!errorMessage.isNullOrBlank()) {
+                Log.e("CandidateViewModel", errorMessage)
+                customRegistrationResultDialog("Unsuccessful!", errorMessage, R.color.MellowMelon)
+            }
+
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_candidate_read, container, false)
+    private fun customRegistrationResultDialog(title: String, text: String, colorId: Int) {
+        lifecycleScope.launch(Dispatchers.Main) {
+            val dialogBinding =
+                CustomregistrationresultdialogBinding.inflate(LayoutInflater.from(requireContext()))
+            val dialog = AlertDialog.Builder(requireContext()).apply {
+                setView(dialogBinding.root)
+            }.create()
+
+            dialogBinding.itemimageView.loadImageWithGlideAndResize(R.drawable.registerstatuse, requireContext())
+            dialogBinding.titleTextView.text = title
+            dialogBinding.titleTextView.setTextColor(ContextCompat.getColor(requireContext(), colorId))
+            dialogBinding.textTextView.text = text
+            dialogBinding.textTextView.setTextColor(ContextCompat.getColor(requireContext(), colorId))
+
+            dialog.show()
+            delay(2000)
+            dialog.dismiss()
+        }
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment CandidateReadFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            CandidateReadFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
-    }
+
 }

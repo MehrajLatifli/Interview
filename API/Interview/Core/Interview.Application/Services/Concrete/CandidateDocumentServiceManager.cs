@@ -3,6 +3,7 @@ using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Interview.Application.Exception;
 using Interview.Application.Mapper.DTO.CandidateDocumentDTO;
+using Interview.Application.Mapper.DTO.CandidateDTO;
 using Interview.Application.Repositories.Custom;
 using Interview.Application.Services.Abstract;
 using Interview.Domain.Entities.Models;
@@ -24,13 +25,17 @@ namespace Interview.Application.Services.Concrete
         private readonly ICandidateDocumentWriteRepository _candidateDocumentWriteRepository;
         private readonly ICandidateDocumentReadRepository _candidateDocumentReadRepository;
         private readonly IUserReadRepository _userReadRepository;
+        private readonly ICandidateWriteRepository _candidateWriteRepository;
+        private readonly ICandidateReadRepository _candidateReadRepository;
 
-        public CandidateDocumentServiceManager(IMapper mapper, ICandidateDocumentWriteRepository candidateDocumentWriteRepository, ICandidateDocumentReadRepository candidateDocumentReadRepository, IUserReadRepository userReadRepository)
+        public CandidateDocumentServiceManager(IMapper mapper, ICandidateDocumentWriteRepository candidateDocumentWriteRepository, ICandidateDocumentReadRepository candidateDocumentReadRepository, IUserReadRepository userReadRepository, ICandidateWriteRepository candidateWriteRepository, ICandidateReadRepository candidateReadRepository)
         {
             _mapper = mapper;
             _candidateDocumentWriteRepository = candidateDocumentWriteRepository;
             _candidateDocumentReadRepository = candidateDocumentReadRepository;
             _userReadRepository = userReadRepository;
+            _candidateWriteRepository = candidateWriteRepository;
+            _candidateReadRepository = candidateReadRepository;
         }
 
 
@@ -94,10 +99,24 @@ namespace Interview.Application.Services.Concrete
 
                     };
 
+               
+
 
                     await _candidateDocumentWriteRepository.AddAsync(entity);
 
                     await _candidateDocumentWriteRepository.SaveAsync();
+
+                   var candidate =  _mapper.Map<List<CandidateDocumentDTOforGetandGetAll>>(_candidateDocumentReadRepository.GetAll(false)).TakeLast(1).FirstOrDefault().Id;
+
+                    var entity2 = new Candidate
+                    {
+                        CandidateDocumentId = candidate,
+
+                    };
+
+                    await _candidateWriteRepository.AddAsync(entity2);
+
+                    await _candidateWriteRepository.SaveAsync();
                 }
                 else
                 {
@@ -272,8 +291,27 @@ namespace Interview.Application.Services.Concrete
                     if (_candidateDocumentReadRepository.GetAll().Any(i => i.Id == Convert.ToInt32(id)))
                     {
 
+
+
+                        var candidateDocumentId = _mapper.Map<List<CandidateDocumentDTOforGetandGetAll>>(_candidateDocumentReadRepository.GetAll(false)).Where(i=>i.Id==id).FirstOrDefault().Id;
+                        var candidateId = _mapper.Map<List<CandidateDTOforGetandGetAll>>(_candidateReadRepository.GetAll(false)).Where(i => i.CandidateDocumentId == id).FirstOrDefault().Id;
+
+                        var entity2 = new Candidate
+                        {
+                            Id = candidateId,
+                            CandidateDocumentId = candidateDocumentId,
+
+                        };
+
+                        await _candidateWriteRepository.RemoveByIdAsync(entity2.Id.ToString());
+
+                        await _candidateWriteRepository.SaveAsync();
+
+
+
                         await _candidateDocumentWriteRepository.RemoveByIdAsync(id.ToString());
                         await _candidateDocumentWriteRepository.SaveAsync();
+
 
                         return null;
 

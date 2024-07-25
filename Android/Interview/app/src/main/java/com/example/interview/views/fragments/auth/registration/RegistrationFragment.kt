@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.provider.OpenableColumns
 import android.text.InputType
 import android.util.Log
-import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.EditText
@@ -23,16 +22,13 @@ import androidx.navigation.fragment.navArgs
 import com.example.interview.R
 import com.example.interview.databinding.CustomregistrationresultdialogBinding
 import com.example.interview.databinding.FragmentRegistrationBinding
-import com.example.interview.models.responses.post.registration.Register
+import com.example.interview.models.responses.post.registration.RegisterAdmin
+import com.example.interview.models.responses.post.registration.RegisterHR
 import com.example.interview.viewmodels.auth.AuthViewModel
 import com.example.interview.views.fragments.base.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
-import com.example.interview.utilities.gone
 import com.example.interview.utilities.loadImageWithGlideAndResize
-import com.example.interview.utilities.visible
-import com.example.interview.views.fragments.profile.ProfileFragmentDirections
-import com.example.interview.views.fragments.walkthrough.WalkthroughFragmentDirections
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -132,7 +128,15 @@ class RegistrationFragment : BaseFragment<FragmentRegistrationBinding>(FragmentR
                 return@setOnClickListener
             }
 
-            val registerData = Register(
+            val registerAdminData = RegisterAdmin(
+                username = username,
+                email = email,
+                password = password,
+                phoneNumber = phoneNumber,
+                imagePath = imagePath
+            )
+
+            val registerHRData = RegisterHR(
                 username = username,
                 email = email,
                 password = password,
@@ -141,11 +145,11 @@ class RegistrationFragment : BaseFragment<FragmentRegistrationBinding>(FragmentR
             )
 
             if (args.accountType.contains("Admin")) {
-                viewModel.registerAdmin(registerData)
+                viewModel.registerAdmin(registerAdminData)
             }
 
             if (args.accountType.contains("HR")) {
-                viewModel.registerHR(registerData)
+                viewModel.registerHR(registerHRData)
             }
             else{
                 customregistrationresultdialog(requireContext(),"UnSuccessful!","Cannot registration",R.color.MellowMelon)
@@ -190,7 +194,7 @@ class RegistrationFragment : BaseFragment<FragmentRegistrationBinding>(FragmentR
             } else {
 
                 Log.e("AuthViewModel", errorMessage)
-                //customregistrationresultdialog(requireContext(),"UnSuccessful!","${errorMessage.toString()}",R.color.MellowMelon)
+                customregistrationresultdialog(requireContext(),"UnSuccessful!","${errorMessage.toString()}",R.color.MellowMelon)
             }
         }
 

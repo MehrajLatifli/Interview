@@ -9,6 +9,17 @@
 
     tools:context=".views.fragments.candidate.CandidateCreateFragment"> <!-- Bu atributu əlavə edin -->
 
+    <include
+        android:id="@+id/include_progressbar"
+        layout="@layout/include_progressbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <!-- Header Section -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/headerConstraintLayout"
@@ -113,6 +124,7 @@
                 android:background="@drawable/rounded_candidate_edittext_bg"
                 android:fontFamily="@font/nunito_medium"
                 android:hint="Surname"
+                android:text="Candidate_1"
                 android:maxLength="15"
                 android:maxLines="1"
                 android:paddingLeft="20dp"
@@ -135,6 +147,7 @@
                 android:background="@drawable/rounded_candidate_edittext_bg"
                 android:fontFamily="@font/nunito_medium"
                 android:hint="Name"
+                android:text="Candidate_1"
                 android:maxLength="30"
                 android:maxLines="1"
                 android:paddingLeft="20dp"
@@ -158,6 +171,7 @@
                 android:background="@drawable/rounded_candidate_edittext_bg"
                 android:fontFamily="@font/nunito_medium"
                 android:hint="Patronymic"
+                android:text="Candidate_1"
                 android:maxLength="30"
                 android:maxLines="1"
                 android:paddingLeft="20dp"
@@ -180,6 +194,7 @@
                 android:background="@drawable/rounded_candidate_edittext_bg"
                 android:fontFamily="@font/nunito_medium"
                 android:hint="Phonenumber"
+                android:text="Candidate_1"
                 android:maxLength="30"
                 android:maxLines="1"
                 android:paddingLeft="20dp"
@@ -202,6 +217,7 @@
                 android:background="@drawable/rounded_candidate_edittext_bg"
                 android:fontFamily="@font/nunito_medium"
                 android:hint="Email"
+                android:text="Candidate_1@mail.com"
                 android:maxLength="30"
                 android:maxLines="1"
                 android:paddingLeft="20dp"
@@ -280,6 +296,7 @@
                 android:background="@drawable/rounded_candidate_edittext_bg"
                 android:fontFamily="@font/nunito_medium"
                 android:hint="Address"
+                android:text="Candidate_1"
                 android:maxLength="30"
                 android:maxLines="1"
                 android:paddingLeft="20dp"

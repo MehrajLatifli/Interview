@@ -9,7 +9,11 @@ services:
     ports:
       - "50000:80"
       - "50005:443"
-    environment:
-      - TZ=Asia/Baku
     # environment:
-    # - ASPNETCORE_ENVIRONMENT=Docker
+    #   - TZ=Asia/Baku
+    extra_hosts:
+       - "host.docker.internal:192.168.22.6"
+       - "host.docker.internal:192.168.22.189"
+
+
+

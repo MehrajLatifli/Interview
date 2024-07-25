@@ -8,7 +8,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.interview.models.entities.LoginEntity
 import com.example.interview.models.responses.get.login.LoginResponse
 import com.example.interview.models.responses.post.login.Login
-import com.example.interview.models.responses.post.registration.Register
+import com.example.interview.models.responses.post.registration.RegisterAdmin
+import com.example.interview.models.responses.post.registration.RegisterHR
 import com.example.interview.source.api.Resource
 import com.example.interview.source.api.repositories.auth.AuthRepository
 import com.example.interview.source.local.mapping.toLoginEntity
@@ -55,11 +56,11 @@ class AuthViewModel @Inject constructor(
     val hash: LiveData<String> = _hash
 
 
-    fun registerAdmin(register: Register) {
+    fun registerAdmin(registerAdmin: RegisterAdmin) {
         _loading.value = true
 
         viewModelScope.launch {
-            val result = authRepository.registerAdmin(register)
+            val result = authRepository.registerAdmin(registerAdmin)
             if (result is Resource.Success) {
                 _authResult.postValue(true)
             } else if (result is Resource.Error) {
@@ -70,11 +71,11 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    fun registerHR(register: Register) {
+    fun registerHR(registerHR: RegisterHR) {
         _loading.value = true
 
         viewModelScope.launch {
-            val result = authRepository.registerHR(register)
+            val result = authRepository.registerHR(registerHR)
             if (result is Resource.Success) {
                 _authResult.postValue(true)
             } else if (result is Resource.Error) {

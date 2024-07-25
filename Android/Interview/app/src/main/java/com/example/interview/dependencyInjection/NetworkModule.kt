@@ -75,9 +75,9 @@ object NetworkModule {
         return retrofit.create(IApiManager::class.java)
     }
 
-    @Provides
-    @Singleton
-    fun provideRefreshTokenDetector(apiManager: IApiManager, @ApplicationContext  context: Context): RefreshTokenDetector {
-        return RefreshTokenDetector(apiManager, context)
-    }
+//    @Provides
+//    @Singleton
+//    fun provideRefreshTokenDetector(apiManager: IApiManager, @ApplicationContext  context: Context): RefreshTokenDetector {
+//        return RefreshTokenDetector(apiManager, context)
+//    }
 }

@@ -9,8 +9,7 @@ import com.example.interview.R
 import com.example.interview.databinding.ItemOperationtypeBinding
 import com.example.interview.models.localadapdermodels.operationtype.OperationType
 import com.example.interview.views.adapters.base.BaseAdapter
-import com.example.interview.views.adapters.operationcrud.OperationCRUDAdapter
-import com.example.interview.views.fragments.candidate.CandidateCreateFragment
+import com.example.interview.views.adapters.operation.OperationAdapter
 
 class OperationTypeAdapder : BaseAdapter<OperationType, OperationTypeAdapder.OperationTypeViewHolder>() {
 
@@ -30,28 +29,28 @@ class OperationTypeAdapder : BaseAdapter<OperationType, OperationTypeAdapder.Ope
         holder.itemBinding.itemtextView.text = item.text
         holder.itemBinding.itemimageView.setImageResource(item.image)
 
-        val adapter = OperationCRUDAdapter { selectedItemText ->
+        val adapter = OperationAdapter { selectedItemText ->
             itemClickHandler?.invoke(selectedItemText, item.text)
         }
 
-        holder.itemBinding.rvOperationCRUD.adapter = adapter
-        holder.itemBinding.rvOperationCRUD.layoutManager = LinearLayoutManager(
+        holder.itemBinding.rvOperation.adapter = adapter
+        holder.itemBinding.rvOperation.layoutManager = LinearLayoutManager(
             holder.itemView.context,
             LinearLayoutManager.HORIZONTAL,
             false
         )
-        adapter.updateList(item.operationCRUDs)
+        adapter.updateList(item.operations)
 
         // Set color based on item.text
         val context = holder.itemView.context
         val (bgColor, cardColor, textColor) = when (item.text) {
             "Candidate" -> Triple(R.color.ThickBlue, R.color.Indigo, R.color.ThickBlue)
-            "Category" -> Triple(R.color.ComingUpRoses, R.color.PinkDazzle, R.color.ComingUpRoses)
-            "Structure" -> Triple(R.color.Patrice, R.color.FoulGreen, R.color.Patrice)
-            "Level" -> Triple(R.color.TulipTree, R.color.AlamedaOchre, R.color.TulipTree)
-            "Position" -> Triple(R.color.ThickBlue, R.color.Indigo, R.color.ThickBlue)
             "Vacancy" -> Triple(R.color.ComingUpRoses, R.color.PinkDazzle, R.color.ComingUpRoses)
             "Question" -> Triple(R.color.Patrice, R.color.FoulGreen, R.color.Patrice)
+            "Category" -> Triple(R.color.TulipTree, R.color.AlamedaOchre, R.color.TulipTree)
+            "Structure" -> Triple(R.color.ThickBlue, R.color.Indigo, R.color.ThickBlue)
+            "Position" -> Triple(R.color.ComingUpRoses, R.color.PinkDazzle, R.color.ComingUpRoses)
+            "Level" -> Triple(R.color.Patrice, R.color.FoulGreen, R.color.Patrice)
             else -> Triple(R.color.Transparent, R.color.Transparent, R.color.Transparent)
         }
 

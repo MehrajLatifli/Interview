@@ -40,7 +40,17 @@ builder.Services.AddMvcCore().AddApiExplorer();
 builder.Services.AddSwaggerGenServiceExtension();
 
 
-builder.Services.AddCors();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllPolicy", builder =>
+    {
+        builder.AllowAnyOrigin()
+               .AllowAnyMethod()
+               .AllowAnyHeader()
+                  .SetIsOriginAllowed(hostName => true);
+
+    });
+});
 
 
 builder.Services.AddAuthorization();
@@ -134,6 +144,8 @@ builder.Services.APIVersion();
 
 //builder.WebHost.UseUrls("https://localhost:6000");
 
+//builder.WebHost.UseUrls("http://*:80", "https://*:443");
+
 
 
 
@@ -224,6 +236,7 @@ app.UseSerilogRequestLogging();
 app.UseRateLimiter();
 
 app.UseRouting();
+app.UseCors("AllowAllPolicy");
 
 
 

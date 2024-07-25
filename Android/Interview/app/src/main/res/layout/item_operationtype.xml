@@ -92,7 +92,7 @@
                 app:layout_constraintTop_toBottomOf="@id/itemtextView">
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rvOperationCRUD"
+                    android:id="@+id/rvOperation"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"

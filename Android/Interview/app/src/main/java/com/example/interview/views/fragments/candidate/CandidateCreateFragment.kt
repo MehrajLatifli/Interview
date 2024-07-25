@@ -20,9 +20,14 @@ import androidx.navigation.fragment.findNavController
 import com.example.interview.R
 import com.example.interview.databinding.CustomregistrationresultdialogBinding
 import com.example.interview.databinding.FragmentCandidateCreateBinding
+import com.example.interview.databinding.FragmentCandidateReadBinding
 import com.example.interview.models.responses.post.candidatedocument.CandidateDocument
+import com.example.interview.utilities.gone
 import com.example.interview.utilities.loadImageWithGlideAndResize
+import com.example.interview.utilities.visible
 import com.example.interview.viewmodels.candidate.CandidateViewModel
+import com.example.interview.views.fragments.auth.login.LogInFragmentDirections
+import com.example.interview.views.fragments.base.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -30,27 +35,27 @@ import kotlinx.coroutines.launch
 import java.io.File
 
 @AndroidEntryPoint
-class CandidateCreateFragment : Fragment() {
+class CandidateCreateFragment : BaseFragment<FragmentCandidateCreateBinding>(
+    FragmentCandidateCreateBinding::inflate) {
 
-    private var _binding: FragmentCandidateCreateBinding? = null
-    private val binding get() = _binding!!
     private var selectedFile: File? = null
     private val viewModel by viewModels<CandidateViewModel>()
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentCandidateCreateBinding.inflate(inflater, container, false)
-        return binding.root
-    }
+
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
+        obseveData()
+
         binding.buttonUploadFile.setOnClickListener {
             openFilePicker()
         }
+
+
+
 
         binding.buttonRegistration.setOnClickListener {
             val surname = binding.editText.text.toString()
@@ -81,26 +86,54 @@ class CandidateCreateFragment : Fragment() {
                 address = address
             )
 
+
             viewModel.registerCandidatedocument(registerData)
+
+
+
+
         }
 
+
+    }
+
+    private fun obseveData() {
         viewModel.loading.observe(viewLifecycleOwner) { isLoading ->
-            // Handle loading state
+
+            if (isLoading) {
+                binding.includeProgressbar.progressBar.visible()
+            } else {
+                binding.includeProgressbar.progressBar.gone()
+            }
         }
 
-        viewModel.authResult.observe(viewLifecycleOwner) { auth ->
+        viewModel.candidateDocuments.observe(viewLifecycleOwner) { item ->
+
+
+
+        }
+
+        viewModel.complateResult.observe(viewLifecycleOwner) { complateResult ->
             lifecycleScope.launch {
-                if (auth) {
+                if (complateResult) {
                     customRegistrationResultDialog(
                         "Successful!",
                         "Please wait a moment, we are preparing for you...",
                         R.color.DeepPurple
                     )
-                    delay(500)
-                    // Check if Fragment is added and visible before navigating
-                    if (isAdded) {
 
-                    }
+
+
+                    delay(2500)
+
+
+                    findNavController().navigate(CandidateCreateFragmentDirections.actionCandidateCreateFragmentToCandidateReadFragment())
+
+
+                }
+                else{
+                    delay(2500)
+                    findNavController().navigate(CandidateCreateFragmentDirections.actionCandidateCreateFragmentToOperationFragment())
                 }
             }
         }
@@ -186,10 +219,7 @@ class CandidateCreateFragment : Fragment() {
                 type?.startsWith("application/epub+zip") == true
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
+
 
     companion object {
         private const val PICK_FILE_REQUEST_CODE = 1

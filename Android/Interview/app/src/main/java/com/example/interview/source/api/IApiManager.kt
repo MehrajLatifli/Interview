@@ -1,24 +1,30 @@
 package com.example.interview.source.api
 
+import com.example.interview.models.responses.get.candidate.CandidateDocumentResponse
+import com.example.interview.models.responses.get.candidate.CandidateResponse
 import com.example.interview.models.responses.get.login.LoginResponse
 import com.example.interview.models.responses.get.profile.ProfileResponse
 import com.example.interview.models.responses.get.token.TokenResponse
+import com.example.interview.models.responses.post.candidate.Candidate
 import com.example.interview.models.responses.post.login.Login
 import com.example.interview.models.responses.post.token.RefreshTokenRequest
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface IApiManager {
 
     @Headers("Content-Type: application/json; charset=UTF-8")
+
 
     @Multipart
     @POST("Auth/registerAdmin")
@@ -63,17 +69,24 @@ interface IApiManager {
         @Part("surname") surname: RequestBody,
         @Part("name") name: RequestBody,
         @Part("patronymic") patronymic: RequestBody,
-        @Part("phoneNumber") phonenumber: RequestBody,
-        @Part("email ") email : RequestBody,
+        @Part("phoneNumber") phoneNumber: RequestBody,
+        @Part("email") email: RequestBody,
         @Part cv: MultipartBody.Part?,
-        @Part("address ") address : RequestBody,
+        @Part("address") address: RequestBody
     ): Response<Unit>
 
-    @Multipart
     @POST("Candidate/candidate")
-    suspend fun registerCandidate(
-        @Part("CandidateDocumentId") candidateDocumentId: RequestBody
-    ): Response<Unit>
+    suspend fun registerCandidate(@Body candidate: Candidate): Response<CandidateResponse>
 
+    @GET("CandidateDocument/candidatedocument")
+    suspend fun getAllCandidateDocuments(): Response<List<CandidateDocumentResponse>>
+
+    @GET("Candidate/candidate")
+    suspend fun getAllCandidates(): Response<List<CandidateResponse>>
+
+    @DELETE("CandidateDocument/candidatedocument/{id}")
+    suspend fun deleteCandidateDocumentById(
+        @Path("id") id: Int
+    ): Response<Unit>
 
 }

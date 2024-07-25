@@ -3,7 +3,7 @@ package com.example.interview.models.responses.get.candidate
 
 import com.google.gson.annotations.SerializedName
 
-data class Candidate(
+data class CandidateResponse(
     @SerializedName("CandidateDocumentId")
     val candidateDocumentId: Int
 )

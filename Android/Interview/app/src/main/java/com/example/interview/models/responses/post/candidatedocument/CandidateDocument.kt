@@ -2,22 +2,21 @@ package com.example.interview.models.responses.post.candidatedocument
 
 
 import com.google.gson.annotations.SerializedName
+import java.io.File
 
-data class CandidateDocumentItem(
+data class CandidateDocument(
     @SerializedName("address")
-    val address: String,
+    val address: String?,
     @SerializedName("cv")
-    val cv: String,
+    val cv: File? = null,
     @SerializedName("email")
-    val email: String,
-    @SerializedName("id")
-    val id: Int,
+    val email: String?,
     @SerializedName("name")
-    val name: String,
+    val name: String?,
     @SerializedName("patronymic")
-    val patronymic: String,
+    val patronymic: String?,
     @SerializedName("phonenumber")
-    val phonenumber: String,
+    val phonenumber: String?,
     @SerializedName("surname")
-    val surname: String
+    val surname: String?
 )

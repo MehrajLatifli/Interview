@@ -20,8 +20,8 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    @Inject
-    lateinit var refreshTokenDetector: RefreshTokenDetector
+//    @Inject
+//    lateinit var refreshTokenDetector: RefreshTokenDetector
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
@@ -49,6 +49,7 @@ class MainActivity : AppCompatActivity() {
                     R.id.homeFragment,
                     R.id.profileFragment,
                     R.id.operationFragment,
+                    R.id.candidateReadFragment,
                     R.id.candidateCreateFragment -> {
                         binding.includeBottomnav.BottomNavigationView.visible()
                     }
@@ -59,7 +60,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        refreshTokenDetector.startTokenRefreshing()
+//        refreshTokenDetector.startTokenRefreshing()
     }
 
     override fun onResume() {
@@ -69,6 +70,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        refreshTokenDetector.stop()
+//        refreshTokenDetector.stop()
     }
 }

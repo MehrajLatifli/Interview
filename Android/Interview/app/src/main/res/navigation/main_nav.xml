@@ -91,10 +91,25 @@
         <action
             android:id="@+id/action_operationFragment_to_candidateCreateFragment"
             app:destination="@id/candidateCreateFragment" />
+        <action
+            android:id="@+id/action_operationFragment_to_candidateReadFragment"
+            app:destination="@id/candidateReadFragment" />
     </fragment>
     <fragment
         android:id="@+id/candidateCreateFragment"
         android:name="com.example.interview.views.fragments.candidate.CandidateCreateFragment"
         android:label="fragment_candidate_create"
-        tools:layout="@layout/fragment_candidate_create" />
+        tools:layout="@layout/fragment_candidate_create" >
+        <action
+            android:id="@+id/action_candidateCreateFragment_to_operationFragment"
+            app:destination="@id/operationFragment" />
+        <action
+            android:id="@+id/action_candidateCreateFragment_to_candidateReadFragment"
+            app:destination="@id/candidateReadFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/candidateReadFragment"
+        android:name="com.example.interview.views.fragments.candidate.CandidateReadFragment"
+        android:label="fragment_candidate_read"
+        tools:layout="@layout/fragment_candidate_read" />
 </navigation>

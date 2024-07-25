@@ -1,22 +1,23 @@
 package com.example.interview.viewmodels.candidate
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.interview.models.responses.get.candidate.CandidateDocumentResponse
+import com.example.interview.models.responses.get.candidate.CandidateResponse
 import com.example.interview.models.responses.post.candidate.Candidate
 import com.example.interview.models.responses.post.candidatedocument.CandidateDocument
-import com.example.interview.models.responses.post.registration.Register
 import com.example.interview.source.api.Resource
 import com.example.interview.source.api.repositories.candidate.CandidateRepository
-import com.example.interview.source.local.repositories.EntityRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class CandidateViewModel  @Inject constructor (private val candidateRepository: CandidateRepository) : ViewModel() {
-
+class CandidateViewModel @Inject constructor(private val candidateRepository: CandidateRepository) : ViewModel() {
 
     private val _loading = MutableLiveData<Boolean>()
     val loading: LiveData<Boolean> = _loading
@@ -24,23 +25,86 @@ class CandidateViewModel  @Inject constructor (private val candidateRepository: 
     private val _error = MutableLiveData<String?>()
     val error: LiveData<String?> = _error
 
-    private val _authResult = MutableLiveData<Boolean>()
-    val authResult: LiveData<Boolean> = _authResult
+    private val _complateResult = MutableLiveData<Boolean>()
+    val complateResult: LiveData<Boolean> = _complateResult
 
-    fun registerCandidate(candidate: Candidate) {
+    private val _candidateDocuments = MutableLiveData<List<CandidateDocumentResponse>>()
+    val candidateDocuments: LiveData<List<CandidateDocumentResponse>> = _candidateDocuments
+
+    private val _candidates = MutableLiveData<List<CandidateResponse>>()
+    val candidates: LiveData<List<CandidateResponse>> = _candidates
+
+    fun getAllCandidateDocuments(): List<CandidateDocumentResponse>? {
         _loading.value = true
-
         viewModelScope.launch {
-            val result = candidateRepository.registerCandidate(candidate)
+            val result = candidateRepository.getAllCandidateDocuments()
             if (result is Resource.Success) {
-                _authResult.postValue(true)
+                _loading.postValue(false)
+                val itemResponse = result.data
+                if (itemResponse != null) {
+                    _candidateDocuments.value = itemResponse!!
+                }
+
             } else if (result is Resource.Error) {
                 _loading.postValue(false)
                 _error.postValue(result.message ?: "Unknown error")
-                _authResult.postValue(false)
+                Log.e("CandidateViewModel", result.message ?: "Unknown error")
+            }
+        }
+
+        return _candidateDocuments.value.orEmpty()
+    }
+
+    fun getAllCandidate() {
+        _loading.value = true
+
+        viewModelScope.launch {
+            val result = candidateRepository.getAllCandidates()
+            if (result is Resource.Success) {
+                _loading.postValue(false)
+                val itemResponse = result.data
+                if (itemResponse != null) {
+                    _candidates.value = itemResponse!!
+                }
+
+            } else if (result is Resource.Error) {
+                _loading.postValue(false)
+                _error.postValue(result.message ?: "Unknown error")
+                Log.e("CandidateViewModel", result.message ?: "Unknown error")
             }
         }
     }
+
+
+
+    fun getLastCandidateDocument(): CandidateDocumentResponse? {
+        _loading.value = true
+
+        viewModelScope.launch {
+            val result = candidateRepository.getAllCandidateDocuments()
+            if (result is Resource.Success) {
+                _loading.postValue(false)
+                val itemResponse = result.data
+                if (itemResponse != null) {
+                    _candidateDocuments.value = itemResponse!!
+
+
+                }
+
+
+
+            } else if (result is Resource.Error) {
+                _loading.postValue(false)
+                _error.postValue(result.message ?: "Unknown error")
+                Log.e("CandidateViewModel", result.message ?: "Unknown error")
+            }
+        }
+
+        return _candidateDocuments.value?.lastOrNull()
+    }
+
+
+
 
     fun registerCandidatedocument(candidateDocument: CandidateDocument) {
         _loading.value = true
@@ -48,12 +112,43 @@ class CandidateViewModel  @Inject constructor (private val candidateRepository: 
         viewModelScope.launch {
             val result = candidateRepository.registerCandidatedocument(candidateDocument)
             if (result is Resource.Success) {
-                _authResult.postValue(true)
+
+
+                _complateResult.postValue(true)
+                    Log.d("CandidateViewModel", "CandidateDocument registered: ${result.data}")
+
             } else if (result is Resource.Error) {
                 _loading.postValue(false)
                 _error.postValue(result.message ?: "Unknown error")
-                _authResult.postValue(false)
+                _complateResult.postValue(true)
+
+                Log.e("CandidateViewModel", result.message ?: "Unknown error")
             }
         }
     }
+
+
+    fun deleteCandidateDocumentById(documentId: Int) {
+        _loading.value = true
+
+        viewModelScope.launch {
+            val result = candidateRepository.deleteCandidateDocumentById(documentId)
+            if (result is Resource.Success) {
+
+                delay(200)
+                _loading.postValue(false)
+                _complateResult.postValue(true)
+                Log.d("CandidateViewModel", "CandidateDocument deleted successfully")
+            } else if (result is Resource.Error) {
+                _loading.postValue(false)
+                _error.postValue(result.message ?: "Unknown error")
+                Log.e("CandidateViewModel", "Failed to delete CandidateDocument: ${result.message ?: "Unknown error"}")
+            }
+        }
+    }
+
+
 }
+
+
+
