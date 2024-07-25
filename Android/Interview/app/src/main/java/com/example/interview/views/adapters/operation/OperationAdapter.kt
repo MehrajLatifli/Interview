@@ -6,12 +6,12 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.interview.R
 import com.example.interview.databinding.ItemOperationcrudBinding
-import com.example.interview.models.localadapdermodels.operationcrud.OperationCRUD
+import com.example.interview.models.localadapdermodels.operationcrud.Operation
 import com.example.interview.views.adapters.base.BaseAdapter
 
-class OperationCRUDAdapter(
+class OperationAdapter(
     private val onClickItem: (String) -> Unit
-) : BaseAdapter<OperationCRUD, OperationCRUDAdapter.OperationCRUDViewHolder>() {
+) : BaseAdapter<Operation, OperationAdapter.OperationCRUDViewHolder>() {
 
     inner class OperationCRUDViewHolder(val itemBinding: ItemOperationcrudBinding) :
         RecyclerView.ViewHolder(itemBinding.root)

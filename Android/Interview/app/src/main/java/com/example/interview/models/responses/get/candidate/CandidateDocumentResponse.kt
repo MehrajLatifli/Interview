@@ -1,9 +1,9 @@
-package com.example.interview.models.responses.post.candidatedocument
+package com.example.interview.models.responses.get.candidate
 
 
 import com.google.gson.annotations.SerializedName
 
-data class CandidateDocumentItem(
+data class CandidateDocumentResponse(
     @SerializedName("address")
     val address: String,
     @SerializedName("cv")
