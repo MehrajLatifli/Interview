@@ -11,7 +11,7 @@ import com.example.interview.views.adapters.base.BaseAdapter
 class CandidateAdapter: BaseAdapter<CandidateDocumentResponse, CandidateAdapter.CandidateViewHolder>() {
 
 
-    lateinit var onClickItem: (Int) -> Unit
+    lateinit var onClickDeleteItem: (Int) -> Unit
 
     inner class CandidateViewHolder(val itemBinding: ItemCandidateBinding) :
         RecyclerView.ViewHolder(itemBinding.root)
@@ -27,10 +27,23 @@ class CandidateAdapter: BaseAdapter<CandidateDocumentResponse, CandidateAdapter.
         holder.itemBinding.item = item
 
         holder.itemBinding.buttonDelete.setOnClickListener {
-            onClickItem.invoke(item.id)
+            onClickDeleteItem.invoke(item.id)
 
 
         }
     }
+
+    fun deleteItem(position: Int) {
+
+        if (position >= 0 && position < list.size) {
+            list.removeAt(position)
+            notifyItemRemoved(position)
+
+            if (list.isEmpty()) {
+                notifyItemRangeRemoved(0, list.size)
+            }
+        }
+    }
+
 
 }

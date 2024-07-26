@@ -18,7 +18,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.interview.R
-import com.example.interview.databinding.CustomregistrationresultdialogBinding
+import com.example.interview.databinding.CustomresultdialogBinding
 import com.example.interview.databinding.FragmentCandidateCreateBinding
 import com.example.interview.databinding.FragmentCandidateReadBinding
 import com.example.interview.models.responses.post.candidatedocument.CandidateDocument
@@ -67,12 +67,12 @@ class CandidateCreateFragment : BaseFragment<FragmentCandidateCreateBinding>(
             val address = binding.editText7.text.toString() // Assuming this should be address
 
             if (!isEmailValid(email)) {
-                customRegistrationResultDialog("Unsuccessful!", "Invalid email format", R.color.MellowMelon)
+                customresultdialog("Unsuccessful!", "Invalid email format", R.color.MellowMelon)
                 return@setOnClickListener
             }
 
             if (selectedFile == null) {
-                customRegistrationResultDialog("Unsuccessful!", "Select a file", R.color.MellowMelon)
+                customresultdialog("Unsuccessful!", "Select a file", R.color.MellowMelon)
                 return@setOnClickListener
             }
 
@@ -116,7 +116,7 @@ class CandidateCreateFragment : BaseFragment<FragmentCandidateCreateBinding>(
         viewModel.complateResult.observe(viewLifecycleOwner) { complateResult ->
             lifecycleScope.launch {
                 if (complateResult) {
-                    customRegistrationResultDialog(
+                    customresultdialog(
                         "Successful!",
                         "Please wait a moment, we are preparing for you...",
                         R.color.DeepPurple
@@ -141,15 +141,15 @@ class CandidateCreateFragment : BaseFragment<FragmentCandidateCreateBinding>(
         viewModel.error.observe(viewLifecycleOwner) { errorMessage ->
             if (!errorMessage.isNullOrBlank()) {
                 Log.e("CandidateViewModel", errorMessage)
-                customRegistrationResultDialog("Unsuccessful!", errorMessage, R.color.MellowMelon)
+                customresultdialog("Unsuccessful!", errorMessage, R.color.MellowMelon)
             }
         }
     }
 
-    private fun customRegistrationResultDialog(title: String, text: String, colorId: Int) {
+    private fun customresultdialog(title: String, text: String, colorId: Int) {
         lifecycleScope.launch(Dispatchers.Main) {
             val dialogBinding =
-                CustomregistrationresultdialogBinding.inflate(LayoutInflater.from(requireContext()))
+                CustomresultdialogBinding.inflate(LayoutInflater.from(requireContext()))
             val dialog = AlertDialog.Builder(requireContext()).apply {
                 setView(dialogBinding.root)
             }.create()

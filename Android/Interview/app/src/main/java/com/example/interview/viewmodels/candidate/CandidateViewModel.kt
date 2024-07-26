@@ -28,17 +28,21 @@ class CandidateViewModel @Inject constructor(private val candidateRepository: Ca
     private val _complateResult = MutableLiveData<Boolean>()
     val complateResult: LiveData<Boolean> = _complateResult
 
+    private val _afterdeleteResult = MutableLiveData<Boolean>()
+    val afterdeleteResult: LiveData<Boolean> = _afterdeleteResult
+
     private val _candidateDocuments = MutableLiveData<List<CandidateDocumentResponse>>()
     val candidateDocuments: LiveData<List<CandidateDocumentResponse>> = _candidateDocuments
 
     private val _candidates = MutableLiveData<List<CandidateResponse>>()
     val candidates: LiveData<List<CandidateResponse>> = _candidates
 
-    fun getAllCandidateDocuments(): List<CandidateDocumentResponse>? {
+    fun getAllCandidateDocuments(): List<CandidateDocumentResponse> {
         _loading.value = true
         viewModelScope.launch {
             val result = candidateRepository.getAllCandidateDocuments()
             if (result is Resource.Success) {
+
                 _loading.postValue(false)
                 val itemResponse = result.data
                 if (itemResponse != null) {
@@ -137,9 +141,10 @@ class CandidateViewModel @Inject constructor(private val candidateRepository: Ca
 
                 delay(200)
                 _loading.postValue(false)
-                _complateResult.postValue(true)
+                _afterdeleteResult.postValue(true)
                 Log.d("CandidateViewModel", "CandidateDocument deleted successfully")
             } else if (result is Resource.Error) {
+                _afterdeleteResult.postValue(false)
                 _loading.postValue(false)
                 _error.postValue(result.message ?: "Unknown error")
                 Log.e("CandidateViewModel", "Failed to delete CandidateDocument: ${result.message ?: "Unknown error"}")

@@ -20,7 +20,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.interview.R
-import com.example.interview.databinding.CustomregistrationresultdialogBinding
+import com.example.interview.databinding.CustomresultdialogBinding
 import com.example.interview.databinding.FragmentRegistrationBinding
 import com.example.interview.models.responses.post.registration.RegisterAdmin
 import com.example.interview.models.responses.post.registration.RegisterHR
@@ -79,7 +79,7 @@ class RegistrationFragment : BaseFragment<FragmentRegistrationBinding>(FragmentR
             if (!isUsernameandPasswordValid(username)) {
 
 
-                customregistrationresultdialog(requireContext(),"UnSuccessful!","Username must have at least 8 characters, one uppercase letter, one lowercase letter, one special character, and one number",R.color.MellowMelon)
+                customresultdialog(requireContext(),"UnSuccessful!","Username must have at least 8 characters, one uppercase letter, one lowercase letter, one special character, and one number",R.color.MellowMelon)
 
                 return@setOnClickListener
             }
@@ -87,7 +87,7 @@ class RegistrationFragment : BaseFragment<FragmentRegistrationBinding>(FragmentR
 
 
             if (!isEmailValid(email)) {
-                customregistrationresultdialog(requireContext(),"UnSuccessful!","Invalid email format",R.color.MellowMelon)
+                customresultdialog(requireContext(),"UnSuccessful!","Invalid email format",R.color.MellowMelon)
 
                 return@setOnClickListener
             }
@@ -95,7 +95,7 @@ class RegistrationFragment : BaseFragment<FragmentRegistrationBinding>(FragmentR
             if (!isUsernameandPasswordValid(password)) {
 
 
-                customregistrationresultdialog(requireContext(),"UnSuccessful!","Password must have at least 8 characters, one uppercase letter, one lowercase letter, one special character, and one number",R.color.MellowMelon)
+                customresultdialog(requireContext(),"UnSuccessful!","Password must have at least 8 characters, one uppercase letter, one lowercase letter, one special character, and one number",R.color.MellowMelon)
 
 
                 return@setOnClickListener
@@ -105,7 +105,7 @@ class RegistrationFragment : BaseFragment<FragmentRegistrationBinding>(FragmentR
 
 
 
-                customregistrationresultdialog(requireContext(),"UnSuccessful!","Confirm password must have at least 8 characters, one uppercase letter, one lowercase letter, one special character, and one number",R.color.MellowMelon)
+                customresultdialog(requireContext(),"UnSuccessful!","Confirm password must have at least 8 characters, one uppercase letter, one lowercase letter, one special character, and one number",R.color.MellowMelon)
 
 
 
@@ -115,7 +115,7 @@ class RegistrationFragment : BaseFragment<FragmentRegistrationBinding>(FragmentR
             if (password != confirmpassword) {
 
 
-                customregistrationresultdialog(requireContext(),"UnSuccessful!","Password and Confirm Password are not same",R.color.MellowMelon)
+                customresultdialog(requireContext(),"UnSuccessful!","Password and Confirm Password are not same",R.color.MellowMelon)
 
                 return@setOnClickListener
             }
@@ -123,7 +123,7 @@ class RegistrationFragment : BaseFragment<FragmentRegistrationBinding>(FragmentR
 
             if (binding.editText6.text.isNullOrBlank()) {
 
-                customregistrationresultdialog(requireContext(),"UnSuccessful!","Select images",R.color.MellowMelon)
+                customresultdialog(requireContext(),"UnSuccessful!","Select images",R.color.MellowMelon)
 
                 return@setOnClickListener
             }
@@ -152,7 +152,7 @@ class RegistrationFragment : BaseFragment<FragmentRegistrationBinding>(FragmentR
                 viewModel.registerHR(registerHRData)
             }
             else{
-                customregistrationresultdialog(requireContext(),"UnSuccessful!","Cannot registration",R.color.MellowMelon)
+                customresultdialog(requireContext(),"UnSuccessful!","Cannot registration",R.color.MellowMelon)
 
                 return@setOnClickListener
             }
@@ -172,7 +172,7 @@ class RegistrationFragment : BaseFragment<FragmentRegistrationBinding>(FragmentR
             lifecycleScope.launch {
                 if (auth) {
 
-                    customregistrationresultdialog(
+                    customresultdialog(
                         requireContext(),
                         "Successful!",
                         "Please wait a moment, we are preparing for you...",
@@ -194,7 +194,7 @@ class RegistrationFragment : BaseFragment<FragmentRegistrationBinding>(FragmentR
             } else {
 
                 Log.e("AuthViewModel", errorMessage)
-                customregistrationresultdialog(requireContext(),"UnSuccessful!","${errorMessage.toString()}",R.color.MellowMelon)
+                customresultdialog(requireContext(),"UnSuccessful!","${errorMessage.toString()}",R.color.MellowMelon)
             }
         }
 
@@ -213,11 +213,11 @@ class RegistrationFragment : BaseFragment<FragmentRegistrationBinding>(FragmentR
 
 
 
-    private fun customregistrationresultdialog(context: Context, title:String, text:String, colorId: Int) {
+    private fun customresultdialog(context: Context, title:String, text:String, colorId: Int) {
 
         lifecycleScope.launch(Dispatchers.Main) {
             val dialogBinding =
-                CustomregistrationresultdialogBinding.inflate(LayoutInflater.from(context))
+                CustomresultdialogBinding.inflate(LayoutInflater.from(context))
             val dialog = AlertDialog.Builder(context).apply {
                 setView(dialogBinding.root)
             }.create()

@@ -12,7 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.interview.R
-import com.example.interview.databinding.CustomregistrationresultdialogBinding
+import com.example.interview.databinding.CustomresultdialogBinding
 import com.example.interview.databinding.FragmentProfileBinding
 import com.example.interview.utilities.gone
 import com.example.interview.utilities.loadImageWithGlideAndResize
@@ -69,7 +69,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
 
             lifecycleScope.launch {
                 delay(250)
-                customregistrationresultdialog(
+                customresultdialog(
                     requireContext(),
                     "Successful!",
                     "Please wait a moment, we are preparing for you...",
@@ -120,7 +120,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
 
             } else {
 
-                customregistrationresultdialog(requireContext(),"UnSuccessful!","${errorMessage.toString()}",R.color.MellowMelon)
+                customresultdialog(requireContext(),"UnSuccessful!","${errorMessage.toString()}",R.color.MellowMelon)
             }
         }
 
@@ -151,11 +151,11 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
         }
     }
 
-    private fun customregistrationresultdialog(context: Context, title:String, text:String, colorId: Int) {
+    private fun customresultdialog(context: Context, title:String, text:String, colorId: Int) {
 
         lifecycleScope.launch(Dispatchers.Main) {
             val dialogBinding =
-                CustomregistrationresultdialogBinding.inflate(LayoutInflater.from(context))
+                CustomresultdialogBinding.inflate(LayoutInflater.from(context))
             val dialog = AlertDialog.Builder(context).apply {
                 setView(dialogBinding.root)
             }.create()

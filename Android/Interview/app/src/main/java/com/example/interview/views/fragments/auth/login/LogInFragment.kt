@@ -14,7 +14,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.interview.R
-import com.example.interview.databinding.CustomregistrationresultdialogBinding
+import com.example.interview.databinding.CustomresultdialogBinding
 import com.example.interview.databinding.FragmentLogInBinding
 import com.example.interview.models.responses.post.login.Login
 import com.example.interview.utilities.gone
@@ -61,7 +61,7 @@ class LogInFragment : BaseFragment<FragmentLogInBinding>(FragmentLogInBinding::i
             if (!isUsernameandPasswordValid(username)) {
 
 
-                customregistrationresultdialog(requireContext(),"UnSuccessful!","Username must have at least 8 characters, one uppercase letter, one lowercase letter, one special character, and one number",R.color.MellowMelon)
+                customresultdialog(requireContext(),"UnSuccessful!","Username must have at least 8 characters, one uppercase letter, one lowercase letter, one special character, and one number",R.color.MellowMelon)
 
                 return@setOnClickListener
             }
@@ -71,7 +71,7 @@ class LogInFragment : BaseFragment<FragmentLogInBinding>(FragmentLogInBinding::i
             if (!isUsernameandPasswordValid(password)) {
 
 
-                customregistrationresultdialog(requireContext(),"UnSuccessful!","Password must have at least 8 characters, one uppercase letter, one lowercase letter, one special character, and one number",R.color.MellowMelon)
+                customresultdialog(requireContext(),"UnSuccessful!","Password must have at least 8 characters, one uppercase letter, one lowercase letter, one special character, and one number",R.color.MellowMelon)
 
 
                 return@setOnClickListener
@@ -122,7 +122,7 @@ class LogInFragment : BaseFragment<FragmentLogInBinding>(FragmentLogInBinding::i
 
                 if (auth) {
 
-                    customregistrationresultdialog(
+                    customresultdialog(
                         requireContext(),
                         "Successful!",
                         "Please wait a moment, we are preparing for you...",
@@ -148,7 +148,7 @@ class LogInFragment : BaseFragment<FragmentLogInBinding>(FragmentLogInBinding::i
             if (errorMessage.isNullOrBlank()) {
             } else {
 
-                customregistrationresultdialog(requireContext(),"UnSuccessful!","${errorMessage.toString()}",R.color.MellowMelon)
+                customresultdialog(requireContext(),"UnSuccessful!","${errorMessage.toString()}",R.color.MellowMelon)
             }
         }
 
@@ -182,11 +182,11 @@ class LogInFragment : BaseFragment<FragmentLogInBinding>(FragmentLogInBinding::i
 
 
 
-    private fun customregistrationresultdialog(context: Context, title:String, text:String, colorId: Int) {
+    private fun customresultdialog(context: Context, title:String, text:String, colorId: Int) {
 
         lifecycleScope.launch(Dispatchers.Main) {
             val dialogBinding =
-                CustomregistrationresultdialogBinding.inflate(LayoutInflater.from(context))
+                CustomresultdialogBinding.inflate(LayoutInflater.from(context))
             val dialog = AlertDialog.Builder(context).apply {
                 setView(dialogBinding.root)
             }.create()

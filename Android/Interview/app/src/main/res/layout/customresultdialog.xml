@@ -8,6 +8,8 @@
     app:cardCornerRadius="25dp"
     app:cardElevation="5dp"
     app:strokeWidth="5dp"
+    android:background="@color/Transparent"
+    android:backgroundTint="@color/Transparent"
     app:strokeColor="@color/LavenderTonic"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">

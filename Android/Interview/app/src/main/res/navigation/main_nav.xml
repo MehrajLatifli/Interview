@@ -111,5 +111,9 @@
         android:id="@+id/candidateReadFragment"
         android:name="com.example.interview.views.fragments.candidate.CandidateReadFragment"
         android:label="fragment_candidate_read"
-        tools:layout="@layout/fragment_candidate_read" />
+        tools:layout="@layout/fragment_candidate_read" >
+        <action
+            android:id="@+id/action_candidateReadFragment_to_candidateCreateFragment"
+            app:destination="@id/candidateCreateFragment" />
+    </fragment>
 </navigation>
