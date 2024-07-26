@@ -19,4 +19,16 @@ abstract class BaseAdapter<T, VH : RecyclerView.ViewHolder> : RecyclerView.Adapt
         lastSelectedItemPosition = RecyclerView.NO_POSITION
         notifyDataSetChanged()
     }
+
+    fun deleteItem(position: Int) {
+
+        if (position >= 0 && position < list.size) {
+            list.removeAt(position)
+            notifyItemRemoved(position)
+
+            if (list.isEmpty()) {
+                notifyItemRangeRemoved(0, list.size)
+            }
+        }
+    }
 }

@@ -33,17 +33,7 @@ class CandidateAdapter: BaseAdapter<CandidateDocumentResponse, CandidateAdapter.
         }
     }
 
-    fun deleteItem(position: Int) {
 
-        if (position >= 0 && position < list.size) {
-            list.removeAt(position)
-            notifyItemRemoved(position)
-
-            if (list.isEmpty()) {
-                notifyItemRangeRemoved(0, list.size)
-            }
-        }
-    }
 
 
 }
