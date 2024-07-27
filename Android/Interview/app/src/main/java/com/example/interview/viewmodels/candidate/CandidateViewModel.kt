@@ -166,7 +166,7 @@ class CandidateViewModel @Inject constructor(private val candidateRepository: Ca
         viewModelScope.launch {
             val result = candidateRepository.updateCandidateDocument(id, candidateDocument)
             if (result is Resource.Success) {
-                delay(600)
+                delay(500)
                 _afterupdateResult.postValue(true)
                 Log.d("CandidateViewModel", "CandidateDocument updated: ${result.data}")
             } else if (result is Resource.Error) {

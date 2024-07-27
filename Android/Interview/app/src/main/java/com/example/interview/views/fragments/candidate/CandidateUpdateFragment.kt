@@ -22,7 +22,6 @@ import com.example.interview.databinding.CustomresultdialogBinding
 import com.example.interview.databinding.FragmentCandidateDetailBinding
 import com.example.interview.databinding.FragmentCandidateUpdateBinding
 import com.example.interview.models.responses.post.candidatedocument.CandidateDocument
-import com.example.interview.models.responses.update.CandidateDocumentUpdate
 import com.example.interview.utilities.gone
 import com.example.interview.utilities.loadImageWithGlideAndResize
 import com.example.interview.utilities.visible
@@ -141,7 +140,7 @@ class CandidateUpdateFragment : BaseFragment<FragmentCandidateUpdateBinding>(
                         R.color.DeepPurple
                     )
 
-                    delay(500)
+                    delay(2500)
 
 
                     findNavController().navigate(CandidateUpdateFragmentDirections.actionCandidateUpdateFragmentToCandidateReadFragment())

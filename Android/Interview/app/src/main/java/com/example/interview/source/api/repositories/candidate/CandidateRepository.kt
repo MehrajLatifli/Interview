@@ -5,7 +5,6 @@ import com.example.interview.models.responses.get.candidate.CandidateResponse
 import com.example.interview.models.responses.get.error.ErrorResponse
 import com.example.interview.models.responses.post.candidate.Candidate
 import com.example.interview.models.responses.post.candidatedocument.CandidateDocument
-import com.example.interview.models.responses.update.CandidateDocumentUpdate
 import com.example.interview.source.api.IApiManager
 import com.example.interview.source.api.Resource
 import com.google.gson.Gson
