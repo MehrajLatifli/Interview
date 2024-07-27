@@ -7,10 +7,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
+import android.view.animation.LayoutAnimationController
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.interview.R
 import com.example.interview.databinding.CustomresultdialogBinding
 import com.example.interview.databinding.FragmentCandidateReadBinding
@@ -42,6 +46,7 @@ class CandidateReadFragment  : BaseFragment<FragmentCandidateReadBinding>(Fragme
 
 
 
+
         binding.rvCandidates.adapter=candidateAdapter
 
 
@@ -58,7 +63,26 @@ class CandidateReadFragment  : BaseFragment<FragmentCandidateReadBinding>(Fragme
 
 
 
+
         }
+
+        candidateAdapter.onClickDetailItem = { id ->
+
+
+            findNavController().navigate(CandidateReadFragmentDirections.actionCandidateReadFragmentToCandidateDetailFragment(id))
+        }
+
+
+        candidateAdapter.onClickUpdateItem = { id ->
+
+
+            findNavController().navigate(CandidateReadFragmentDirections.actionCandidateReadFragmentToCandidateUpdateFragment(id))
+        }
+
+
+
+
+
 
         viewModel.getAllCandidateDocuments()
 
@@ -72,10 +96,18 @@ class CandidateReadFragment  : BaseFragment<FragmentCandidateReadBinding>(Fragme
 
     private fun observeData() {
 
+
+
         viewModel.candidateDocuments.observe(viewLifecycleOwner) { item ->
 
 
                 candidateAdapter.updateList(item)
+
+
+            val layoutAnimationController = AnimationUtils.loadLayoutAnimation(context, R.anim.item_layout_animation)
+            binding.rvCandidates.layoutAnimation = layoutAnimationController
+
+
 
 
         }
@@ -86,6 +118,14 @@ class CandidateReadFragment  : BaseFragment<FragmentCandidateReadBinding>(Fragme
             if (isLoading) {
                 binding.includeProgressbar.progressBar.visible()
                 binding.NestedScrollView.gone()
+
+
+//                if(viewModel.getAllCandidateDocuments().isEmpty())
+//                {
+//                    findNavController().navigate(R.id.action_candidateReadFragment_to_operationFragment)
+//
+//                }
+
             } else {
                 binding.includeProgressbar.progressBar.gone()
                 binding.NestedScrollView.visible()
@@ -96,6 +136,12 @@ class CandidateReadFragment  : BaseFragment<FragmentCandidateReadBinding>(Fragme
             if (!errorMessage.isNullOrBlank()) {
                 Log.e("CandidateViewModel", errorMessage)
                 customresultdialog("Unsuccessful!", errorMessage, R.color.MellowMelon)
+
+
+
+                if (viewModel.getAllCandidateDocuments().size <= 0) {
+                    findNavController().navigate(CandidateReadFragmentDirections.actionCandidateReadFragmentToCandidateCreateFragment())
+                }
             }
 
         }
@@ -103,11 +149,6 @@ class CandidateReadFragment  : BaseFragment<FragmentCandidateReadBinding>(Fragme
         viewModel.afterdeleteResult.observe(viewLifecycleOwner) { isafterdeleteResult ->
             if (isafterdeleteResult) {
 
-
-                if(viewModel.getAllCandidateDocuments().size<=0)
-                {
-                    findNavController().navigate(CandidateReadFragmentDirections.actionCandidateReadFragmentToCandidateCreateFragment())
-                }
 
 
             }

@@ -66,6 +66,13 @@ class CandidateCreateFragment : BaseFragment<FragmentCandidateCreateBinding>(
             val cv = selectedFile
             val address = binding.editText7.text.toString() // Assuming this should be address
 
+            if(name.isNullOrBlank())
+            {
+
+                customresultdialog("Unsuccessful!", "Write name", R.color.MellowMelon)
+                return@setOnClickListener
+            }
+
             if (!isEmailValid(email)) {
                 customresultdialog("Unsuccessful!", "Invalid email format", R.color.MellowMelon)
                 return@setOnClickListener
@@ -107,6 +114,13 @@ class CandidateCreateFragment : BaseFragment<FragmentCandidateCreateBinding>(
             }
         }
 
+        viewModel.error.observe(viewLifecycleOwner) { errorMessage ->
+            if (!errorMessage.isNullOrBlank()) {
+                Log.e("CandidateViewModel", errorMessage)
+                customresultdialog("Unsuccessful!", errorMessage, R.color.MellowMelon)
+            }
+        }
+
         viewModel.candidateDocuments.observe(viewLifecycleOwner) { item ->
 
 
@@ -138,12 +152,7 @@ class CandidateCreateFragment : BaseFragment<FragmentCandidateCreateBinding>(
             }
         }
 
-        viewModel.error.observe(viewLifecycleOwner) { errorMessage ->
-            if (!errorMessage.isNullOrBlank()) {
-                Log.e("CandidateViewModel", errorMessage)
-                customresultdialog("Unsuccessful!", errorMessage, R.color.MellowMelon)
-            }
-        }
+
     }
 
     private fun customresultdialog(title: String, text: String, colorId: Int) {
@@ -196,10 +205,7 @@ class CandidateCreateFragment : BaseFragment<FragmentCandidateCreateBinding>(
         }
     }
 
-    private fun isEmailValid(email: String): Boolean {
-        val emailPattern = "^(?=.{8,100}\$)([a-zA-Z0-9]+[-._+&])*[a-zA-Z0-9]+@([-a-zA-Z0-9]+\\.)+[a-zA-Z]{2,20}\$"
-        return email.matches(emailPattern.toRegex())
-    }
+
 
     private fun getFileName(uri: Uri): String? {
         val cursor = requireContext().contentResolver.query(uri, null, null, null, null)
@@ -223,5 +229,10 @@ class CandidateCreateFragment : BaseFragment<FragmentCandidateCreateBinding>(
 
     companion object {
         private const val PICK_FILE_REQUEST_CODE = 1
+    }
+
+    private fun isEmailValid(email: String): Boolean {
+        val emailPattern = "^(?=.{8,100}\$)([a-zA-Z0-9]+[-._+&])*[a-zA-Z0-9]+@([-a-zA-Z0-9]+\\.)+[a-zA-Z]{2,20}\$"
+        return email.matches(emailPattern.toRegex())
     }
 }

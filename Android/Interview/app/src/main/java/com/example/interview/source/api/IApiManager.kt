@@ -17,6 +17,7 @@ import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -81,6 +82,12 @@ interface IApiManager {
     @GET("CandidateDocument/candidatedocument")
     suspend fun getAllCandidateDocuments(): Response<List<CandidateDocumentResponse>>
 
+    @GET("CandidateDocument/candidatedocument/{id}")
+    suspend fun getCandidateDocumentByID(
+        @Path("id") id: Int
+    ): Response<CandidateDocumentResponse>
+
+
     @GET("Candidate/candidate")
     suspend fun getAllCandidates(): Response<List<CandidateResponse>>
 
@@ -88,5 +95,19 @@ interface IApiManager {
     suspend fun deleteCandidateDocumentById(
         @Path("id") id: Int
     ): Response<Unit>
+
+    @Multipart
+    @PUT("CandidateDocument/candidatedocument")
+    suspend fun updateCandidateDocument(
+        @Part("id") id: RequestBody?,
+        @Part("surname") surname: RequestBody?,
+        @Part("name") name: RequestBody?,
+        @Part("patronymic") patronymic: RequestBody?,
+        @Part("phoneNumber") phoneNumber: RequestBody?,
+        @Part("email") email: RequestBody?,
+        @Part cv: MultipartBody.Part?,
+        @Part("address") address: RequestBody?
+    ): Response<Unit>
+
 
 }

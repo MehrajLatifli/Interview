@@ -50,7 +50,9 @@ class MainActivity : AppCompatActivity() {
                     R.id.profileFragment,
                     R.id.operationFragment,
                     R.id.candidateReadFragment,
-                    R.id.candidateCreateFragment -> {
+                    R.id.candidateCreateFragment,
+                    R.id.candidateDetailFragment,
+                    R.id.candidateUpdateFragment,-> {
                         binding.includeBottomnav.BottomNavigationView.visible()
                     }
                     else -> {

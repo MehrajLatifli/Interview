@@ -2,10 +2,12 @@ package com.example.interview.views.adapters.profile
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.compose.animation.core.Animation
 import androidx.recyclerview.widget.RecyclerView
 import com.example.interview.databinding.ItemProfileuserclaimsBinding
 import com.example.interview.models.responses.get.profile.UserClaim
 import com.example.interview.views.adapters.base.BaseAdapter
+import com.google.android.material.animation.AnimationUtils
 
 class UserClaimAdapder : BaseAdapter<UserClaim, UserClaimAdapder.UserClaimViewHolder>() {
 
@@ -20,6 +22,7 @@ class UserClaimAdapder : BaseAdapter<UserClaim, UserClaimAdapder.UserClaimViewHo
     override fun onBindViewHolder(holder: UserClaimViewHolder, position: Int) {
         val item = list[position]
         holder.itemBinding.item = item
+
 
     }
 }

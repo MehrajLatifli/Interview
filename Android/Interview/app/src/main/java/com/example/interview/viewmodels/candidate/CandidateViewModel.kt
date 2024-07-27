@@ -31,8 +31,14 @@ class CandidateViewModel @Inject constructor(private val candidateRepository: Ca
     private val _afterdeleteResult = MutableLiveData<Boolean>()
     val afterdeleteResult: LiveData<Boolean> = _afterdeleteResult
 
+    private val _afterupdateResult = MutableLiveData<Boolean>()
+    val afterupdateResult: LiveData<Boolean> = _afterupdateResult
+
     private val _candidateDocuments = MutableLiveData<List<CandidateDocumentResponse>>()
     val candidateDocuments: LiveData<List<CandidateDocumentResponse>> = _candidateDocuments
+
+    private val _candidateDocument = MutableLiveData<CandidateDocumentResponse>()
+    val candidateDocument: LiveData<CandidateDocumentResponse> = _candidateDocument
 
     private val _candidates = MutableLiveData<List<CandidateResponse>>()
     val candidates: LiveData<List<CandidateResponse>> = _candidates
@@ -57,6 +63,28 @@ class CandidateViewModel @Inject constructor(private val candidateRepository: Ca
         }
 
         return _candidateDocuments.value.orEmpty()
+    }
+
+    fun getCandidateDocumentByID(id:Int) {
+        _loading.value = true
+        viewModelScope.launch {
+            val result = candidateRepository.getCandidateDocumentByID(id)
+            if (result is Resource.Success) {
+
+                delay(200)
+                _loading.postValue(false)
+                val itemResponse = result.data
+                if (itemResponse != null) {
+                    _candidateDocument.value = itemResponse!!
+                }
+
+            } else if (result is Resource.Error) {
+                _loading.postValue(false)
+                _error.postValue(result.message ?: "Unknown error")
+                Log.e("CandidateViewModel", result.message ?: "Unknown error")
+            }
+        }
+
     }
 
     fun getAllCandidate() {
@@ -117,6 +145,7 @@ class CandidateViewModel @Inject constructor(private val candidateRepository: Ca
             val result = candidateRepository.registerCandidatedocument(candidateDocument)
             if (result is Resource.Success) {
 
+                delay(500)
 
                 _complateResult.postValue(true)
                     Log.d("CandidateViewModel", "CandidateDocument registered: ${result.data}")
@@ -131,6 +160,25 @@ class CandidateViewModel @Inject constructor(private val candidateRepository: Ca
         }
     }
 
+    fun updateCandidateDocument(id: Int, candidateDocument: CandidateDocument) {
+        _loading.value = true
+
+        viewModelScope.launch {
+            val result = candidateRepository.updateCandidateDocument(id, candidateDocument)
+            if (result is Resource.Success) {
+                delay(600)
+                _afterupdateResult.postValue(true)
+                Log.d("CandidateViewModel", "CandidateDocument updated: ${result.data}")
+            } else if (result is Resource.Error) {
+                _loading.postValue(false)
+                _error.postValue(result.message ?: "Unknown error")
+                _afterupdateResult.postValue(false)
+                Log.e("CandidateViewModel", result.message ?: "Unknown error")
+            }
+        }
+    }
+
+
 
     fun deleteCandidateDocumentById(documentId: Int) {
         _loading.value = true
@@ -139,7 +187,7 @@ class CandidateViewModel @Inject constructor(private val candidateRepository: Ca
             val result = candidateRepository.deleteCandidateDocumentById(documentId)
             if (result is Resource.Success) {
 
-                delay(200)
+                delay(500)
                 _loading.postValue(false)
                 _afterdeleteResult.postValue(true)
                 Log.d("CandidateViewModel", "CandidateDocument deleted successfully")

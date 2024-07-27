@@ -1,9 +1,11 @@
 package com.example.interview.source.api.repositories.candidate
 import android.util.Log
+import com.example.interview.models.responses.get.candidate.CandidateDocumentResponse
 import com.example.interview.models.responses.get.candidate.CandidateResponse
 import com.example.interview.models.responses.get.error.ErrorResponse
 import com.example.interview.models.responses.post.candidate.Candidate
 import com.example.interview.models.responses.post.candidatedocument.CandidateDocument
+import com.example.interview.models.responses.update.CandidateDocumentUpdate
 import com.example.interview.source.api.IApiManager
 import com.example.interview.source.api.Resource
 import com.google.gson.Gson
@@ -68,11 +70,47 @@ class CandidateRepository @Inject constructor(private val api: IApiManager) {
 
     }
 
+    suspend fun getCandidateDocumentByID(id: Int): Resource<CandidateDocumentResponse> {
+        return safeApiRequest {
+            api.getCandidateDocumentByID(id)
+        }
+    }
+
     suspend fun deleteCandidateDocumentById(id:Int) =safeApiRequest{
 
         api.deleteCandidateDocumentById(id)
 
     }
+
+    suspend fun updateCandidateDocument(id: Int, candidateDocument: CandidateDocument): Resource<Unit> {
+        return safeApiRequest {
+
+            val surnamePart = candidateDocument.surname?.toRequestBody("text/plain".toMediaType())
+            val namePart = candidateDocument.name?.toRequestBody("text/plain".toMediaType())
+            val patronymicPart = candidateDocument.patronymic?.toRequestBody("text/plain".toMediaType())
+            val phoneNumberPart = candidateDocument.phonenumber?.toRequestBody("text/plain".toMediaType())
+            val emailPart = candidateDocument.email?.toRequestBody("text/plain".toMediaType())
+
+            val cvPart = candidateDocument.cv?.let {
+                val requestFile = it.asRequestBody("application/*".toMediaType())
+                MultipartBody.Part.createFormData("cv", it.name, requestFile)
+            }
+
+            val addressPart = candidateDocument.address?.toRequestBody("text/plain".toMediaType())
+
+            api.updateCandidateDocument(
+                id = id.toString().toRequestBody("text/plain".toMediaType()),
+                surname = surnamePart,
+                name = namePart,
+                patronymic = patronymicPart,
+                phoneNumber = phoneNumberPart,
+                email = emailPart,
+                cv = cvPart,
+                address = addressPart
+            )
+        }
+    }
+
 
     private suspend fun <T> safeApiRequest(request: suspend () -> Response<T>): Resource<T> {
         return withContext(Dispatchers.IO) {

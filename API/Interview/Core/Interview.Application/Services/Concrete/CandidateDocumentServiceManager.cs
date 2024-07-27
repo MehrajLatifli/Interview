@@ -45,35 +45,30 @@ namespace Interview.Application.Services.Concrete
 
         public async Task CandidateDocumentCreate(CandidateDocumentDTOforCreate model, string AzureconnectionString, ClaimsPrincipal claimsPrincipal)
         {
-
-          if (!_userReadRepository.GetAll(false).AsEnumerable().Any(i => string.IsNullOrEmpty(i.RefreshToken) && i.UserName == claimsPrincipal.Identity.Name))
+            if (!_userReadRepository.GetAll(false).AsEnumerable().Any(i => string.IsNullOrEmpty(i.RefreshToken) && i.UserName == claimsPrincipal.Identity.Name))
             {
                 if (claimsPrincipal.Identity.IsAuthenticated)
                 {
                     string connectionString = AzureconnectionString;
-
                     string azuriteConnectionString = Environment.GetEnvironmentVariable("CUSTOMCONNSTR_AZURE_STORAGE_CONNECTION_STRING");
                     if (!string.IsNullOrEmpty(azuriteConnectionString))
                     {
                         connectionString = azuriteConnectionString;
                     }
 
-                    string containerName = "profile-images";
+                    string containerName = "cv-files";
                     string blobName = model.Name + "_" + Guid.NewGuid() + Path.GetExtension(model.Cv.FileName);
 
-                    // Set content type and disposition based on file extension
                     var blobHttpHeaders = new BlobHttpHeaders
                     {
                         ContentType = GetContentType(Path.GetExtension(model.Cv.FileName)),
-                        ContentDisposition = "inline" // Ensures the image is viewable in the browser
+                        ContentDisposition = "inline" // Ensure this is set to inline
                     };
 
-                    // Create a BlobServiceClient and get a reference to the container
                     var blobServiceClient = new BlobServiceClient(connectionString);
                     var containerClient = blobServiceClient.GetBlobContainerClient(containerName);
                     await containerClient.CreateIfNotExistsAsync(PublicAccessType.Blob);
 
-                    // Get a reference to the blob and upload the image with headers
                     var blobClient = containerClient.GetBlobClient(blobName);
                     using (var stream = model.Cv.OpenReadStream())
                     {
@@ -86,36 +81,19 @@ namespace Interview.Application.Services.Concrete
                     string Url = blobClient.Uri.ToString();
 
                     var entity = _mapper.Map<CandidateDocument>(model);
-
-                    entity = new CandidateDocument
-                    {
-                        Surname = model.Surname,
-                        Name = model.Name,
-                        Phonenumber = model.Phonenumber,
-                        Email = model.Email,
-                        CV = Url,
-                        Address = model.Address,
-                        Patronymic = model.Patronymic,
-
-                    };
-
-               
-
+                    entity.CV = Url;
 
                     await _candidateDocumentWriteRepository.AddAsync(entity);
-
                     await _candidateDocumentWriteRepository.SaveAsync();
 
-                   var candidate =  _mapper.Map<List<CandidateDocumentDTOforGetandGetAll>>(_candidateDocumentReadRepository.GetAll(false)).TakeLast(1).FirstOrDefault().Id;
+                    var candidate = _mapper.Map<List<CandidateDocumentDTOforGetandGetAll>>(_candidateDocumentReadRepository.GetAll(false)).TakeLast(1).FirstOrDefault().Id;
 
                     var entity2 = new Candidate
                     {
                         CandidateDocumentId = candidate,
-
                     };
 
                     await _candidateWriteRepository.AddAsync(entity2);
-
                     await _candidateWriteRepository.SaveAsync();
                 }
                 else
@@ -218,7 +196,6 @@ namespace Interview.Application.Services.Concrete
                     }
 
                     string connectionString = AzureconnectionString;
-
                     string azuriteConnectionString = Environment.GetEnvironmentVariable("CUSTOMCONNSTR_AZURE_STORAGE_CONNECTION_STRING");
                     if (!string.IsNullOrEmpty(azuriteConnectionString))
                     {
@@ -226,19 +203,25 @@ namespace Interview.Application.Services.Concrete
                     }
 
                     string containerName = "cv-files";
+                    string blobName = model.Name + "_" + Guid.NewGuid() + Path.GetExtension(model.Cv.FileName);
 
-                    string blobName = model.Name + "_" + model.Email + "_" + Guid.NewGuid().ToString() + Path.GetExtension(model.Cv.FileName);
+                    var blobHttpHeaders = new BlobHttpHeaders
+                    {
+                        ContentType = GetContentType(Path.GetExtension(model.Cv.FileName)),
+                        ContentDisposition = "inline" // Ensure this is set to inline
+                    };
 
-                    BlobServiceClient blobServiceClient = new BlobServiceClient(connectionString);
-                    BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(containerName);
-
+                    var blobServiceClient = new BlobServiceClient(connectionString);
+                    var containerClient = blobServiceClient.GetBlobContainerClient(containerName);
                     await containerClient.CreateIfNotExistsAsync(PublicAccessType.Blob);
 
-                    BlobClient blobClient = containerClient.GetBlobClient(blobName);
-
-                    using (Stream stream = model.Cv.OpenReadStream())
+                    var blobClient = containerClient.GetBlobClient(blobName);
+                    using (var stream = model.Cv.OpenReadStream())
                     {
-                        await blobClient.UploadAsync(stream, true);
+                        await blobClient.UploadAsync(stream, new BlobUploadOptions
+                        {
+                            HttpHeaders = blobHttpHeaders
+                        });
                     }
 
                     string Url = blobClient.Uri.ToString();

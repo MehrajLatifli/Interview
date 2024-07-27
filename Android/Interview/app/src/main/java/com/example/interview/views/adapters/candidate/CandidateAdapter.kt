@@ -12,6 +12,8 @@ class CandidateAdapter: BaseAdapter<CandidateDocumentResponse, CandidateAdapter.
 
 
     lateinit var onClickDeleteItem: (Int) -> Unit
+    lateinit var onClickDetailItem: (Int) -> Unit
+    lateinit var onClickUpdateItem: (Int) -> Unit
 
     inner class CandidateViewHolder(val itemBinding: ItemCandidateBinding) :
         RecyclerView.ViewHolder(itemBinding.root)
@@ -26,8 +28,21 @@ class CandidateAdapter: BaseAdapter<CandidateDocumentResponse, CandidateAdapter.
         val item = list[position]
         holder.itemBinding.item = item
 
+
         holder.itemBinding.buttonDelete.setOnClickListener {
             onClickDeleteItem.invoke(item.id)
+
+
+        }
+
+        holder.itemBinding.buttonDetail.setOnClickListener {
+            onClickDetailItem.invoke(item.id)
+
+
+        }
+
+        holder.itemBinding.buttonUpdate.setOnClickListener {
+            onClickUpdateItem.invoke(item.id)
 
 
         }

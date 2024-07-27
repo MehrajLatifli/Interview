@@ -114,6 +114,37 @@
         tools:layout="@layout/fragment_candidate_read" >
         <action
             android:id="@+id/action_candidateReadFragment_to_candidateCreateFragment"
-            app:destination="@id/candidateCreateFragment" />
+            app:destination="@id/candidateCreateFragment"
+            app:popUpTo="@id/candidateReadFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_candidateReadFragment_to_candidateDetailFragment"
+            app:destination="@id/candidateDetailFragment" />
+        <action
+            android:id="@+id/action_candidateReadFragment_to_candidateUpdateFragment"
+            app:destination="@id/candidateUpdateFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/candidateDetailFragment"
+        android:name="com.example.interview.views.fragments.candidate.CandidateDetailFragment"
+        android:label="fragment_candidate_detail"
+        tools:layout="@layout/fragment_candidate_detail" >
+        <argument
+            android:name="id"
+            app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/candidateUpdateFragment"
+        android:name="com.example.interview.views.fragments.candidate.CandidateUpdateFragment"
+        android:label="fragment_candidate_update"
+        tools:layout="@layout/fragment_candidate_update" >
+        <argument
+            android:name="id"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_candidateUpdateFragment_to_candidateReadFragment"
+            app:destination="@id/candidateReadFragment"
+            app:popUpTo="@id/candidateUpdateFragment"
+            app:popUpToInclusive="true" />
     </fragment>
 </navigation>
