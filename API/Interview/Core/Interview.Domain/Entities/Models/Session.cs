@@ -18,7 +18,7 @@ public  class Session : BaseEntity
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
 
-    [Column(TypeName = "decimal(18, 0)")]
+    [Column(TypeName = "decimal(18, 18)")]
     public decimal? EndValue { get; set; }
 
     public DateTime? StartDate { get; set; }

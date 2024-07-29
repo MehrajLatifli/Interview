@@ -238,7 +238,7 @@ namespace Interview.Persistence.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<decimal>("Coefficient")
-                        .HasColumnType("decimal(18, 0)");
+                        .HasColumnType("decimal(18, 2)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -317,7 +317,7 @@ namespace Interview.Persistence.Migrations
 
                     b.Property<decimal?>("EndValue")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("decimal(18, 0)")
+                        .HasColumnType("decimal(18, 18)")
                         .HasDefaultValueSql("((0.0))");
 
                     b.Property<DateTime?>("StartDate")

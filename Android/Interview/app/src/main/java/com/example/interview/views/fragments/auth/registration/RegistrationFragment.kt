@@ -75,43 +75,43 @@ class RegistrationFragment : BaseFragment<FragmentRegistrationBinding>(FragmentR
             val phoneNumber = binding.editText5.text.toString()
             val imagePath = selectedFile
 
-
-            if (!isUsernameandPasswordValid(username)) {
-
-
-                customresultdialog(requireContext(),"UnSuccessful!","Username must have at least 8 characters, one uppercase letter, one lowercase letter, one special character, and one number",R.color.MellowMelon)
-
-                return@setOnClickListener
-            }
-
-
-
-            if (!isEmailValid(email)) {
-                customresultdialog(requireContext(),"UnSuccessful!","Invalid email format",R.color.MellowMelon)
-
-                return@setOnClickListener
-            }
-
-            if (!isUsernameandPasswordValid(password)) {
-
-
-                customresultdialog(requireContext(),"UnSuccessful!","Password must have at least 8 characters, one uppercase letter, one lowercase letter, one special character, and one number",R.color.MellowMelon)
-
-
-                return@setOnClickListener
-            }
-
-            if (!isUsernameandPasswordValid(confirmpassword)) {
-
-
-
-                customresultdialog(requireContext(),"UnSuccessful!","Confirm password must have at least 8 characters, one uppercase letter, one lowercase letter, one special character, and one number",R.color.MellowMelon)
-
-
-
-                return@setOnClickListener
-            }
-
+//
+//            if (!isUsernameandPasswordValid(username)) {
+//
+//
+//                customresultdialog(requireContext(),"UnSuccessful!","Username must have at least 8 characters, one uppercase letter, one lowercase letter, one special character, and one number",R.color.MellowMelon)
+//
+//                return@setOnClickListener
+//            }
+//
+//
+//
+//            if (!isEmailValid(email)) {
+//                customresultdialog(requireContext(),"UnSuccessful!","Invalid email format",R.color.MellowMelon)
+//
+//                return@setOnClickListener
+//            }
+//
+//            if (!isUsernameandPasswordValid(password)) {
+//
+//
+//                customresultdialog(requireContext(),"UnSuccessful!","Password must have at least 8 characters, one uppercase letter, one lowercase letter, one special character, and one number",R.color.MellowMelon)
+//
+//
+//                return@setOnClickListener
+//            }
+//
+//            if (!isUsernameandPasswordValid(confirmpassword)) {
+//
+//
+//
+//                customresultdialog(requireContext(),"UnSuccessful!","Confirm password must have at least 8 characters, one uppercase letter, one lowercase letter, one special character, and one number",R.color.MellowMelon)
+//
+//
+//
+//                return@setOnClickListener
+//            }
+//
             if (password != confirmpassword) {
 
 
@@ -119,43 +119,47 @@ class RegistrationFragment : BaseFragment<FragmentRegistrationBinding>(FragmentR
 
                 return@setOnClickListener
             }
+//
+//
+//            if (binding.editText6.text.isNullOrBlank()) {
+//
+//                customresultdialog(requireContext(),"UnSuccessful!","Select images",R.color.MellowMelon)
+//
+//                return@setOnClickListener
+//            }
 
 
-            if (binding.editText6.text.isNullOrBlank()) {
 
-                customresultdialog(requireContext(),"UnSuccessful!","Select images",R.color.MellowMelon)
 
-                return@setOnClickListener
-            }
-
-            val registerAdminData = RegisterAdmin(
-                username = username,
-                email = email,
-                password = password,
-                phoneNumber = phoneNumber,
-                imagePath = imagePath
-            )
-
-            val registerHRData = RegisterHR(
-                username = username,
-                email = email,
-                password = password,
-                phoneNumber = phoneNumber,
-                imagePath = imagePath
-            )
 
             if (args.accountType.contains("Admin")) {
+                val registerAdminData = RegisterAdmin(
+                    username = username,
+                    email = email,
+                    password = password,
+                    phoneNumber = phoneNumber,
+                    imagePath = imagePath
+                )
+
                 viewModel.registerAdmin(registerAdminData)
             }
 
             if (args.accountType.contains("HR")) {
+
+                val registerHRData = RegisterHR(
+                    username = username,
+                    email = email,
+                    password = password,
+                    phoneNumber = phoneNumber,
+                    imagePath = imagePath
+                )
                 viewModel.registerHR(registerHRData)
             }
-            else{
-                customresultdialog(requireContext(),"UnSuccessful!","Cannot registration",R.color.MellowMelon)
-
-                return@setOnClickListener
-            }
+//            else{
+//                customresultdialog(requireContext(),"UnSuccessful!","Cannot registration",R.color.MellowMelon)
+//
+//                return@setOnClickListener
+//            }
         }
 
 

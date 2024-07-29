@@ -1,8 +1,6 @@
-package com.example.interview.source.api
+package com.example.interview.source.api.interceptors
 
-import android.content.Context
-import com.example.interview.utilities.Constants
-import com.example.interview.utilities.Constants.API_KEY
+import com.example.interview.source.api.ApiKeyProvider
 import okhttp3.Interceptor
 import okhttp3.Response
 import javax.inject.Inject

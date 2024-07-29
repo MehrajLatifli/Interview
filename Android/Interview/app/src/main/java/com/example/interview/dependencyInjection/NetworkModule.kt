@@ -1,7 +1,7 @@
 package com.example.interview.dependencyInjection
 
 import android.content.Context
-import com.example.interview.source.api.ApiKeyInterceptor
+import com.example.interview.source.api.interceptors.ApiKeyInterceptor
 import com.example.interview.source.api.ApiKeyProvider
 import com.example.interview.source.api.IApiManager
 import com.example.interview.source.api.RefreshTokenDetector
@@ -75,9 +75,9 @@ object NetworkModule {
         return retrofit.create(IApiManager::class.java)
     }
 
-//    @Provides
-//    @Singleton
-//    fun provideRefreshTokenDetector(apiManager: IApiManager, @ApplicationContext  context: Context): RefreshTokenDetector {
-//        return RefreshTokenDetector(apiManager, context)
-//    }
+    @Provides
+    @Singleton
+    fun provideRefreshTokenDetector(apiManager: IApiManager, @ApplicationContext  context: Context): RefreshTokenDetector {
+        return RefreshTokenDetector(apiManager, context)
+    }
 }

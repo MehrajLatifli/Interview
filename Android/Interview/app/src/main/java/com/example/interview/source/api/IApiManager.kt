@@ -37,6 +37,7 @@ interface IApiManager {
         @Part imagePath: MultipartBody.Part?
     ): Response<Unit>
 
+
     @Multipart
     @POST("Auth/registerHR")
     suspend fun registerHR(

@@ -20,8 +20,8 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-//    @Inject
-//    lateinit var refreshTokenDetector: RefreshTokenDetector
+    @Inject
+    lateinit var refreshTokenDetector: RefreshTokenDetector
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
@@ -62,16 +62,16 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-//        refreshTokenDetector.startTokenRefreshing()
+        refreshTokenDetector.startTokenRefreshing()
     }
 
     override fun onResume() {
         super.onResume()
-        // Add any additional logic needed when the activity resumes
+
     }
 
     override fun onDestroy() {
         super.onDestroy()
-//        refreshTokenDetector.stop()
+        refreshTokenDetector.stop()
     }
 }

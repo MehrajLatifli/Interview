@@ -57,25 +57,25 @@ class LogInFragment : BaseFragment<FragmentLogInBinding>(FragmentLogInBinding::i
             val password = binding.editText3.text.toString()
 
 
-
-            if (!isUsernameandPasswordValid(username)) {
-
-
-                customresultdialog(requireContext(),"UnSuccessful!","Username must have at least 8 characters, one uppercase letter, one lowercase letter, one special character, and one number",R.color.MellowMelon)
-
-                return@setOnClickListener
-            }
-
-
-
-            if (!isUsernameandPasswordValid(password)) {
-
-
-                customresultdialog(requireContext(),"UnSuccessful!","Password must have at least 8 characters, one uppercase letter, one lowercase letter, one special character, and one number",R.color.MellowMelon)
-
-
-                return@setOnClickListener
-            }
+//
+//            if (!isUsernameandPasswordValid(username)) {
+//
+//
+//                customresultdialog(requireContext(),"UnSuccessful!","Username must have at least 8 characters, one uppercase letter, one lowercase letter, one special character, and one number",R.color.MellowMelon)
+//
+//                return@setOnClickListener
+//            }
+//
+//
+//
+//            if (!isUsernameandPasswordValid(password)) {
+//
+//
+//                customresultdialog(requireContext(),"UnSuccessful!","Password must have at least 8 characters, one uppercase letter, one lowercase letter, one special character, and one number",R.color.MellowMelon)
+//
+//
+//                return@setOnClickListener
+//            }
 
 
             val login = Login(

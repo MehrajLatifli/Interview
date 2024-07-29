@@ -23,6 +23,7 @@ import javax.inject.Inject
 class AuthRepository @Inject constructor(private val api: IApiManager) {
 
     suspend fun registerAdmin(registerAdmin: RegisterAdmin) = safeApiRequest {
+
         val usernamePart = registerAdmin.username?.toRequestBody("text/plain".toMediaType())
             ?: "".toRequestBody("text/plain".toMediaType())
         val emailPart = registerAdmin.email?.toRequestBody("text/plain".toMediaType())
@@ -45,6 +46,7 @@ class AuthRepository @Inject constructor(private val api: IApiManager) {
             imagePath = imagePathPart
         )
     }
+
 
     suspend fun registerHR(registerHR: RegisterHR) = safeApiRequest {
         val usernamePart = registerHR.username?.toRequestBody("text/plain".toMediaType())

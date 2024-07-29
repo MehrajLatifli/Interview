@@ -20,7 +20,7 @@ public  class Level : BaseEntity
     [Required]
     public string Name { get; set; }
 
-    [Column(TypeName = "decimal(18, 0)")]
+    [Column(TypeName = "decimal(18, 2)")]
     public decimal Coefficient { get; set; }
 
     [InverseProperty("Level")]

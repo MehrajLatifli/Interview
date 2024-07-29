@@ -21,11 +21,12 @@ namespace Interview.Application.Services.Concrete
 
         private readonly IUserReadRepository _userReadRepository;
 
-        public StructureTypeServiceManager(IMapper mapper, IStructureTypeWriteRepository structureTypeWriteRepository, IStructureTypeReadRepository structureTypeReadRepository)
+        public StructureTypeServiceManager(IMapper mapper, IStructureTypeWriteRepository structureTypeWriteRepository, IStructureTypeReadRepository structureTypeReadRepository, IUserReadRepository userReadRepository)
         {
             _mapper = mapper;
             _structureTypeWriteRepository = structureTypeWriteRepository;
             _structureTypeReadRepository = structureTypeReadRepository;
+            _userReadRepository = userReadRepository;
         }
 
 

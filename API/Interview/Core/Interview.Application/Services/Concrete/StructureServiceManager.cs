@@ -176,6 +176,8 @@ namespace Interview.Application.Services.Concrete
                     {
                         Id = model.Id,
                         Name = model.Name,
+                        ParentId = model.ParentId,
+                        StructureTypeId = model.StructureTypeId,
 
                     };
 
