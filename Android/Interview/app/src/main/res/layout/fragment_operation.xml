@@ -51,6 +51,7 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvOperationtype"
+                android:layoutAnimation="@anim/item_layout_animation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"

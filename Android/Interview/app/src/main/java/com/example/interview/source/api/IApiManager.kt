@@ -3,11 +3,15 @@ package com.example.interview.source.api
 import com.example.interview.models.responses.get.candidate.CandidateDocumentResponse
 import com.example.interview.models.responses.get.candidate.CandidateResponse
 import com.example.interview.models.responses.get.login.LoginResponse
+import com.example.interview.models.responses.get.position.PositionResponse
 import com.example.interview.models.responses.get.profile.ProfileResponse
+import com.example.interview.models.responses.get.structure.StructureResponse
 import com.example.interview.models.responses.get.token.TokenResponse
+import com.example.interview.models.responses.get.vacancy.VacancyResponse
 import com.example.interview.models.responses.post.candidate.Candidate
 import com.example.interview.models.responses.post.login.Login
 import com.example.interview.models.responses.post.token.RefreshTokenRequest
+import com.example.interview.models.responses.post.vacancy.Vacancy
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
@@ -110,5 +114,42 @@ interface IApiManager {
         @Part("address") address: RequestBody?
     ): Response<Unit>
 
+
+    @GET("Structure/structure")
+    suspend fun getAllStructures(): Response<List<StructureResponse>>
+
+    @GET("Structure/structure/{id}")
+    suspend fun getStructureByID(
+        @Path("id") id: Int
+    ): Response<StructureResponse>
+
+    @GET("Position/position")
+    suspend fun getAllPositions(): Response<List<PositionResponse>>
+
+    @GET("Position/position/{id}")
+    suspend fun getPositionByID(
+        @Path("id") id: Int
+    ): Response<PositionResponse>
+
+    @GET("Vacancy/vacancy")
+    suspend fun getAllVacancies(): Response<List<VacancyResponse>>
+
+    @GET("Vacancy/vacancy/{id}")
+    suspend fun getVacancyByID(
+        @Path("id") id: Int
+    ): Response<VacancyResponse>
+
+    @POST("Vacancy/vacancy")
+    suspend fun addVacancy(@Body vacancy: Vacancy): Response<Unit>
+
+    @PUT("Vacancy/vacancy")
+    suspend fun updateVacancy(
+        @Path("id") id: Int,
+        @Body vacancy: Vacancy): Response<Unit>
+
+    @DELETE("Vacancy/vacancy/{id}")
+    suspend fun deleteVacancyById(
+        @Path("id") id: Int
+    ): Response<Unit>
 
 }

@@ -46,6 +46,7 @@ class CandidateViewModel @Inject constructor(private val candidateRepository: Ca
     fun getAllCandidateDocuments(): List<CandidateDocumentResponse> {
         _loading.value = true
         viewModelScope.launch {
+            delay(1000)
             val result = candidateRepository.getAllCandidateDocuments()
             if (result is Resource.Success) {
 
@@ -71,7 +72,7 @@ class CandidateViewModel @Inject constructor(private val candidateRepository: Ca
             val result = candidateRepository.getCandidateDocumentByID(id)
             if (result is Resource.Success) {
 
-                delay(200)
+                delay(1000)
                 _loading.postValue(false)
                 val itemResponse = result.data
                 if (itemResponse != null) {

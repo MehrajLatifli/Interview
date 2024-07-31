@@ -5,5 +5,52 @@
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
 
+    <!-- Custom style for TextInputLayout with outlined box and exposed dropdown menu -->
+    <style name="CustomTextInputLayoutStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+        <!-- Customize border color -->
+        <item name="boxStrokeColor">@drawable/dropdown_boxstrokecolor</item>
+        <item name="boxStrokeWidth">2dp</item>
+        <!-- Customize hint text color -->
+        <item name="hintTextColor">@color/ComingUpRoses</item>
+        <item name="android:textColorHint">@color/ComingUpRoses</item>
+        <!-- Customize dropdown menu styles -->
+        <item name="popupTheme">@style/CustomPopupTheme</item>
+    </style>
+
+    <!-- Custom style for the popup theme -->
+    <style name="CustomPopupTheme" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <!-- Customize dropdown menu text color -->
+        <item name="android:textColor">@color/ComingUpRoses</item>
+        <!-- Customize dropdown menu background color -->
+        <item name="android:background">@color/ComingUpRoses</item>
+        <!-- Set custom drawable for the dropdown arrow -->
+        <item name="android:popupBackground">@drawable/dropdown_arrow_vacancy</item>
+    </style>
+
+    <!-- Custom TimePickerDialog Theme -->
+    <style name="CustomDatePickerDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorAccent">@color/ComingUpRoses</item>
+        <item name="android:textColor">@color/White</item>
+        <item name="android:buttonBarPositiveButtonStyle">@style/DialogButtonStyled</item>
+        <item name="android:buttonBarNegativeButtonStyle">@style/DialogButtonStyled</item>
+        <item name="android:buttonBarNeutralButtonStyle">@style/DialogButtonStyled</item>
+    </style>
+
+
+    <!-- Custom DatePickerDialog Theme -->
+    <style name="CustomTimePickerDialogTheme" parent="ThemeOverlay.AppCompat.Dialog.Alert">
+        <item name="colorAccent">@color/ComingUpRoses</item>
+        <item name="android:textColor">@color/White</item>
+        <item name="android:buttonBarPositiveButtonStyle">@style/DialogButtonStyled</item>
+        <item name="android:buttonBarNegativeButtonStyle">@style/DialogButtonStyled</item>
+        <item name="android:buttonBarNeutralButtonStyle">@style/DialogButtonStyled</item>
+
+    </style>
+
+    <style name="DialogButtonStyled" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:textColor">@color/ComingUpRoses</item>
+    </style>
+
+
     <style name="Theme.Interview" parent="Base.Theme.Interview" />
 </resources>

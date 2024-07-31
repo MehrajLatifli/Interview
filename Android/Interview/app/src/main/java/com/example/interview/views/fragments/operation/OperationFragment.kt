@@ -56,6 +56,14 @@ class OperationFragment : BaseFragment<FragmentOperationBinding>(
                         findNavController().navigate(action)
                     }
                 }
+                if (operationTypeText == "Vacancy" && selectedItemText == "Create") {
+                    val action = OperationFragmentDirections.actionOperationFragmentToVacancyCreateFragment()
+                    findNavController().navigate(action)
+                }
+                if (operationTypeText == "Vacancy" && selectedItemText == "Read") {
+//                    val action = OperationFragmentDirections.actionOperationFragmentToCandidateReadFragment()
+//                    findNavController().navigate(action)
+                }
             }
         }
 

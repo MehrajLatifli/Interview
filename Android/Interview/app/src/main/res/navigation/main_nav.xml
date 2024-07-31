@@ -94,6 +94,9 @@
         <action
             android:id="@+id/action_operationFragment_to_candidateReadFragment"
             app:destination="@id/candidateReadFragment" />
+        <action
+            android:id="@+id/action_operationFragment_to_vacancyCreateFragment"
+            app:destination="@id/vacancyCreateFragment" />
     </fragment>
     <fragment
         android:id="@+id/candidateCreateFragment"
@@ -147,4 +150,9 @@
             app:popUpTo="@id/candidateUpdateFragment"
             app:popUpToInclusive="true" />
     </fragment>
+    <fragment
+        android:id="@+id/vacancyCreateFragment"
+        android:name="com.example.interview.views.fragments.vacancy.VacancyCreateFragment"
+        android:label="fragment_vacancy_create"
+        tools:layout="@layout/fragment_vacancy_create" />
 </navigation>
