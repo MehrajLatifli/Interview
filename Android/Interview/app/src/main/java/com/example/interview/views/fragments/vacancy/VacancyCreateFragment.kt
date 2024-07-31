@@ -156,7 +156,6 @@ class VacancyCreateFragment : BaseFragment<FragmentVacancyCreateBinding>(Fragmen
             setupAutoCompleteTextView()
         }
 
-
     }
     private fun addMonthSafely(startCalendar: Calendar): Calendar {
         val endCalendar = startCalendar.clone() as Calendar
