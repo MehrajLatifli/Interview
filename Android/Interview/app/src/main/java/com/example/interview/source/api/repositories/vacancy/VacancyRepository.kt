@@ -42,9 +42,9 @@ class VacancyRepository @Inject constructor(private val api: IApiManager) {
 
     }
 
-    suspend fun updateVacancy(id:Int, vacancy: Vacancy) =safeApiRequest{
+    suspend fun updateVacancy(vacancy: VacancyResponse) =safeApiRequest{
 
-        api.updateVacancy(id,Vacancy(vacancy.title, vacancy.description, vacancy.startDate, vacancy.endDate,vacancy.positionId,vacancy.structureId) )
+        api.updateVacancy(VacancyResponse(vacancy.id, vacancy.title, vacancy.description, vacancy.startDate, vacancy.endDate,vacancy.positionId,vacancy.structureId) )
 
     }
 

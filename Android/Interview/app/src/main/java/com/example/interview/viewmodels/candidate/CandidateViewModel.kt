@@ -154,7 +154,7 @@ class CandidateViewModel @Inject constructor(private val candidateRepository: Ca
             } else if (result is Resource.Error) {
                 _loading.postValue(false)
                 _error.postValue(result.message ?: "Unknown error")
-                _complateResult.postValue(true)
+                _complateResult.postValue(false)
 
                 Log.e("CandidateViewModel", result.message ?: "Unknown error")
             }

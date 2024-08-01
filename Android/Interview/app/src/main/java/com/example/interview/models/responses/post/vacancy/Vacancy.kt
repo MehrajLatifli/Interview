@@ -4,16 +4,16 @@ package com.example.interview.models.responses.post.vacancy
 import com.google.gson.annotations.SerializedName
 
 data class Vacancy(
-    @SerializedName("Title")
+    @SerializedName("title")
     val title: String,
-    @SerializedName("Description")
+    @SerializedName("description")
     val description: String,
-    @SerializedName("StartDate")
+    @SerializedName("startDate")
     val startDate: String,
-    @SerializedName("EndDate")
+    @SerializedName("endDate")
     val endDate: String,
-    @SerializedName("PositionId")
+    @SerializedName("positionId")
     val positionId: Int,
-    @SerializedName("StructureId")
+    @SerializedName("structureId")
     val structureId: Int,
 )

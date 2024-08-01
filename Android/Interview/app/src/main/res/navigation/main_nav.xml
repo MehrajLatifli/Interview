@@ -97,6 +97,9 @@
         <action
             android:id="@+id/action_operationFragment_to_vacancyCreateFragment"
             app:destination="@id/vacancyCreateFragment" />
+        <action
+            android:id="@+id/action_operationFragment_to_vacancyReadFragment"
+            app:destination="@id/vacancyReadFragment" />
     </fragment>
     <fragment
         android:id="@+id/candidateCreateFragment"
@@ -105,10 +108,14 @@
         tools:layout="@layout/fragment_candidate_create" >
         <action
             android:id="@+id/action_candidateCreateFragment_to_operationFragment"
-            app:destination="@id/operationFragment" />
+            app:destination="@id/operationFragment"
+            app:popUpTo="@id/candidateCreateFragment"
+            app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_candidateCreateFragment_to_candidateReadFragment"
-            app:destination="@id/candidateReadFragment" />
+            app:destination="@id/candidateReadFragment"
+            app:popUpTo="@id/candidateCreateFragment"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/candidateReadFragment"
@@ -154,5 +161,54 @@
         android:id="@+id/vacancyCreateFragment"
         android:name="com.example.interview.views.fragments.vacancy.VacancyCreateFragment"
         android:label="fragment_vacancy_create"
-        tools:layout="@layout/fragment_vacancy_create" />
+        tools:layout="@layout/fragment_vacancy_create" >
+        <action
+            android:id="@+id/action_vacancyCreateFragment_to_vacancyReadFragment"
+            app:destination="@id/vacancyReadFragment"
+            app:popUpTo="@id/vacancyCreateFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_vacancyCreateFragment_to_operationFragment"
+            app:destination="@id/operationFragment"
+            app:popUpTo="@id/vacancyCreateFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/vacancyReadFragment"
+        android:name="com.example.interview.views.fragments.vacancy.VacancyReadFragment"
+        android:label="fragment_vacancy_read"
+        tools:layout="@layout/fragment_vacancy_read" >
+        <action
+            android:id="@+id/action_vacancyReadFragment_to_vacancyCreateFragment"
+            app:destination="@id/vacancyCreateFragment"
+            app:popUpTo="@id/vacancyReadFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_vacancyReadFragment_to_vacancyDetailFragment"
+            app:destination="@id/vacancyDetailFragment" />
+        <action
+            android:id="@+id/action_vacancyReadFragment_to_vacancyUpdateFragment"
+            app:destination="@id/vacancyUpdateFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/vacancyDetailFragment"
+        android:name="com.example.interview.views.fragments.vacancy.VacancyDetailFragment"
+        android:label="fragment_vacancy_detail"
+        tools:layout="@layout/fragment_vacancy_detail" >
+        <argument
+            android:name="vacancy"
+            app:argType="com.example.interview.models.responses.get.vacancy.VacancyResponse" />
+    </fragment>
+    <fragment
+        android:id="@+id/vacancyUpdateFragment"
+        android:name="com.example.interview.views.fragments.vacancy.VacancyUpdateFragment"
+        android:label="fragment_vacancy_update"
+        tools:layout="@layout/fragment_vacancy_update" >
+        <action
+            android:id="@+id/action_vacancyUpdateFragment_to_vacancyReadFragment"
+            app:destination="@id/vacancyReadFragment" />
+        <argument
+            android:name="vacancy"
+            app:argType="com.example.interview.models.responses.get.vacancy.VacancyResponse" />
+    </fragment>
 </navigation>

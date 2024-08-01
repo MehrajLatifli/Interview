@@ -144,8 +144,7 @@ interface IApiManager {
 
     @PUT("Vacancy/vacancy")
     suspend fun updateVacancy(
-        @Path("id") id: Int,
-        @Body vacancy: Vacancy): Response<Unit>
+        @Body vacancy: VacancyResponse): Response<Unit>
 
     @DELETE("Vacancy/vacancy/{id}")
     suspend fun deleteVacancyById(

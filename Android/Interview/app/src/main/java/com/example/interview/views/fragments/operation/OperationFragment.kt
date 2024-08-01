@@ -28,7 +28,7 @@ class OperationFragment : BaseFragment<FragmentOperationBinding>(
     private var operationTypeList = arrayListOf(
         OperationType(R.drawable.candidate, "Candidate", operations),
         OperationType(R.drawable.vacancy, "Vacancy", operations),
-        OperationType(R.drawable.question, "Question", operations),
+//        OperationType(R.drawable.question, "Question", operations),
 //        OperationType(R.drawable.category, "Category", operationCRUD),
 //        OperationType(R.drawable.structure, "Structure", operationCRUD),
 //        OperationType(R.drawable.level, "Level", operationCRUD),
@@ -61,8 +61,8 @@ class OperationFragment : BaseFragment<FragmentOperationBinding>(
                     findNavController().navigate(action)
                 }
                 if (operationTypeText == "Vacancy" && selectedItemText == "Read") {
-//                    val action = OperationFragmentDirections.actionOperationFragmentToCandidateReadFragment()
-//                    findNavController().navigate(action)
+                    val action = OperationFragmentDirections.actionOperationFragmentToVacancyReadFragment()
+                    findNavController().navigate(action)
                 }
             }
         }

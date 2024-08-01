@@ -1,6 +1,7 @@
 package com.example.interview.utilities
 
 import android.content.Context
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
@@ -8,6 +9,8 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.example.interview.R
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 @BindingAdapter("ellipsizedTextIfLong")
 fun TextView.setEllipsizedTextIfLong(text: String) {
@@ -31,3 +34,38 @@ fun ImageView.loadImageWithGlide(imageId: String) {
             .error(R.color.MellowMelon))
         .into(this)
 }
+
+
+
+@BindingAdapter("formatDateTimeStart", "formatDateTimeEnd")
+fun TextView.formatDateTime(startDate: String?, endDate: String?) {
+    val inputFormatter = DateTimeFormatter.ISO_DATE_TIME
+    val outputFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy  HH:mm:ss.SSS")
+
+    val formattedStartDate = try {
+        if (startDate.isNullOrEmpty()) {
+            "Invalid Start Date Format"
+        } else {
+            val dateTime = LocalDateTime.parse(startDate, inputFormatter)
+            dateTime.format(outputFormatter)
+        }
+    } catch (e: Exception) {
+        "Invalid Start Date Format"
+    }
+
+    val formattedEndDate = try {
+        if (endDate.isNullOrEmpty()) {
+            "Invalid End Date Format"
+        } else {
+            val dateTime = LocalDateTime.parse(endDate, inputFormatter)
+            dateTime.format(outputFormatter)
+        }
+    } catch (e: Exception) {
+        "Invalid End Date Format"
+    }
+
+    this.text = "Start date: \t ${formattedStartDate} \nEnd date:  \t ${formattedEndDate}"
+}
+
+
+

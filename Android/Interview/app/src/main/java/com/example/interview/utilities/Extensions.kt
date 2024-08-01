@@ -28,6 +28,8 @@ import java.io.InputStream
 import android.graphics.BitmapFactory
 import android.os.Handler
 import android.os.Looper
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 
 fun View.gone() {
@@ -50,6 +52,8 @@ fun EditText.setEllipsizedEditTextIfLongBySize(text: String, size: Int) {
         this.setText(text)
     }
 }
+
+
 
 
 

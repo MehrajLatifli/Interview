@@ -76,12 +76,58 @@ class VacancyViewModel @Inject constructor(
             } else if (result is Resource.Error) {
                 _loading.postValue(false)
                 _error.postValue(result.message ?: "Unknown error")
-                _completeResult.postValue(true)
+                _completeResult.postValue(false)
 
                 Log.e("VacancyViewModel", result.message ?: "Unknown error")
             }
         }
     }
+
+    fun getAllVacancies(): List<VacancyResponse> {
+        _loading.value = true
+        viewModelScope.launch {
+            val result = vacancyRepository.getAllVacancies()
+            if (result is Resource.Success) {
+
+                _loading.postValue(false)
+                val itemResponse = result.data
+                if (itemResponse != null) {
+                    _vacancies.value = itemResponse!!
+                    Log.e("Vacancies",  _vacancies.value.toString())
+                }
+
+            } else if (result is Resource.Error) {
+                _loading.postValue(false)
+                _error.postValue(result.message ?: "Unknown error")
+                Log.e("VacancyViewModel", result.message ?: "Unknown error")
+            }
+        }
+
+        return _vacancies.value.orEmpty()
+    }
+
+    fun getVacancyByID(id:Int) {
+        _loading.value = true
+        viewModelScope.launch {
+            val result = vacancyRepository.getVacancyByID(id)
+            if (result is Resource.Success) {
+
+                delay(200)
+                _loading.postValue(false)
+                val itemResponse = result.data
+                if (itemResponse != null) {
+                    _vacancy.value = itemResponse!!
+                }
+
+            } else if (result is Resource.Error) {
+                _loading.postValue(false)
+                _error.postValue(result.message ?: "Unknown error")
+                Log.e("VacancyViewModel", result.message ?: "Unknown error")
+            }
+        }
+
+    }
+
 
 
     fun getAllPositions(): List<PositionResponse> {
@@ -94,7 +140,7 @@ class VacancyViewModel @Inject constructor(
                 val itemResponse = result.data
                 if (itemResponse != null) {
                     _positions.value = itemResponse!!
-                    Log.e("Positions",  _position.value.toString())
+                    Log.e("Positions",  _positions.value.toString())
                 }
 
             } else if (result is Resource.Error) {
@@ -107,7 +153,7 @@ class VacancyViewModel @Inject constructor(
         return _positions.value.orEmpty()
     }
 
-    fun getPositionByID(id:Int) {
+    fun getPositionByID(id:Int):PositionResponse? {
         _loading.value = true
         viewModelScope.launch {
             val result = positionRepository.getPositionByID(id)
@@ -118,6 +164,7 @@ class VacancyViewModel @Inject constructor(
                 val itemResponse = result.data
                 if (itemResponse != null) {
                     _position.value = itemResponse!!
+                    Log.e("Position",  _position.value.toString())
                 }
 
             } else if (result is Resource.Error) {
@@ -127,6 +174,7 @@ class VacancyViewModel @Inject constructor(
             }
         }
 
+        return _position.value?:null
     }
 
     fun getAllStructures(): List<StructureResponse> {
@@ -152,8 +200,9 @@ class VacancyViewModel @Inject constructor(
         return _structures.value.orEmpty()
     }
 
-    fun getStructureByID(id:Int) {
+    fun getStructureByID(id:Int) :StructureResponse?{
         _loading.value = true
+
         viewModelScope.launch {
             val result = structureRepository.getStructureByID(id)
             if (result is Resource.Success) {
@@ -163,6 +212,8 @@ class VacancyViewModel @Inject constructor(
                 val itemResponse = result.data
                 if (itemResponse != null) {
                     _structure.value = itemResponse!!
+                    Log.e("Structure",  _structure.value.toString())
+
                 }
 
             } else if (result is Resource.Error) {
@@ -172,5 +223,44 @@ class VacancyViewModel @Inject constructor(
             }
         }
 
+        return  _structure.value?:null
+    }
+
+    fun deleteVacancyById(documentId: Int) {
+        _loading.value = true
+
+        viewModelScope.launch {
+            val result = vacancyRepository.deleteVacancyById(documentId)
+            if (result is Resource.Success) {
+
+                delay(500)
+                _loading.postValue(false)
+                _afterDeleteResult.postValue(true)
+                Log.d("VacancyViewModel", "Vacancy deleted successfully")
+            } else if (result is Resource.Error) {
+                _afterDeleteResult.postValue(false)
+                _loading.postValue(false)
+                _error.postValue(result.message ?: "Unknown error")
+                Log.e("VacancyViewModel", "Failed to delete Vacancy: ${result.message ?: "Unknown error"}")
+            }
+        }
+    }
+
+    fun updateVacancy(vacancy: VacancyResponse) {
+        _loading.value = true
+
+        viewModelScope.launch {
+            val result = vacancyRepository.updateVacancy(vacancy)
+            if (result is Resource.Success) {
+                delay(500)
+                _afterUpdateResult.postValue(true)
+                Log.d("VacancyViewModel", "Vacancy updated: ${result.data}")
+            } else if (result is Resource.Error) {
+                _loading.postValue(false)
+                _error.postValue(result.message ?: "Unknown error")
+                _afterUpdateResult.postValue(false)
+                Log.e("VacancyViewModel", result.message ?: "Unknown error")
+            }
+        }
     }
 }
