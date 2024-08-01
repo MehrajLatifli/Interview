@@ -181,7 +181,6 @@ class VacancyUpdateFragment : BaseFragment<FragmentVacancyUpdateBinding>(Fragmen
                     findNavController().navigate(VacancyUpdateFragmentDirections.actionVacancyUpdateFragmentToVacancyReadFragment())
                 } else {
                     delay(500)
-                    // Handle unsuccessful update
                 }
             }
         }
