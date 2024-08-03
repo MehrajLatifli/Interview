@@ -172,7 +172,6 @@ INSERT [Interview].[dbo].[Questions] ([Text], [LevelId], [CategoryId], [Structur
 INSERT [Interview].[dbo].[Questions] ([Text], [LevelId], [CategoryId], [StructureId]) VALUES (N'Question_118', 3, 2, 1)
 INSERT [Interview].[dbo].[Questions] ([Text], [LevelId], [CategoryId], [StructureId]) VALUES (N'Question_119', 3, 2, 1)
 INSERT [Interview].[dbo].[Questions] ([Text], [LevelId], [CategoryId], [StructureId]) VALUES (N'Question_120', 3, 2, 1)
-
 INSERT [Interview].[dbo].[Questions] ([Text], [LevelId], [CategoryId], [StructureId]) VALUES (N'Question_121', 1, 1, 8)
 INSERT [Interview].[dbo].[Questions] ([Text], [LevelId], [CategoryId], [StructureId]) VALUES (N'Question_122', 1, 1, 8)
 INSERT [Interview].[dbo].[Questions] ([Text], [LevelId], [CategoryId], [StructureId]) VALUES (N'Question_123', 1, 1, 8)
