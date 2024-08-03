@@ -14,7 +14,7 @@
 
         public int CandidateId { get; set; }
 
-        public int UserAccountId { get; set; }
+        public int UserId { get; set; }
 
     }
 }
