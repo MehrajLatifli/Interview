@@ -106,7 +106,7 @@ namespace Interview.API.Controllers.Operations
         }
 
 
-        [HttpGet(Routes.RandomQuestionById)]
+        [HttpPost(Routes.RandomQuestionById)]
         public async Task<IActionResult> GetRandomQuestion([FromQuery] RandomQuestionRequestModel request)
         {
 
@@ -117,7 +117,7 @@ namespace Interview.API.Controllers.Operations
 
         }
 
-        [HttpGet(Routes.RandomQuestion2)]
+        [HttpPost(Routes.RandomQuestion2)]
         public async Task<IActionResult> GetRandomQuestion2([FromQuery] RandomQuestionRequestModel2 request)
         {
 
