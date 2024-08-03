@@ -7,6 +7,7 @@ INSERT INTO [Interview].[dbo].[CandidateDocuments] ([Surname], [Name], [Patronym
 --Candidates
 
 INSERT [Interview].[dbo].[Candidates] ([CandidateDocumentId]) VALUES (1)
+INSERT [Interview].[dbo].[Candidates] ([CandidateDocumentId]) VALUES (2)
 
 --Categories
 
