@@ -11,9 +11,9 @@ services:
       - "50005:443"
     # environment:
     #   - TZ=Asia/Baku
-    extra_hosts:
-       - "host.docker.internal:192.168.22.6"
-       - "host.docker.internal:192.168.22.189"
+    # extra_hosts:
+    #    - "host.docker.internal:192.168.22.6"
+    #    - "host.docker.internal:192.168.22.189"
 
 
 
