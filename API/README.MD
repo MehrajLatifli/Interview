@@ -4,6 +4,8 @@
 <h1> SQL </h1>
 <a href="https://github.com/MehrajLatifli/Interview-with-Onion-Architecture-/blob/master/v2/Assets/Interview.sql">Interview SQL file</a>
 </br>
+<a href="https://github.com/MehrajLatifli/Interview-with-Onion-Architecture-/blob/master/v2/Assets/InsertExample.sql">InsertExample SQL file</a>
+</br>
 <p>If Id's jumping up 1000 ->  ALTER DATABASE SCOPED CONFIGURATION SET IDENTITY_CACHE = OFF   GO</p>
 </br>
 <img src="https://github.com/MehrajLatifli/Interview-with-Onion-Architecture-/blob/master/v2/Assets/İnterview%20diagram.png" alt="Diagram" width="500">
