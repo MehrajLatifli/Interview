@@ -1,14 +1,3 @@
---Positions
-
-INSERT [Interview].[dbo].[Positions] ([Name]) VALUES (N'Junior')
-INSERT [Interview].[dbo].[Positions] ([Name]) VALUES (N'Middle')
-INSERT [Interview].[dbo].[Positions] ([Name]) VALUES (N'Senior')
-
---Vacancies
-
-INSERT [Interview].[dbo].[Vacancies] ( [Title], [Description], [StartDate], [EndDate], [PositionId], [StructureId]) VALUES ( N'Vacancy_1', N'Vacancy_Description', CAST(N'2024-07-29T17:20:42.0630000' AS DateTime2), CAST(N'2024-08-29T17:20:42.0630000' AS DateTime2), 1, 1)
-INSERT [Interview].[dbo].[Vacancies] ( [Title], [Description], [StartDate], [EndDate], [PositionId], [StructureId]) VALUES ( N'Vacancy_2', N'Vacancy_Description', CAST(N'2024-07-29T17:20:42.0630000' AS DateTime2), CAST(N'2024-08-29T17:20:42.0630000' AS DateTime2), 2, 1)
-INSERT [Interview].[dbo].[Vacancies] ( [Title], [Description], [StartDate], [EndDate], [PositionId], [StructureId]) VALUES ( N'Vacancy_3', N'Vacancy_Description', CAST(N'2024-07-29T17:20:42.0630000' AS DateTime2), CAST(N'2024-08-29T17:20:42.0630000' AS DateTime2), 3, 1)
 
 --CandidateDocuments
 
@@ -47,6 +36,18 @@ INSERT [Interview].[dbo].[Structures] ([Name], [ParentId], [StructureTypeId]) VA
 INSERT [Interview].[dbo].[Structures] ([Name], [ParentId], [StructureTypeId]) VALUES (N'Department_2', N'0', 1)
 INSERT [Interview].[dbo].[Structures] ([Name], [ParentId], [StructureTypeId]) VALUES (N'Department_3', N'0', 1)
 INSERT [Interview].[dbo].[Structures] ([Name], [ParentId], [StructureTypeId]) VALUES (N'Department_4', N'0', 1)
+
+--Positions
+
+INSERT [Interview].[dbo].[Positions] ([Name]) VALUES (N'Junior')
+INSERT [Interview].[dbo].[Positions] ([Name]) VALUES (N'Middle')
+INSERT [Interview].[dbo].[Positions] ([Name]) VALUES (N'Senior')
+
+--Vacancies
+
+INSERT [Interview].[dbo].[Vacancies] ( [Title], [Description], [StartDate], [EndDate], [PositionId], [StructureId]) VALUES ( N'Vacancy_1', N'Vacancy_Description', CAST(N'2024-07-29T17:20:42.0630000' AS DateTime2), CAST(N'2024-08-29T17:20:42.0630000' AS DateTime2), 1, 1)
+INSERT [Interview].[dbo].[Vacancies] ( [Title], [Description], [StartDate], [EndDate], [PositionId], [StructureId]) VALUES ( N'Vacancy_2', N'Vacancy_Description', CAST(N'2024-07-29T17:20:42.0630000' AS DateTime2), CAST(N'2024-08-29T17:20:42.0630000' AS DateTime2), 2, 1)
+INSERT [Interview].[dbo].[Vacancies] ( [Title], [Description], [StartDate], [EndDate], [PositionId], [StructureId]) VALUES ( N'Vacancy_3', N'Vacancy_Description', CAST(N'2024-07-29T17:20:42.0630000' AS DateTime2), CAST(N'2024-08-29T17:20:42.0630000' AS DateTime2), 3, 1)
 
 --Questions
 
