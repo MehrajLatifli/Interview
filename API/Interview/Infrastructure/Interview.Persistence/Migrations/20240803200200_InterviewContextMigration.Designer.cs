@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Interview.Persistence.Migrations
 {
     [DbContext(typeof(InterviewContext))]
-    [Migration("20240729143626_InterviewContextMigration")]
+    [Migration("20240803200200_InterviewContextMigration")]
     partial class InterviewContextMigration
     {
         /// <inheritdoc />
@@ -241,7 +241,7 @@ namespace Interview.Persistence.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<decimal>("Coefficient")
-                        .HasColumnType("decimal(18.2)");
+                        .HasColumnType("decimal(18, 2)");
 
                     b.Property<string>("Name")
                         .IsRequired()
