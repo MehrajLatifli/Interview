@@ -204,56 +204,67 @@ namespace Interview.Application.Services.Concrete
 
 
 
-                    await Task.Run(() =>{
+                    await Task.Run(() =>
+                    {
 
-                          if (!_mapper.Map<List<SessionDTOforGetandGetAll>>(_sessionReadRepository.GetAll(false)).Any(i => i.Id == model.Id))
-                           {
+                        if (!_mapper.Map<List<SessionDTOforGetandGetAll>>(_sessionReadRepository.GetAll(false)).Any(i => i.Id == model.Id))
+                        {
                             throw new NotFoundException("Session not found");
-                           }
+                        }
                     });
 
 
+                    var currentuserid = _userReadRepository.GetAll(false).AsEnumerable().Where(i => i.UserName == claimsPrincipal.Identity.Name).FirstOrDefault().Id;
 
-
-
-                    var sessionQuery = from sq in _mapper.Map<List<SessionQuestionDTOforGetandGetAll>>(_sessionQuestionReadRepository.GetAll(false))
-                                       join q in _mapper.Map<List<QuestionDTOforGetandGetAll>>(_questionReadRepository.GetAll(false)) on sq.QuestionId equals q.Id
-                                       join s in _mapper.Map<List<SessionDTOforGetandGetAll>>(_sessionReadRepository.GetAll(false)) on sq.SessionId equals s.Id
-                                       join l in _mapper.Map<List<LevelDTOforGetandGetAll>>(_levelReadRepository.GetAll(false)) on q.LevelId equals l.Id
-                                       where s.Id == model.Id
-                                       select new
-                                       {
-                                           SessionId = model.Id,
-                                           EndValue = l.Coefficient * sq.Value,
-                                           SessionEndDate = model.EndDate,
-
-                                       };
-
-
-
-
-
-                    var totalEndValue = sessionQuery.ToList().Sum(session => session.EndValue);
-
-                    var entity = _mapper.Map<Session>(model);
-
-
-
-                    entity = new Session
+                    if (_sessionReadRepository.GetAll(false).AsEnumerable().Any(i => i.UserId == currentuserid))
                     {
-                        Id = model.Id,
-                        EndValue = totalEndValue,
-                        StartDate = _mapper.Map<SessionDTOforGetandGetAll>(await _sessionReadRepository.GetByIdAsync(model.Id.ToString(), false)).StartDate,
-                        EndDate = model.EndDate,
-                        VacancyId = _sessionReadRepository.GetAll(false).Where(i => i.Id == model.Id).FirstOrDefault().VacancyId,
-                        CandidateId = _sessionReadRepository.GetAll(false).Where(i => i.Id == model.Id).FirstOrDefault().CandidateId,
-                        UserId = _sessionReadRepository.GetAll(false).Where(i => i.Id == model.Id).FirstOrDefault().UserId,
 
 
-                    };
 
-                    _sessionWriteRepository.Update(entity);
-                    await _sessionWriteRepository.SaveAsync();
+                        var sessionQuery = from sq in _mapper.Map<List<SessionQuestionDTOforGetandGetAll>>(_sessionQuestionReadRepository.GetAll(false))
+                                           join q in _mapper.Map<List<QuestionDTOforGetandGetAll>>(_questionReadRepository.GetAll(false)) on sq.QuestionId equals q.Id
+                                           join s in _mapper.Map<List<SessionDTOforGetandGetAll>>(_sessionReadRepository.GetAll(false)) on sq.SessionId equals s.Id
+                                           join l in _mapper.Map<List<LevelDTOforGetandGetAll>>(_levelReadRepository.GetAll(false)) on q.LevelId equals l.Id
+                                           where s.Id == model.Id
+                                           select new
+                                           {
+                                               SessionId = model.Id,
+                                               EndValue = l.Coefficient * sq.Value,
+                                               SessionEndDate = model.EndDate,
+
+                                           };
+
+
+
+
+
+                        var totalEndValue = sessionQuery.ToList().Sum(session => session.EndValue);
+
+                        var entity = _mapper.Map<Session>(model);
+
+
+
+                        entity = new Session
+                        {
+                            Id = model.Id,
+                            EndValue = totalEndValue,
+                            StartDate = _mapper.Map<SessionDTOforGetandGetAll>(await _sessionReadRepository.GetByIdAsync(model.Id.ToString(), false)).StartDate,
+                            EndDate = model.EndDate,
+                            VacancyId = _sessionReadRepository.GetAll(false).Where(i => i.Id == model.Id).FirstOrDefault().VacancyId,
+                            CandidateId = _sessionReadRepository.GetAll(false).Where(i => i.Id == model.Id).FirstOrDefault().CandidateId,
+                            UserId = _sessionReadRepository.GetAll(false).Where(i => i.Id == model.Id).FirstOrDefault().UserId,
+
+
+                        };
+
+                        _sessionWriteRepository.Update(entity);
+                        await _sessionWriteRepository.SaveAsync();
+                    }
+                    else
+                    {
+
+                        throw new ForbiddenException("You don't have update permission");
+                    }
                 }
                 else
                 {
@@ -277,11 +288,21 @@ namespace Interview.Application.Services.Concrete
 
                     if (_sessionReadRepository.GetAll().Any(i => i.Id == Convert.ToInt32(id)))
                     {
+                      var currentuserid =  _userReadRepository.GetAll(false).AsEnumerable().Where(i => i.UserName == claimsPrincipal.Identity.Name).FirstOrDefault().Id;
 
-                        await _sessionWriteRepository.RemoveByIdAsync(id.ToString());
-                        await _sessionWriteRepository.SaveAsync();
+                        if (_sessionReadRepository.GetAll(false).AsEnumerable().Any(i => i.UserId == currentuserid))
+                        {
 
-                        return null;
+                            await _sessionWriteRepository.RemoveByIdAsync(id.ToString());
+                            await _sessionWriteRepository.SaveAsync();
+
+                            return null;
+                        }
+                        else
+                        {
+
+                            throw new ForbiddenException("You don't have delete permission");
+                        }
 
                     }
 
