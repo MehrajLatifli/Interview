@@ -11,6 +11,8 @@ namespace Interview.Application.Services.Abstract
 
         public Task<List<SessionDTOforGetandGetAll>> GetSession(ClaimsPrincipal claimsPrincipal);
 
+        public Task<List<SessionDTOforGetandGetAll>> GetOwnSession(ClaimsPrincipal claimsPrincipal);
+
         public Task<SessionDTOforGetandGetAll> GetSessionById(int id, ClaimsPrincipal claimsPrincipal);
 
         public Task SessionUpdate(SessionDTOforUpdate model, ClaimsPrincipal claimsPrincipal);

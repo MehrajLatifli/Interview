@@ -54,6 +54,18 @@ namespace Interview.API.Controllers.Operations
         }
 
 
+        [HttpGet(Routes.OwnSession)]
+        public async Task<IActionResult> GetOwnSession()
+        {
+
+            var data = await _sessionService.GetOwnSession(User);
+
+
+            return Ok(data);
+
+        }
+
+
         [HttpPost(Routes.Session)]
         public async Task<IActionResult> SessionCreate([FromBody] SessionDTOforCreate model)
         {

@@ -45,6 +45,7 @@ namespace Interview.API.API_Routes
 
 
         public const string Session = "session";
+        public const string OwnSession = "ownSession";
 
         public const string  SessionById = Session + "/{id}";
 

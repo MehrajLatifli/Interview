@@ -165,6 +165,52 @@ namespace Interview.Application.Services.Concrete
             }
         }
 
+        public async Task<List<SessionDTOforGetandGetAll>> GetOwnSession(ClaimsPrincipal claimsPrincipal)
+        {
+
+            if (!_userReadRepository.GetAll(false).AsEnumerable().Any(i => string.IsNullOrEmpty(i.RefreshToken) && i.UserName == claimsPrincipal.Identity.Name))
+            {
+                if (claimsPrincipal.Identity.IsAuthenticated)
+                {
+                    
+
+                    List<SessionDTOforGetandGetAll> datas = null;
+
+                    await Task.Run(() =>
+                    {
+                        datas = _mapper.Map<List<SessionDTOforGetandGetAll>>(_sessionReadRepository.GetAll(false));
+                    });
+
+                    if (datas.Count <= 0)
+                    {
+                        throw new NotFoundException("Session not found");
+                    }
+
+                    var currentuserid = _userReadRepository.GetAll(false).AsEnumerable().Where(i => i.UserName == claimsPrincipal.Identity.Name).FirstOrDefault().Id;
+
+                    if (_sessionReadRepository.GetAll(false).AsEnumerable().Any(i => i.UserId == currentuserid))
+                    {
+
+                        return datas;
+                    }
+                    else
+                    {
+
+                        throw new NotFoundException("You have not any sessions");
+                    }
+                }
+                else
+                {
+                    throw new UnauthorizedException("Current user is not authenticated.");
+                }
+            }
+            else
+            {
+                throw new UnauthorizedException("Current user is not authenticated.");
+            }
+        }
+
+
         public async Task<SessionDTOforGetandGetAll> GetSessionById(int id, ClaimsPrincipal claimsPrincipal)
         {
 
