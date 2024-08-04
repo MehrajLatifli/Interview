@@ -42,6 +42,8 @@ namespace Interview.Application.Services.Concrete
         private readonly IUserWriteRepository _userWriteRepository;
         private readonly IUserReadRepository _userReadRepository;
 
+
+
         public SessionServiceManager(IMapper mapper, ISessionWriteRepository sessionWriteRepository, ISessionReadRepository sessionReadRepository, IVacancyWriteRepository vacancyWriteRepository, IVacancyReadRepository vacancyReadRepository, ICandidateWriteRepository candidateWriteRepository, ICandidateReadRepository candidateReadRepository, ISessionQuestionWriteRepository sessionQuestionWriteRepository, ISessionQuestionReadRepository sessionQuestionReadRepository, IQuestionWriteRepository questionWriteRepository, IQuestionReadRepository questionReadRepository, ILevelWriteRepository levelWriteRepository, ILevelReadRepository levelReadRepository, IUserWriteRepository userWriteRepository, IUserReadRepository userReadRepository)
         {
             _mapper = mapper;
@@ -292,6 +294,12 @@ namespace Interview.Application.Services.Concrete
 
                         if (_sessionReadRepository.GetAll(false).AsEnumerable().Any(i => i.UserId == currentuserid))
                         {
+                            var sessinquestions = _sessionQuestionReadRepository.GetAll(false).AsEnumerable().Where(i => i.SessionId == id);
+                            foreach (var item in sessinquestions.ToList())
+                            {
+                                await _sessionQuestionWriteRepository.RemoveByIdAsync(item.Id.ToString());
+                                await _sessionQuestionWriteRepository.SaveAsync();
+                            }
 
                             await _sessionWriteRepository.RemoveByIdAsync(id.ToString());
                             await _sessionWriteRepository.SaveAsync();
