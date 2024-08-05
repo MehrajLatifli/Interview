@@ -109,14 +109,26 @@ class VacancyUpdateFragment : BaseFragment<FragmentVacancyUpdateBinding>(Fragmen
                 return@setOnClickListener
             }
 
-            if(startDateTime.contains(args.vacancy.startDate) && endDateTime.contains(args.vacancy.endDate)) {
+            if (!startDateTime.contains(args.vacancy.startDate) && !endDateTime.contains(args.vacancy.endDate)) {
+
+                val inputFormatter =
+                    DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss.SSS", Locale.getDefault())
+                val outputFormatter =
+                    DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.getDefault())
+
+
+                val dateString = binding.editText3.text.toString()
+                val dateTime = LocalDateTime.parse(dateString, inputFormatter)
+                val newDateTime = dateTime.plusMonths(1)
+
+                newDateTime.format(outputFormatter)
 
                 val vacancy = VacancyResponse(
                     id = args.vacancy.id,
                     title = binding.editText.text.toString(),
                     description = binding.editText2.text.toString(),
-                    startDate = args.vacancy.startDate,
-                    endDate = args.vacancy.endDate,
+                    startDate = dateTime.format(outputFormatter),
+                    endDate = newDateTime.format(outputFormatter),
                     positionId = selectedPositionId ?: 0,
                     structureId = selectedStructureId ?: 0
                 )
@@ -124,8 +136,7 @@ class VacancyUpdateFragment : BaseFragment<FragmentVacancyUpdateBinding>(Fragmen
                 viewModel.updateVacancy(vacancy)
 
 
-            }else
-            {
+            } else {
                 val vacancy = VacancyResponse(
                     id = args.vacancy.id,
                     title = binding.editText.text.toString(),
