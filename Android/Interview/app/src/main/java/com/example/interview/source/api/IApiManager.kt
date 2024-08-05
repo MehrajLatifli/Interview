@@ -5,13 +5,15 @@ import com.example.interview.models.responses.get.candidate.CandidateResponse
 import com.example.interview.models.responses.get.login.LoginResponse
 import com.example.interview.models.responses.get.position.PositionResponse
 import com.example.interview.models.responses.get.profile.ProfileResponse
+import com.example.interview.models.responses.get.session.SessionResponse
 import com.example.interview.models.responses.get.structure.StructureResponse
 import com.example.interview.models.responses.get.token.TokenResponse
 import com.example.interview.models.responses.get.vacancy.VacancyResponse
-import com.example.interview.models.responses.post.candidate.Candidate
-import com.example.interview.models.responses.post.login.Login
+import com.example.interview.models.responses.post.candidate.CandidateRequest
+import com.example.interview.models.responses.post.login.LoginRequest
+import com.example.interview.models.responses.post.session.SessionRequest
 import com.example.interview.models.responses.post.token.RefreshTokenRequest
-import com.example.interview.models.responses.post.vacancy.Vacancy
+import com.example.interview.models.responses.post.vacancy.VacancyRequest
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
@@ -24,7 +26,6 @@ import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.Path
-import retrofit2.http.Query
 
 interface IApiManager {
 
@@ -54,7 +55,7 @@ interface IApiManager {
 
 
     @POST("Auth/login")
-    suspend fun login(@Body login: Login): Response<LoginResponse>
+    suspend fun login(@Body loginRequest: LoginRequest): Response<LoginResponse>
 
 
     @GET("Auth/profile")
@@ -82,7 +83,12 @@ interface IApiManager {
     ): Response<Unit>
 
     @POST("Candidate/candidate")
-    suspend fun registerCandidate(@Body candidate: Candidate): Response<CandidateResponse>
+    suspend fun registerCandidate(@Body candidateRequest: CandidateRequest): Response<CandidateResponse>
+
+    @GET("Candidate/candidate/{id}")
+    suspend fun getCandidateByID(
+        @Path("id") id: Int
+    ): Response<CandidateResponse>
 
     @GET("CandidateDocument/candidatedocument")
     suspend fun getAllCandidateDocuments(): Response<List<CandidateDocumentResponse>>
@@ -123,6 +129,7 @@ interface IApiManager {
         @Path("id") id: Int
     ): Response<StructureResponse>
 
+
     @GET("Position/position")
     suspend fun getAllPositions(): Response<List<PositionResponse>>
 
@@ -130,6 +137,7 @@ interface IApiManager {
     suspend fun getPositionByID(
         @Path("id") id: Int
     ): Response<PositionResponse>
+
 
     @GET("Vacancy/vacancy")
     suspend fun getAllVacancies(): Response<List<VacancyResponse>>
@@ -140,7 +148,7 @@ interface IApiManager {
     ): Response<VacancyResponse>
 
     @POST("Vacancy/vacancy")
-    suspend fun addVacancy(@Body vacancy: Vacancy): Response<Unit>
+    suspend fun addVacancy(@Body vacancyRequest: VacancyRequest): Response<Unit>
 
     @PUT("Vacancy/vacancy")
     suspend fun updateVacancy(
@@ -148,6 +156,29 @@ interface IApiManager {
 
     @DELETE("Vacancy/vacancy/{id}")
     suspend fun deleteVacancyById(
+        @Path("id") id: Int
+    ): Response<Unit>
+
+
+    @GET("Session/ownSession")
+    suspend fun getAllOwnSession(): Response<List<SessionResponse>>
+
+    @GET("Session/session")
+    suspend fun getAllSession(): Response<List<SessionResponse>>
+
+    @GET("Session/session/{id}")
+    suspend fun getSessionByID(
+        @Path("id") id: Int
+    ): Response<SessionResponse>
+
+    @POST("Session/session")
+    suspend fun addSession(@Body sessionRequest: SessionRequest): Response<Unit>
+
+    @PUT("Session/session")
+    suspend fun updateSession(@Body session: SessionResponse): Response<Unit>
+
+    @DELETE("Session/session/{id}")
+    suspend fun deleteSessionById(
         @Path("id") id: Int
     ): Response<Unit>
 

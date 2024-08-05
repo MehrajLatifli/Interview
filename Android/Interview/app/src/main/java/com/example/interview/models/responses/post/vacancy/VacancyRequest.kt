@@ -3,7 +3,7 @@ package com.example.interview.models.responses.post.vacancy
 
 import com.google.gson.annotations.SerializedName
 
-data class Vacancy(
+data class VacancyRequest(
     @SerializedName("title")
     val title: String,
     @SerializedName("description")

@@ -16,7 +16,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.interview.R
 import com.example.interview.databinding.CustomresultdialogBinding
 import com.example.interview.databinding.FragmentLogInBinding
-import com.example.interview.models.responses.post.login.Login
+import com.example.interview.models.responses.post.login.LoginRequest
 import com.example.interview.utilities.gone
 import com.example.interview.utilities.loadImageWithGlideAndResize
 import com.example.interview.utilities.visible
@@ -78,12 +78,12 @@ class LogInFragment : BaseFragment<FragmentLogInBinding>(FragmentLogInBinding::i
 //            }
 
 
-            val login = Login(
+            val loginRequest = LoginRequest(
                 username = username,
                 password = password,
             )
 
-            viewModel.login(login) { apiKey, refreshToken ->
+            viewModel.login(loginRequest) { apiKey, refreshToken ->
                 saveCredentials(apiKey, refreshToken)
             }
 

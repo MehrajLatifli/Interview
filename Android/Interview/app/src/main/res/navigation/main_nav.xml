@@ -100,6 +100,9 @@
         <action
             android:id="@+id/action_operationFragment_to_vacancyReadFragment"
             app:destination="@id/vacancyReadFragment" />
+        <action
+            android:id="@+id/action_operationFragment_to_sessionReadFragment"
+            app:destination="@id/sessionReadFragment" />
     </fragment>
     <fragment
         android:id="@+id/candidateCreateFragment"
@@ -210,5 +213,46 @@
         <argument
             android:name="vacancy"
             app:argType="com.example.interview.models.responses.get.vacancy.VacancyResponse" />
+    </fragment>
+    <fragment
+        android:id="@+id/sessionReadFragment"
+        android:name="com.example.interview.views.fragments.session.SessionReadFragment"
+        android:label="fragment_session_read"
+        tools:layout="@layout/fragment_session_read" >
+        <action
+            android:id="@+id/action_sessionReadFragment_to_sessionCreateFragment"
+            app:destination="@id/sessionCreateFragment" />
+        <action
+            android:id="@+id/action_sessionReadFragment_to_sessionUpdateFragment"
+            app:destination="@id/sessionUpdateFragment" />
+        <action
+            android:id="@+id/action_sessionReadFragment_to_sessionDetailFragment"
+            app:destination="@id/sessionDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/sessionCreateFragment"
+        android:name="com.example.interview.views.fragments.session.SessionCreateFragment"
+        android:label="fragment_session_create"
+        tools:layout="@layout/fragment_session_create" />
+    <fragment
+        android:id="@+id/sessionUpdateFragment"
+        android:name="com.example.interview.views.fragments.session.SessionUpdateFragment"
+        android:label="fragment_session_update"
+        tools:layout="@layout/fragment_session_update" >
+        <action
+            android:id="@+id/action_sessionUpdateFragment_to_sessionReadFragment"
+            app:destination="@id/sessionReadFragment" />
+        <argument
+            android:name="session"
+            app:argType="com.example.interview.models.responses.get.session.SessionResponse" />
+    </fragment>
+    <fragment
+        android:id="@+id/sessionDetailFragment"
+        android:name="com.example.interview.views.fragments.session.SessionDetailFragment"
+        android:label="fragment_session_detail"
+        tools:layout="@layout/fragment_session_detail" >
+        <argument
+            android:name="session"
+            app:argType="com.example.interview.models.responses.get.session.SessionResponse" />
     </fragment>
 </navigation>

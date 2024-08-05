@@ -1,4 +1,4 @@
-package com.example.interview.views.fragments.vacancy
+package com.example.interview.views.fragments.session
 
 import android.app.AlertDialog
 import android.os.Bundle
@@ -13,15 +13,15 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import com.example.interview.R
 import com.example.interview.databinding.CustomresultdialogBinding
-import com.example.interview.databinding.FragmentVacancyCreateBinding
-import com.example.interview.databinding.FragmentVacancyDetailBinding
+import com.example.interview.databinding.FragmentSessionCreateBinding
+import com.example.interview.databinding.FragmentSessionDetailBinding
 import com.example.interview.utilities.gone
 import com.example.interview.utilities.loadImageWithGlideAndResize
 import com.example.interview.utilities.visible
-import com.example.interview.viewmodels.candidate.CandidateViewModel
+import com.example.interview.viewmodels.session.SessionViewModel
 import com.example.interview.viewmodels.vacancy.VacancyViewModel
 import com.example.interview.views.fragments.base.BaseFragment
-import com.example.interview.views.fragments.candidate.CandidateDetailFragmentArgs
+import com.example.interview.views.fragments.vacancy.VacancyDetailFragmentArgs
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -30,13 +30,14 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 @AndroidEntryPoint
-class VacancyDetailFragment : BaseFragment<FragmentVacancyDetailBinding>(FragmentVacancyDetailBinding::inflate) {
+class SessionDetailFragment : BaseFragment<FragmentSessionDetailBinding>(FragmentSessionDetailBinding::inflate) {
 
-    private val args: VacancyDetailFragmentArgs by navArgs()
-    private val viewModel by viewModels<VacancyViewModel>()
+    private val args: SessionDetailFragmentArgs by navArgs()
+    private val viewModel by viewModels<SessionViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
 
         binding.includeProgressbar.progressBar.visible()
         binding.NestedScrollView.gone()
@@ -44,10 +45,11 @@ class VacancyDetailFragment : BaseFragment<FragmentVacancyDetailBinding>(Fragmen
         lifecycleScope.launch {
             delay(2000)
 
-            viewModel.getVacancyByID(args.vacancy.id)
+            args.session.id?.let { sessionId -> viewModel.getSessionByID(sessionId) }
+            args.session.vacancyId?.let { vacancyId -> viewModel.getVacancyByID(vacancyId) }
+            args.session.candidateId?.let { candidateId -> viewModel.getCandidateDocumentByID(candidateId) }
+            args.session.userId?.let { viewModel.getprofile() }
 
-            viewModel.getPositionByID(args.vacancy.positionId)
-            viewModel.getStructureByID(args.vacancy.structureId)
 
             observeData()
 
@@ -55,25 +57,14 @@ class VacancyDetailFragment : BaseFragment<FragmentVacancyDetailBinding>(Fragmen
             binding.NestedScrollView.visible()
         }
 
+
+
+
+
+
     }
 
     private fun observeData() {
-        viewModel.vacancy.observe(viewLifecycleOwner) { item ->
-            item?.let {
-                binding.textView1.text = it.title ?: ""
-                binding.textView2.text = it.description ?: ""
-                binding.textView3.text = formatDateTime(it.startDate ?: "")
-                binding.textView4.text = formatDateTime(it.endDate ?: "")
-            }
-        }
-
-        viewModel.position.observe(viewLifecycleOwner) { position ->
-            binding.textView5.text = position?.name ?: ""
-        }
-
-        viewModel.structure.observe(viewLifecycleOwner) { structure ->
-            binding.textView6.text = structure?.name ?: ""
-        }
 
         viewModel.loading.observe(viewLifecycleOwner) { isLoading ->
             if (isLoading) {
@@ -90,6 +81,39 @@ class VacancyDetailFragment : BaseFragment<FragmentVacancyDetailBinding>(Fragmen
                 Log.e("VacancyViewModel", errorMessage)
                 customresultdialog("Unsuccessful!", errorMessage, R.color.MellowMelon)
             }
+        }
+
+        viewModel.session.observe(viewLifecycleOwner) { item ->
+            item?.let {
+
+                binding.textView1.text = it.endValue.toString() ?: ""
+
+                if(!it.startDate.isNullOrEmpty())
+                {
+                    binding.textView2.text = formatDateTime(it.startDate ?: "")
+                }
+
+                if(!it.endDate.isNullOrEmpty()) {
+
+                    binding.textView3.text = formatDateTime(it.endDate ?: "")
+                }
+            }
+        }
+
+        viewModel.vacancy.observe(viewLifecycleOwner) { vacancy ->
+            binding.textView4.text = vacancy?.title ?: ""
+        }
+
+        viewModel.candidateDocument.observe(viewLifecycleOwner) { candidateDocument ->
+            binding.textView5.text = candidateDocument?.name ?: ""
+        }
+
+        viewModel.profiles.observe(viewLifecycleOwner) { profiles ->
+            val profilesText = profiles.map { profile ->
+                "${profile.username ?: ""}"
+            }.joinToString(separator = "\n\n")
+
+            binding.textView6.text = profilesText
         }
     }
 

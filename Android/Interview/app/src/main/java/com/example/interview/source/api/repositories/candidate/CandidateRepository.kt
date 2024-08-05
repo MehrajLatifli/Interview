@@ -3,8 +3,8 @@ import android.util.Log
 import com.example.interview.models.responses.get.candidate.CandidateDocumentResponse
 import com.example.interview.models.responses.get.candidate.CandidateResponse
 import com.example.interview.models.responses.get.error.ErrorResponse
-import com.example.interview.models.responses.post.candidate.Candidate
-import com.example.interview.models.responses.post.candidatedocument.CandidateDocument
+import com.example.interview.models.responses.post.candidate.CandidateRequest
+import com.example.interview.models.responses.post.candidatedocument.CandidateDocumentRequest
 import com.example.interview.source.api.IApiManager
 import com.example.interview.source.api.Resource
 import com.google.gson.Gson
@@ -19,25 +19,25 @@ import javax.inject.Inject
 
 class CandidateRepository @Inject constructor(private val api: IApiManager) {
 
-    suspend fun registerCandidatedocument(candidateDocument: CandidateDocument): Resource<Unit> {
+    suspend fun registerCandidatedocument(candidateDocumentRequest: CandidateDocumentRequest): Resource<Unit> {
         return safeApiRequest {
-            val surnamePart = candidateDocument.surname?.toRequestBody("text/plain".toMediaType())
+            val surnamePart = candidateDocumentRequest.surname?.toRequestBody("text/plain".toMediaType())
                 ?: "".toRequestBody("text/plain".toMediaType())
-            val namePart = candidateDocument.name?.toRequestBody("text/plain".toMediaType())
+            val namePart = candidateDocumentRequest.name?.toRequestBody("text/plain".toMediaType())
                 ?: "".toRequestBody("text/plain".toMediaType())
-            val patronymicPart = candidateDocument.patronymic?.toRequestBody("text/plain".toMediaType())
+            val patronymicPart = candidateDocumentRequest.patronymic?.toRequestBody("text/plain".toMediaType())
                 ?: "".toRequestBody("text/plain".toMediaType())
-            val phoneNumberPart = candidateDocument.phonenumber?.toRequestBody("text/plain".toMediaType())
+            val phoneNumberPart = candidateDocumentRequest.phonenumber?.toRequestBody("text/plain".toMediaType())
                 ?: "".toRequestBody("text/plain".toMediaType())
-            val emailPart = candidateDocument.email?.toRequestBody("text/plain".toMediaType())
+            val emailPart = candidateDocumentRequest.email?.toRequestBody("text/plain".toMediaType())
                 ?: "".toRequestBody("text/plain".toMediaType())
 
-            val cvPart = candidateDocument.cv?.let {
+            val cvPart = candidateDocumentRequest.cv?.let {
                 val requestFile = it.asRequestBody("application/*".toMediaType())
                 MultipartBody.Part.createFormData("cv", it.name, requestFile)
             }
 
-            val addressPart = candidateDocument.address?.toRequestBody("text/plain".toMediaType())
+            val addressPart = candidateDocumentRequest.address?.toRequestBody("text/plain".toMediaType())
                 ?: "".toRequestBody("text/plain".toMediaType())
 
             api.registerCandidatedocument(
@@ -54,7 +54,7 @@ class CandidateRepository @Inject constructor(private val api: IApiManager) {
 
     suspend fun registerCandidate(candidateDocumentId: Int): Resource<CandidateResponse> {
         return safeApiRequest {
-            api.registerCandidate(Candidate(candidateDocumentId))
+            api.registerCandidate(CandidateRequest(candidateDocumentId))
         }
     }
     suspend fun getAllCandidateDocuments() =safeApiRequest{
@@ -81,21 +81,21 @@ class CandidateRepository @Inject constructor(private val api: IApiManager) {
 
     }
 
-    suspend fun updateCandidateDocument(id: Int, candidateDocument: CandidateDocument): Resource<Unit> {
+    suspend fun updateCandidateDocument(id: Int, candidateDocumentRequest: CandidateDocumentRequest): Resource<Unit> {
         return safeApiRequest {
 
-            val surnamePart = candidateDocument.surname?.toRequestBody("text/plain".toMediaType())
-            val namePart = candidateDocument.name?.toRequestBody("text/plain".toMediaType())
-            val patronymicPart = candidateDocument.patronymic?.toRequestBody("text/plain".toMediaType())
-            val phoneNumberPart = candidateDocument.phonenumber?.toRequestBody("text/plain".toMediaType())
-            val emailPart = candidateDocument.email?.toRequestBody("text/plain".toMediaType())
+            val surnamePart = candidateDocumentRequest.surname?.toRequestBody("text/plain".toMediaType())
+            val namePart = candidateDocumentRequest.name?.toRequestBody("text/plain".toMediaType())
+            val patronymicPart = candidateDocumentRequest.patronymic?.toRequestBody("text/plain".toMediaType())
+            val phoneNumberPart = candidateDocumentRequest.phonenumber?.toRequestBody("text/plain".toMediaType())
+            val emailPart = candidateDocumentRequest.email?.toRequestBody("text/plain".toMediaType())
 
-            val cvPart = candidateDocument.cv?.let {
+            val cvPart = candidateDocumentRequest.cv?.let {
                 val requestFile = it.asRequestBody("application/*".toMediaType())
                 MultipartBody.Part.createFormData("cv", it.name, requestFile)
             }
 
-            val addressPart = candidateDocument.address?.toRequestBody("text/plain".toMediaType())
+            val addressPart = candidateDocumentRequest.address?.toRequestBody("text/plain".toMediaType())
 
             api.updateCandidateDocument(
                 id = id.toString().toRequestBody("text/plain".toMediaType()),

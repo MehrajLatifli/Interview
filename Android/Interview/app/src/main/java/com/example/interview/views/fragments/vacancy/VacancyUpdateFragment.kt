@@ -7,12 +7,10 @@ import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.DatePicker
 import android.widget.TimePicker
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -21,7 +19,6 @@ import com.example.interview.R
 import com.example.interview.databinding.CustomresultdialogBinding
 import com.example.interview.databinding.FragmentVacancyUpdateBinding
 import com.example.interview.models.responses.get.vacancy.VacancyResponse
-import com.example.interview.models.responses.post.vacancy.Vacancy
 import com.example.interview.utilities.gone
 import com.example.interview.utilities.loadImageWithGlideAndResize
 import com.example.interview.utilities.visible
@@ -79,6 +76,10 @@ class VacancyUpdateFragment : BaseFragment<FragmentVacancyUpdateBinding>(Fragmen
             selectedStructureId = structureMap[selectedItemName]
         }
 
+        binding.buttonDateTime.setOnClickListener {
+            showDatePicker()
+        }
+
         binding.buttonUpdate.setOnClickListener {
             val startDateTime = formatDateTimeforCalendar(calendar)
             val endDateTime = formatDateTimeforCalendar(addMonthSafely(calendar))
@@ -108,17 +109,37 @@ class VacancyUpdateFragment : BaseFragment<FragmentVacancyUpdateBinding>(Fragmen
                 return@setOnClickListener
             }
 
-            val vacancy = VacancyResponse(
-                id = args.vacancy.id,
-                title = binding.editText.text.toString(),
-                description = binding.editText2.text.toString(),
-                startDate = startDateTime,
-                endDate = endDateTime,
-                positionId = selectedPositionId ?: 0,
-                structureId = selectedStructureId ?: 0
-            )
+            if(startDateTime.contains(args.vacancy.startDate) && endDateTime.contains(args.vacancy.endDate)) {
 
-            viewModel.updateVacancy(vacancy)
+                val vacancy = VacancyResponse(
+                    id = args.vacancy.id,
+                    title = binding.editText.text.toString(),
+                    description = binding.editText2.text.toString(),
+                    startDate = args.vacancy.startDate,
+                    endDate = args.vacancy.endDate,
+                    positionId = selectedPositionId ?: 0,
+                    structureId = selectedStructureId ?: 0
+                )
+
+                viewModel.updateVacancy(vacancy)
+
+
+            }else
+            {
+                val vacancy = VacancyResponse(
+                    id = args.vacancy.id,
+                    title = binding.editText.text.toString(),
+                    description = binding.editText2.text.toString(),
+                    startDate = startDateTime,
+                    endDate = endDateTime,
+                    positionId = selectedPositionId ?: 0,
+                    structureId = selectedStructureId ?: 0
+                )
+
+                viewModel.updateVacancy(vacancy)
+            }
+
+
         }
     }
 

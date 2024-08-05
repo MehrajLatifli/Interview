@@ -7,8 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.interview.models.responses.get.candidate.CandidateDocumentResponse
 import com.example.interview.models.responses.get.candidate.CandidateResponse
-import com.example.interview.models.responses.post.candidate.Candidate
-import com.example.interview.models.responses.post.candidatedocument.CandidateDocument
+import com.example.interview.models.responses.post.candidatedocument.CandidateDocumentRequest
 import com.example.interview.source.api.Resource
 import com.example.interview.source.api.repositories.candidate.CandidateRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -139,11 +138,11 @@ class CandidateViewModel @Inject constructor(private val candidateRepository: Ca
 
 
 
-    fun registerCandidatedocument(candidateDocument: CandidateDocument) {
+    fun registerCandidatedocument(candidateDocumentRequest: CandidateDocumentRequest) {
         _loading.value = true
 
         viewModelScope.launch {
-            val result = candidateRepository.registerCandidatedocument(candidateDocument)
+            val result = candidateRepository.registerCandidatedocument(candidateDocumentRequest)
             if (result is Resource.Success) {
 
                 delay(500)
@@ -161,11 +160,11 @@ class CandidateViewModel @Inject constructor(private val candidateRepository: Ca
         }
     }
 
-    fun updateCandidateDocument(id: Int, candidateDocument: CandidateDocument) {
+    fun updateCandidateDocument(id: Int, candidateDocumentRequest: CandidateDocumentRequest) {
         _loading.value = true
 
         viewModelScope.launch {
-            val result = candidateRepository.updateCandidateDocument(id, candidateDocument)
+            val result = candidateRepository.updateCandidateDocument(id, candidateDocumentRequest)
             if (result is Resource.Success) {
                 delay(500)
                 _afterupdateResult.postValue(true)

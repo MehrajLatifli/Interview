@@ -3,14 +3,11 @@ package com.example.interview.views.fragments.vacancy
 import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.DatePicker
 import android.widget.TimePicker
@@ -21,34 +18,27 @@ import androidx.navigation.fragment.findNavController
 import com.example.interview.R
 import com.example.interview.databinding.CustomresultdialogBinding
 import com.example.interview.databinding.FragmentVacancyCreateBinding
-import com.example.interview.models.responses.get.position.PositionResponse
-import com.example.interview.models.responses.get.structure.StructureResponse
-import com.example.interview.models.responses.post.candidatedocument.CandidateDocument
-import com.example.interview.models.responses.post.vacancy.Vacancy
+import com.example.interview.models.responses.post.vacancy.VacancyRequest
 import com.example.interview.utilities.gone
 import com.example.interview.utilities.loadImageWithGlideAndResize
 import com.example.interview.utilities.visible
-import com.example.interview.viewmodels.candidate.CandidateViewModel
 import com.example.interview.viewmodels.vacancy.VacancyViewModel
 import com.example.interview.views.fragments.base.BaseFragment
-import com.example.interview.views.fragments.candidate.CandidateCreateFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import java.util.Locale
 
 @AndroidEntryPoint
-class VacancyCreateFragment : BaseFragment<FragmentVacancyCreateBinding>(FragmentVacancyCreateBinding::inflate){
+class VacancyCreateFragment : BaseFragment<FragmentVacancyCreateBinding>(FragmentVacancyCreateBinding::inflate) {
 
-    private val positionMap = mutableMapOf<String, Int>()
-    private val structureMap = mutableMapOf<String, Int>()
-    private lateinit var selectedPositionId: String
-    private lateinit var selectedStructureId: String
+    private val positionMap = mutableMapOf<String, String>()
+    private val structureMap = mutableMapOf<String, String>()
+    private var selectedPositionId: String = ""
+    private var selectedStructureId: String = ""
 
     private val viewModel by viewModels<VacancyViewModel>()
 
@@ -59,24 +49,14 @@ class VacancyCreateFragment : BaseFragment<FragmentVacancyCreateBinding>(Fragmen
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Load drawable resource
         val dropdownBackground: Drawable? = ContextCompat.getDrawable(requireContext(), R.drawable.autocompletetextview_radiuscolor)
-
         binding.autocompletePositiontextview.setDropDownBackgroundDrawable(dropdownBackground)
         binding.autocompleteStructuretextview.setDropDownBackgroundDrawable(dropdownBackground)
 
         observeData()
 
         lifecycleScope.launch {
-            val positions = viewModel.getAllPositions()
-            positionMap.clear()
-            positionMap.putAll(positions.associate { it.name to it.id })
-            setupAutoCompleteTextView()
-
-            val structures = viewModel.getAllStructures()
-            structureMap.clear()
-            structureMap.putAll(structures.associate { it.name to it.id })
-            setupAutoCompleteTextView()
+            fetchAndSetupData()
         }
 
         binding.buttonDateTime.setOnClickListener {
@@ -84,81 +64,29 @@ class VacancyCreateFragment : BaseFragment<FragmentVacancyCreateBinding>(Fragmen
         }
 
         binding.autocompletePositiontextview.setOnItemClickListener { _, _, position, _ ->
-            val selectedItemName = binding.autocompletePositiontextview.adapter.getItem(position) as String
-            selectedPositionId = positionMap[selectedItemName]?.toString() ?: ""
+            val selectedItemName = binding.autocompletePositiontextview.adapter.getItem(position) as? String
+            selectedPositionId = positionMap[selectedItemName] ?: ""
         }
 
         binding.autocompleteStructuretextview.setOnItemClickListener { _, _, position, _ ->
-            val selectedItemName = binding.autocompleteStructuretextview.adapter.getItem(position) as String
-            selectedStructureId = structureMap[selectedItemName]?.toString() ?: ""
+            val selectedItemName = binding.autocompleteStructuretextview.adapter.getItem(position) as? String
+            selectedStructureId = structureMap[selectedItemName] ?: ""
         }
 
         binding.buttonCreate.setOnClickListener {
-            val startDateTime = formatDateTimeforCalendar(calendar)
-
-            val endDateCalendar = addMonthSafely(calendar)
-            val endDateTime = formatDateTimeforCalendar(endDateCalendar)
-
-            if(binding.editText.text.isNullOrBlank()) {
-                customresultdialog("Unsuccessful!", "Write title", R.color.MellowMelon)
-                return@setOnClickListener
-            }
-
-            if(binding.editText2.text.isNullOrBlank()) {
-                customresultdialog("Unsuccessful!", "Write description", R.color.MellowMelon)
-                return@setOnClickListener
-            }
-
-            if(binding.editText3.text.isNullOrBlank()) {
-                customresultdialog("Unsuccessful!", "Write date", R.color.MellowMelon)
-                return@setOnClickListener
-            }
-
-            if(startDateTime.isNullOrBlank()) {
-                customresultdialog("Unsuccessful!", "Write startDate", R.color.MellowMelon)
-                return@setOnClickListener
-            }
-
-            if(endDateTime.isNullOrBlank()) {
-                customresultdialog("Unsuccessful!", "Write endDate", R.color.MellowMelon)
-                return@setOnClickListener
-            }
-
-            if(selectedPositionId.isNullOrBlank()) {
-                customresultdialog("Unsuccessful!", "Select position", R.color.MellowMelon)
-                return@setOnClickListener
-            }
-
-            if(selectedStructureId.isNullOrBlank()) {
-                customresultdialog("Unsuccessful!", "Select structure", R.color.MellowMelon)
-                return@setOnClickListener
-            }
-
-            val vacancy = Vacancy(
-                title = binding.editText.text.toString(),
-                description = binding.editText2.text.toString(),
-                startDate = startDateTime,
-                endDate = endDateTime,
-                positionId = selectedPositionId.toIntOrNull() ?: 0,
-                structureId = selectedStructureId.toIntOrNull() ?: 0
-            )
-
-            viewModel.addVacancy(vacancy)
+            handleCreateVacancy()
         }
     }
 
     private fun observeData() {
         viewModel.loading.observe(viewLifecycleOwner) { isLoading ->
-            if (isLoading) {
-                lifecycleScope.launch {
-                    delay(2000)
+            lifecycleScope.launch(Dispatchers.Main) {
+                delay(2000)
+                if (isLoading) {
                     binding.includeProgressbar.progressBar.visible()
                     binding.mainConstraintLayout.gone()
                     binding.NestedScrollView.gone()
-                }
-            } else {
-                lifecycleScope.launch {
-                    delay(2000)
+                } else {
                     binding.includeProgressbar.progressBar.gone()
                     binding.mainConstraintLayout.visible()
                     binding.NestedScrollView.visible()
@@ -169,26 +97,30 @@ class VacancyCreateFragment : BaseFragment<FragmentVacancyCreateBinding>(Fragmen
         viewModel.error.observe(viewLifecycleOwner) { errorMessage ->
             if (!errorMessage.isNullOrBlank()) {
                 Log.e("VacancyCreate", errorMessage)
-                customresultdialog("Unsuccessful!", errorMessage, R.color.MellowMelon)
+                customResultDialog("Unsuccessful!", errorMessage, R.color.MellowMelon)
             }
         }
 
         viewModel.positions.observe(viewLifecycleOwner) { positions ->
             positionMap.clear()
-            positionMap.putAll(positions.associate { it.name to it.id })
+            positions.forEach { position ->
+                positionMap[position.name] = position.id.toString()
+            }
             setupAutoCompleteTextView()
         }
 
         viewModel.structures.observe(viewLifecycleOwner) { structures ->
             structureMap.clear()
-            structureMap.putAll(structures.associate { it.name to it.id })
+            structures.forEach { structure ->
+                structureMap[structure.name] = structure.id.toString()
+            }
             setupAutoCompleteTextView()
         }
 
-        viewModel.completeResult.observe(viewLifecycleOwner) { complateResult ->
+        viewModel.completeResult.observe(viewLifecycleOwner) { completeResult ->
             lifecycleScope.launch {
-                if (complateResult) {
-                    customresultdialog(
+                if (completeResult) {
+                    customResultDialog(
                         "Successful!",
                         "Please wait a moment, we are preparing for you...",
                         R.color.DeepPurple
@@ -201,6 +133,74 @@ class VacancyCreateFragment : BaseFragment<FragmentVacancyCreateBinding>(Fragmen
                 }
             }
         }
+    }
+
+    private suspend fun fetchAndSetupData() {
+        val positions = viewModel.getAllPositions()
+        positionMap.clear()
+        positions.forEach { position ->
+            positionMap[position.name] = position.id.toString()
+        }
+        setupAutoCompleteTextView()
+
+        val structures = viewModel.getAllStructures()
+        structureMap.clear()
+        structures.forEach { structure ->
+            structureMap[structure.name] = structure.id.toString()
+        }
+        setupAutoCompleteTextView()
+    }
+
+    private fun handleCreateVacancy() {
+        val startDateTime = formatDateTimeforCalendar(calendar)
+        val endDateCalendar = addMonthSafely(calendar)
+        val endDateTime = formatDateTimeforCalendar(endDateCalendar)
+
+        if (binding.editText.text.isNullOrBlank()) {
+            customResultDialog("Unsuccessful!", "Write title", R.color.MellowMelon)
+            return
+        }
+
+        if (binding.editText2.text.isNullOrBlank()) {
+            customResultDialog("Unsuccessful!", "Write description", R.color.MellowMelon)
+            return
+        }
+
+        if (binding.editText3.text.isNullOrBlank()) {
+            customResultDialog("Unsuccessful!", "Write date", R.color.MellowMelon)
+            return
+        }
+
+        if (startDateTime.isBlank()) {
+            customResultDialog("Unsuccessful!", "Write startDate", R.color.MellowMelon)
+            return
+        }
+
+        if (endDateTime.isBlank()) {
+            customResultDialog("Unsuccessful!", "Write endDate", R.color.MellowMelon)
+            return
+        }
+
+        if (selectedPositionId.isBlank()) {
+            customResultDialog("Unsuccessful!", "Select position", R.color.MellowMelon)
+            return
+        }
+
+        if (selectedStructureId.isBlank()) {
+            customResultDialog("Unsuccessful!", "Select structure", R.color.MellowMelon)
+            return
+        }
+
+        val vacancyRequest = VacancyRequest(
+            title = binding.editText.text.toString(),
+            description = binding.editText2.text.toString(),
+            startDate = startDateTime,
+            endDate = endDateTime,
+            positionId = selectedPositionId.toIntOrNull() ?: 0,
+            structureId = selectedStructureId.toIntOrNull() ?: 0
+        )
+
+        viewModel.addVacancy(vacancyRequest)
     }
 
     private fun addMonthSafely(startCalendar: Calendar): Calendar {
@@ -217,7 +217,7 @@ class VacancyCreateFragment : BaseFragment<FragmentVacancyCreateBinding>(Fragmen
         return endCalendar
     }
 
-    private fun customresultdialog(title: String, text: String, colorId: Int) {
+    private fun customResultDialog(title: String, text: String, colorId: Int) {
         lifecycleScope.launch(Dispatchers.Main) {
             val dialogBinding = CustomresultdialogBinding.inflate(LayoutInflater.from(requireContext()))
             val dialog = AlertDialog.Builder(requireContext()).apply {
@@ -254,13 +254,8 @@ class VacancyCreateFragment : BaseFragment<FragmentVacancyCreateBinding>(Fragmen
             requireContext(),
             R.style.CustomDatePickerDialogTheme,
             { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
-                calendar.set(Calendar.YEAR, year)
-                calendar.set(Calendar.MONTH, month)
-                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-                lifecycleScope.launch {
-                    delay(500)
-                    showTimePicker()
-                }
+                calendar.set(year, month, dayOfMonth)
+                showTimePicker()
             },
             calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),
@@ -276,8 +271,7 @@ class VacancyCreateFragment : BaseFragment<FragmentVacancyCreateBinding>(Fragmen
             { _: TimePicker, hourOfDay: Int, minute: Int ->
                 calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
                 calendar.set(Calendar.MINUTE, minute)
-                val dateTime = formatDateTimeforCalendar(calendar)
-                binding.editText3.setText(formatDateTime(dateTime))
+                binding.editText3.setText("${dateFormat.format(calendar.time)} ${timeFormat.format(calendar.time)}")
             },
             calendar.get(Calendar.HOUR_OF_DAY),
             calendar.get(Calendar.MINUTE),
@@ -285,13 +279,4 @@ class VacancyCreateFragment : BaseFragment<FragmentVacancyCreateBinding>(Fragmen
         )
         timePickerDialog.show()
     }
-
-    fun formatDateTime(dateTimeString: String): String {
-        val inputFormatter = DateTimeFormatter.ISO_DATE_TIME
-        val outputFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy   HH:mm:ss.SSS")
-
-        val dateTime = LocalDateTime.parse(dateTimeString, inputFormatter)
-        return dateTime.format(outputFormatter)
-    }
 }
-

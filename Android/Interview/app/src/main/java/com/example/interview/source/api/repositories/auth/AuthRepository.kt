@@ -4,9 +4,9 @@ import android.util.Log
 import com.example.interview.models.responses.get.error.ErrorResponse
 import com.example.interview.models.responses.get.login.LoginResponse
 import com.example.interview.models.responses.get.token.TokenResponse
-import com.example.interview.models.responses.post.login.Login
-import com.example.interview.models.responses.post.registration.RegisterAdmin
-import com.example.interview.models.responses.post.registration.RegisterHR
+import com.example.interview.models.responses.post.login.LoginRequest
+import com.example.interview.models.responses.post.registration.RegisterAdminRequest
+import com.example.interview.models.responses.post.registration.RegisterHRRequest
 import com.example.interview.models.responses.post.token.RefreshTokenRequest
 import com.example.interview.source.api.IApiManager
 import com.example.interview.source.api.Resource
@@ -22,18 +22,18 @@ import javax.inject.Inject
 
 class AuthRepository @Inject constructor(private val api: IApiManager) {
 
-    suspend fun registerAdmin(registerAdmin: RegisterAdmin) = safeApiRequest {
+    suspend fun registerAdmin(registerAdminRequest: RegisterAdminRequest) = safeApiRequest {
 
-        val usernamePart = registerAdmin.username?.toRequestBody("text/plain".toMediaType())
+        val usernamePart = registerAdminRequest.username?.toRequestBody("text/plain".toMediaType())
             ?: "".toRequestBody("text/plain".toMediaType())
-        val emailPart = registerAdmin.email?.toRequestBody("text/plain".toMediaType())
+        val emailPart = registerAdminRequest.email?.toRequestBody("text/plain".toMediaType())
             ?: "".toRequestBody("text/plain".toMediaType())
-        val passwordPart = registerAdmin.password?.toRequestBody("text/plain".toMediaType())
+        val passwordPart = registerAdminRequest.password?.toRequestBody("text/plain".toMediaType())
             ?: "".toRequestBody("text/plain".toMediaType())
-        val phoneNumberPart = registerAdmin.phoneNumber?.toRequestBody("text/plain".toMediaType())
+        val phoneNumberPart = registerAdminRequest.phoneNumber?.toRequestBody("text/plain".toMediaType())
             ?: "".toRequestBody("text/plain".toMediaType())
 
-        val imagePathPart = registerAdmin.imagePath?.let {
+        val imagePathPart = registerAdminRequest.imagePath?.let {
             val requestFile = it.asRequestBody("image/*".toMediaType())
             MultipartBody.Part.createFormData("imagePath", it.name, requestFile)
         }
@@ -48,17 +48,17 @@ class AuthRepository @Inject constructor(private val api: IApiManager) {
     }
 
 
-    suspend fun registerHR(registerHR: RegisterHR) = safeApiRequest {
-        val usernamePart = registerHR.username?.toRequestBody("text/plain".toMediaType())
+    suspend fun registerHR(registerHRRequest: RegisterHRRequest) = safeApiRequest {
+        val usernamePart = registerHRRequest.username?.toRequestBody("text/plain".toMediaType())
             ?: "".toRequestBody("text/plain".toMediaType())
-        val emailPart = registerHR.email?.toRequestBody("text/plain".toMediaType())
+        val emailPart = registerHRRequest.email?.toRequestBody("text/plain".toMediaType())
             ?: "".toRequestBody("text/plain".toMediaType())
-        val passwordPart = registerHR.password?.toRequestBody("text/plain".toMediaType())
+        val passwordPart = registerHRRequest.password?.toRequestBody("text/plain".toMediaType())
             ?: "".toRequestBody("text/plain".toMediaType())
-        val phoneNumberPart = registerHR.phoneNumber?.toRequestBody("text/plain".toMediaType())
+        val phoneNumberPart = registerHRRequest.phoneNumber?.toRequestBody("text/plain".toMediaType())
             ?: "".toRequestBody("text/plain".toMediaType())
 
-        val imagePathPart = registerHR.imagePath?.let {
+        val imagePathPart = registerHRRequest.imagePath?.let {
             val requestFile = it.asRequestBody("image/*".toMediaType())
             MultipartBody.Part.createFormData("imagePath", it.name, requestFile)
         }
@@ -74,7 +74,7 @@ class AuthRepository @Inject constructor(private val api: IApiManager) {
 
     suspend fun login(username: String, password: String): Resource<LoginResponse> {
         return safeApiRequest {
-            api.login(Login(username, password))
+            api.login(LoginRequest(username, password))
         }
     }
 

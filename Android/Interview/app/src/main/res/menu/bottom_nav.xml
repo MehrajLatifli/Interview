@@ -14,7 +14,7 @@
 
     </item>
     <item
-        android:id="@+id/session"
+        android:id="@+id/sessionReadFragment"
         android:icon="@drawable/session"
         android:layout_height="20dp">
 

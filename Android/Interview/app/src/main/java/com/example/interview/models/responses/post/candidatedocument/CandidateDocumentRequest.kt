@@ -4,7 +4,7 @@ package com.example.interview.models.responses.post.candidatedocument
 import com.google.gson.annotations.SerializedName
 import java.io.File
 
-data class CandidateDocument(
+data class CandidateDocumentRequest(
     @SerializedName("address")
     val address: String?,
     @SerializedName("cv")

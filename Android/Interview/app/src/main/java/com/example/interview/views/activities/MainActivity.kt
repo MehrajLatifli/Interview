@@ -38,10 +38,10 @@ class MainActivity : AppCompatActivity() {
 
         navController = navHostFragment.navController
 
-        // Setup bottom navigation view with NavController
+
         NavigationUI.setupWithNavController(binding.includeBottomnav.BottomNavigationView, navController)
 
-        // Add destination change listener to manage bottom navigation visibility
+
         navController.addOnDestinationChangedListener { _, destination, _ ->
             Log.d("MainActivity", "Current destination: ${destination.id}")
             if (!supportFragmentManager.isStateSaved) {
@@ -56,7 +56,11 @@ class MainActivity : AppCompatActivity() {
                     R.id.vacancyCreateFragment,
                     R.id.vacancyReadFragment,
                     R.id.vacancyUpdateFragment,
-                    R.id.vacancyDetailFragment,-> {
+                    R.id.vacancyDetailFragment,
+                    R.id.sessionCreateFragment,
+                    R.id.sessionReadFragment,
+                    R.id.sessionUpdateFragment,
+                    R.id.sessionDetailFragment, -> {
                         binding.includeBottomnav.BottomNavigationView.visible()
                     }
                     else -> {

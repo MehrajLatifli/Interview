@@ -22,8 +22,8 @@ import androidx.navigation.fragment.navArgs
 import com.example.interview.R
 import com.example.interview.databinding.CustomresultdialogBinding
 import com.example.interview.databinding.FragmentRegistrationBinding
-import com.example.interview.models.responses.post.registration.RegisterAdmin
-import com.example.interview.models.responses.post.registration.RegisterHR
+import com.example.interview.models.responses.post.registration.RegisterAdminRequest
+import com.example.interview.models.responses.post.registration.RegisterHRRequest
 import com.example.interview.viewmodels.auth.AuthViewModel
 import com.example.interview.views.fragments.base.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
@@ -133,7 +133,7 @@ class RegistrationFragment : BaseFragment<FragmentRegistrationBinding>(FragmentR
 
 
             if (args.accountType.contains("Admin")) {
-                val registerAdminData = RegisterAdmin(
+                val registerAdminRequestData = RegisterAdminRequest(
                     username = username,
                     email = email,
                     password = password,
@@ -141,19 +141,19 @@ class RegistrationFragment : BaseFragment<FragmentRegistrationBinding>(FragmentR
                     imagePath = imagePath
                 )
 
-                viewModel.registerAdmin(registerAdminData)
+                viewModel.registerAdmin(registerAdminRequestData)
             }
 
             if (args.accountType.contains("HR")) {
 
-                val registerHRData = RegisterHR(
+                val registerHRRequestData = RegisterHRRequest(
                     username = username,
                     email = email,
                     password = password,
                     phoneNumber = phoneNumber,
                     imagePath = imagePath
                 )
-                viewModel.registerHR(registerHRData)
+                viewModel.registerHR(registerHRRequestData)
             }
 //            else{
 //                customresultdialog(requireContext(),"UnSuccessful!","Cannot registration",R.color.MellowMelon)

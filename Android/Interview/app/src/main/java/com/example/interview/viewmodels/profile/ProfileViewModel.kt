@@ -79,7 +79,7 @@ class ProfileViewModel  @Inject constructor(private val profileRepository: Profi
                             }
 
                         } else {
-                            // Only set error if the profile API call returns null (shouldn't happen normally)
+
                             _error.value = "No profile found"
                             _profiles.value = emptyList()
                             Log.e("APIFailed", _error.value.toString())

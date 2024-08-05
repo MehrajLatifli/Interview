@@ -44,7 +44,7 @@ fun TextView.formatDateTime(startDate: String?, endDate: String?) {
 
     val formattedStartDate = try {
         if (startDate.isNullOrEmpty()) {
-            "Invalid Start Date Format"
+            "null"
         } else {
             val dateTime = LocalDateTime.parse(startDate, inputFormatter)
             dateTime.format(outputFormatter)
@@ -55,7 +55,7 @@ fun TextView.formatDateTime(startDate: String?, endDate: String?) {
 
     val formattedEndDate = try {
         if (endDate.isNullOrEmpty()) {
-            "Invalid End Date Format"
+            "null"
         } else {
             val dateTime = LocalDateTime.parse(endDate, inputFormatter)
             dateTime.format(outputFormatter)

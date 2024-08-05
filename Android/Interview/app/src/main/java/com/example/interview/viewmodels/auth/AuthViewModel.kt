@@ -7,9 +7,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.interview.models.entities.LoginEntity
 import com.example.interview.models.responses.get.login.LoginResponse
-import com.example.interview.models.responses.post.login.Login
-import com.example.interview.models.responses.post.registration.RegisterAdmin
-import com.example.interview.models.responses.post.registration.RegisterHR
+import com.example.interview.models.responses.post.login.LoginRequest
+import com.example.interview.models.responses.post.registration.RegisterAdminRequest
+import com.example.interview.models.responses.post.registration.RegisterHRRequest
 import com.example.interview.source.api.Resource
 import com.example.interview.source.api.repositories.auth.AuthRepository
 import com.example.interview.source.local.mapping.toLoginEntity
@@ -56,11 +56,11 @@ class AuthViewModel @Inject constructor(
     val hash: LiveData<String> = _hash
 
 
-    fun registerAdmin(registerAdmin: RegisterAdmin) {
+    fun registerAdmin(registerAdminRequest: RegisterAdminRequest) {
         _loading.value = true
 
         viewModelScope.launch {
-            val result = authRepository.registerAdmin(registerAdmin)
+            val result = authRepository.registerAdmin(registerAdminRequest)
             if (result is Resource.Success) {
                 _authResult.postValue(true)
             } else if (result is Resource.Error) {
@@ -71,11 +71,11 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    fun registerHR(registerHR: RegisterHR) {
+    fun registerHR(registerHRRequest: RegisterHRRequest) {
         _loading.value = true
 
         viewModelScope.launch {
-            val result = authRepository.registerHR(registerHR)
+            val result = authRepository.registerHR(registerHRRequest)
             if (result is Resource.Success) {
                 _authResult.postValue(true)
             } else if (result is Resource.Error) {
@@ -89,12 +89,12 @@ class AuthViewModel @Inject constructor(
 
 
 
-    fun login(login: Login, onCredentialsGenerated: (apiKey: String, refreshToken: String) -> Unit) {
+    fun login(loginRequest: LoginRequest, onCredentialsGenerated: (apiKey: String, refreshToken: String) -> Unit) {
         _loading.value = true
 
         viewModelScope.launch {
             delay(2000)
-            val result = authRepository.login(login.username, login.password)
+            val result = authRepository.login(loginRequest.username, loginRequest.password)
             if (result is Resource.Success) {
                 val itemResponse = result.data
                 if (itemResponse != null) {
@@ -106,7 +106,7 @@ class AuthViewModel @Inject constructor(
                     _encryptedText.value = encryptedToken
                     _hash.value = hashResult
 
-                    val entity = itemResponse.toLoginEntity(login.username, encryptedToken)
+                    val entity = itemResponse.toLoginEntity(loginRequest.username, encryptedToken)
                     val response = entity.toLoginResponse()
 
                     _decryptedText.value =

@@ -3,7 +3,7 @@ package com.example.interview.models.responses.post.registration
 import com.google.gson.annotations.SerializedName
 import java.io.File
 
-data class RegisterHR (
+data class RegisterHRRequest (
     @SerializedName("username")
     val username: String?,
     @SerializedName("email")

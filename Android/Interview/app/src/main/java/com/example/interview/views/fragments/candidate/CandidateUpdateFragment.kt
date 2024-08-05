@@ -7,10 +7,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.OpenableColumns
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
@@ -19,9 +17,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.interview.R
 import com.example.interview.databinding.CustomresultdialogBinding
-import com.example.interview.databinding.FragmentCandidateDetailBinding
 import com.example.interview.databinding.FragmentCandidateUpdateBinding
-import com.example.interview.models.responses.post.candidatedocument.CandidateDocument
+import com.example.interview.models.responses.post.candidatedocument.CandidateDocumentRequest
 import com.example.interview.utilities.gone
 import com.example.interview.utilities.loadImageWithGlideAndResize
 import com.example.interview.utilities.visible
@@ -86,7 +83,7 @@ class CandidateUpdateFragment : BaseFragment<FragmentCandidateUpdateBinding>(
 
 
 
-            val registerData = CandidateDocument(
+            val registerData = CandidateDocumentRequest(
                 surname = surname,
                 name = name,
                 patronymic = patronymic,

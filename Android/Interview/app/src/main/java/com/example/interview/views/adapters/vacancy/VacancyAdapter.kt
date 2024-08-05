@@ -5,7 +5,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.interview.databinding.ItemVacancyBinding
 import com.example.interview.models.responses.get.vacancy.VacancyResponse
-import com.example.interview.models.responses.post.vacancy.Vacancy
 import com.example.interview.views.adapters.base.BaseAdapter
 
 class VacancyAdapter: BaseAdapter<VacancyResponse, VacancyAdapter.VacancyViewHolder>() {
