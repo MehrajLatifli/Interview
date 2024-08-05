@@ -284,7 +284,7 @@ namespace Interview.Persistence.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    EndValue = table.Column<decimal>(type: "decimal(18,18)", nullable: true, defaultValueSql: "((0.0))"),
+                    EndValue = table.Column<decimal>(type: "decimal(18,2)", nullable: true, defaultValueSql: "((0.0))"),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     EndDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UserId = table.Column<int>(type: "int", nullable: false),

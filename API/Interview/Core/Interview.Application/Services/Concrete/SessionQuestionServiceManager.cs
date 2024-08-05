@@ -190,20 +190,30 @@ namespace Interview.Application.Services.Concrete
             {
                 if (claimsPrincipal.Identity.IsAuthenticated)
                 {
+                    var currentuserid = _userReadRepository.GetAll(false).AsEnumerable().Where(i => i.UserName == claimsPrincipal.Identity.Name).FirstOrDefault().Id;
 
-                    List<SessionQuestionDTOforGetandGetAll> datas = null;
-
-                    await Task.Run(() =>
+                    if (_sessionReadRepository.GetAll(false).AsEnumerable().Any(i => i.UserId == currentuserid))
                     {
-                        datas = _mapper.Map<List<SessionQuestionDTOforGetandGetAll>>(_sessionQuestionReadRepository.GetAll(false).Where(i => i.SessionId == sessionId));
-                    });
 
-                    if (datas.Count <= 0)
-                    {
-                        throw new NotFoundException("SessionQuestion not found");
+                        List<SessionQuestionDTOforGetandGetAll> datas = null;
+
+                        await Task.Run(() =>
+                        {
+                            datas = _mapper.Map<List<SessionQuestionDTOforGetandGetAll>>(_sessionQuestionReadRepository.GetAll(false).Where(i => i.SessionId == sessionId));
+                        });
+
+                        if (datas.Count <= 0)
+                        {
+                            throw new NotFoundException("SessionQuestion not found");
+                        }
+
+                        return datas;
                     }
+                    else
+                    {
 
-                    return datas;
+                        throw new NotFoundException("You have not any sessions");
+                    }
                 }
                 else
                 {

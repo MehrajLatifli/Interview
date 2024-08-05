@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Interview.Persistence.Migrations
 {
     [DbContext(typeof(InterviewContext))]
-    [Migration("20240803225719_InterviewContextMigration2")]
-    partial class InterviewContextMigration2
+    [Migration("20240805171124_InterviewContextMigration")]
+    partial class InterviewContextMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
