@@ -13,7 +13,9 @@ import com.example.interview.models.responses.get.profile.UserClaim
 import com.example.interview.models.responses.get.session.SessionResponse
 import com.example.interview.models.responses.get.vacancy.VacancyResponse
 import com.example.interview.source.api.Resource
+import com.example.interview.source.api.repositories.candidate.CandidateRepository
 import com.example.interview.source.api.repositories.position.PositionRepository
+import com.example.interview.source.api.repositories.profile.ProfileRepository
 import com.example.interview.source.api.repositories.session.SessionRepository
 import com.example.interview.source.api.repositories.structure.StructureRepository
 import com.example.interview.source.api.repositories.vacancy.VacancyRepository
@@ -27,6 +29,9 @@ import javax.inject.Inject
 @HiltViewModel
 class SessionViewModel @Inject constructor(
     private val sessionRepository: SessionRepository,
+    private val vacancyRepository: VacancyRepository,
+    private val candidateRepository: CandidateRepository,
+    private val profileRepository: ProfileRepository
 ) : ViewModel() {
 
     private val _loading = MutableLiveData<Boolean>()
@@ -149,11 +154,10 @@ class SessionViewModel @Inject constructor(
     fun getVacancyByID(id:Int) {
         _loading.value = true
         viewModelScope.launch {
-            sessionRepository.getVacancyByID(id).collect { result ->
+            vacancyRepository.getVacancyByID(id).collect { result ->
                 when (result) {
                     is Resource.Success -> {
 
-                        delay(200)
                         _loading.postValue(false)
                         val itemResponse = result.data
                         if (itemResponse != null) {
@@ -176,41 +180,35 @@ class SessionViewModel @Inject constructor(
     fun getCandidateDocumentByID(id:Int) {
         _loading.value = true
         viewModelScope.launch {
-            sessionRepository.getCandidateDocumentByID(id).collect { result ->
+            val result = candidateRepository.getCandidateDocumentByID(id)
+            if (result is Resource.Success) {
 
-                when (result) {
-                    is Resource.Success -> {
-
-                        delay(1000)
-                        _loading.postValue(false)
-                        val itemResponse = result.data
-                        if (itemResponse != null) {
-                            _candidateDocument.value = itemResponse!!
-                            Log.d("SessionViewModel", "CandidateDocument: ${result.data}")
-                        }
-                    }
-
-                    is Resource.Error -> {
-                        _loading.postValue(false)
-                        _error.postValue(result.message ?: "Unknown error")
-                        Log.e("SessionViewModel", result.message ?: "Unknown error")
-                    }
+                _loading.postValue(false)
+                val itemResponse = result.data
+                if (itemResponse != null) {
+                    _candidateDocument.value = itemResponse!!
                 }
+
+            } else if (result is Resource.Error) {
+                _loading.postValue(false)
+                _error.postValue(result.message ?: "Unknown error")
+                Log.e("SessionViewModel", result.message ?: "Unknown error")
             }
         }
 
     }
+
 
     fun getprofile() : List<ProfileResponse> {
         _loading.value = true
 
         viewModelScope.launch {
 
-            sessionRepository.getprofile().collectLatest { response: Resource<ProfileResponse> ->
+            profileRepository.getprofile().collectLatest { response: Resource<ProfileResponse> ->
 
                 when (response) {
                     is Resource.Success -> {
-                        delay(200)
+
                         _loading.value = false
                         val itemResponse = response.data
                         if (itemResponse != null) {
@@ -261,7 +259,6 @@ class SessionViewModel @Inject constructor(
                 when (result) {
                     is Resource.Success -> {
 
-                        delay(200)
                         _loading.postValue(false)
                         _afterDeleteResult.postValue(true)
                         Log.d("SessionViewModel", "Session deleted successfully")

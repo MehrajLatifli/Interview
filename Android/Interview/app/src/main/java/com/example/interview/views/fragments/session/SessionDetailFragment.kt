@@ -80,6 +80,7 @@ class SessionDetailFragment : BaseFragment<FragmentSessionDetailBinding>(Fragmen
             if (!errorMessage.isNullOrBlank()) {
                 Log.e("VacancyViewModel", errorMessage)
                 customresultdialog("Unsuccessful!", errorMessage, R.color.MellowMelon)
+
             }
         }
 

@@ -31,23 +31,15 @@ class SessionRepository @Inject constructor(private val api: IApiManager) {
         api.getSessionByID(id)
     }
 
-    suspend fun getVacancyByID(id: Int) = safeApiRequest {
-        api.getVacancyByID(id)
-    }
 
-    suspend fun getCandidateDocumentByID(id: Int) = safeApiRequest {
-        api.getCandidateDocumentByID(id)
-    }
+
+
 
     suspend fun addSession(sessionRequest: SessionRequest) = safeApiRequest {
         api.addSession(sessionRequest)
     }
 
-    suspend fun getprofile()=safeApiRequest{
 
-        api.getprofile()
-
-    }
 
     suspend fun deleteSessionById(id: Int) = safeApiRequest {
         api.deleteSessionById(id)

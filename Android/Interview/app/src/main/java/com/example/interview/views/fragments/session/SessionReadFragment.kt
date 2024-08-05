@@ -54,8 +54,12 @@ class SessionReadFragment : BaseFragment<FragmentSessionReadBinding>(FragmentSes
                 if (position != -1) {
                     sessionAdapder.deleteItem(position)
                     viewModel.deleteSessionById(id)
+
+
                 }
             }
+
+
         }
 
         sessionAdapder.onClickDetailItem = { session ->
@@ -124,9 +128,9 @@ class SessionReadFragment : BaseFragment<FragmentSessionReadBinding>(FragmentSes
 
 
 
-                if (viewModel.getAllOwnSession().size <= 0) {
-                    findNavController().navigate(SessionReadFragmentDirections.actionSessionReadFragmentToSessionCreateFragment())
-                }
+//                if (viewModel.getAllOwnSession().size <= 0) {
+//                    findNavController().navigate(SessionReadFragmentDirections.actionSessionReadFragmentToSessionCreateFragment())
+//                }
             }
 
         }
