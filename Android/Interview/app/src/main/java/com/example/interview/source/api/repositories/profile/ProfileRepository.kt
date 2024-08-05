@@ -1,8 +1,10 @@
 package com.example.interview.source.api.repositories.profile
 
 import android.util.Log
+import com.example.interview.models.responses.get.error.ErrorResponse
 import com.example.interview.source.api.IApiManager
 import com.example.interview.source.api.Resource
+import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
@@ -28,15 +30,17 @@ class ProfileRepository  @Inject constructor(private val api: IApiManager) {
 
 
 
-    suspend fun <T> safeApiRequest(request: suspend () -> Response<T>) = flow<Resource<T>> {
+    private suspend fun <T> safeApiRequest(request: suspend () -> Response<T>) = flow<Resource<T>> {
         try {
             val response = request.invoke()
             if (response.isSuccessful) {
                 emit(Resource.Success(response.body()))
             } else {
                 val errorBody = response.errorBody()?.string() ?: "Unknown error"
-                Log.e("Response error", errorBody)
-                emit(Resource.Error(errorBody))
+                val errorResponse = Gson().fromJson(errorBody, ErrorResponse::class.java)
+                val errorMessage = errorResponse.title ?: "Unknown error"
+                Log.e("Response error", errorMessage)
+                emit(Resource.Error(errorMessage))
             }
         } catch (e: Exception) {
             Log.e("APIFailed", e.localizedMessage ?: "Unknown error")
