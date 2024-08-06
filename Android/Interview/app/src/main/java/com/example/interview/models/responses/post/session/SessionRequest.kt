@@ -9,7 +9,7 @@ data class SessionRequest(
     @SerializedName("startDate")
     val startDate: String,
     @SerializedName("endDate")
-    val endDate: String,
+    val endDate: String?,
     @SerializedName("vacancyId")
     val vacancyId: Int,
     @SerializedName("candidateId")

@@ -25,7 +25,7 @@ namespace Interview.Application.Services.Abstract
         public Task<SessionQuestionDTOforGetandGetAll> DeleteSessionQuestionById(int id, ClaimsPrincipal claimsPrincipal);
 
         public Task<List<QuestionDTOforGetandGetAll>> GetRandomQuestion(RandomQuestionRequestModel model, ClaimsPrincipal claimsPrincipal);
-        public Task<List<QuestionDTOforGetandGetAll>> GetRandomQuestion2(RandomQuestionRequestModel2 model, ClaimsPrincipal claimsPrincipal);
+        public Task CreateRandomQuestion(RandomQuestionRequestModel2 model, ClaimsPrincipal claimsPrincipal);
 
         public Task<List<QuestionDTOforGetandGetAll>> GetAllQuestionByPage(QuestionByPageRequestModel questionByPageRequestModel, ClaimsPrincipal claimsPrincipal);
 

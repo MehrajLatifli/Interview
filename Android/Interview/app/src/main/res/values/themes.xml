@@ -24,7 +24,28 @@
         <!-- Customize dropdown menu background color -->
         <item name="android:background">@color/ComingUpRoses</item>
         <!-- Set custom drawable for the dropdown arrow -->
-        <item name="android:popupBackground">@drawable/dropdown_arrow_vacancy</item>
+        <item name="android:popupBackground">@drawable/dropdown_background</item>
+    </style>
+
+    <style name="CustomTextInputLayoutStyle2" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+        <!-- Customize border color -->
+        <item name="boxStrokeColor">@drawable/dropdown_boxstrokecolor2</item>
+        <item name="boxStrokeWidth">2dp</item>
+        <!-- Customize hint text color -->
+        <item name="hintTextColor">@color/DeepPurple</item>
+        <item name="android:textColorHint">@color/DeepPurple</item>
+        <!-- Customize dropdown menu styles -->
+        <item name="popupTheme">@style/CustomPopupTheme2</item>
+    </style>
+
+    <!-- Custom style for the popup theme -->
+    <style name="CustomPopupTheme2" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <!-- Customize dropdown menu text color -->
+        <item name="android:textColor">@color/DeepPurple</item>
+        <!-- Customize dropdown menu background color -->
+        <item name="android:background">@color/DeepPurple</item>
+        <!-- Set custom drawable for the dropdown arrow -->
+        <item name="android:popupBackground">@drawable/dropdown_background2</item>
     </style>
 
     <!-- Custom TimePickerDialog Theme -->

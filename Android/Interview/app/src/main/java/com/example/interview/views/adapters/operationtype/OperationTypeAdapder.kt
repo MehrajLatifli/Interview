@@ -9,7 +9,7 @@ import com.example.interview.R
 import com.example.interview.databinding.ItemOperationtypeBinding
 import com.example.interview.models.localadapdermodels.operationtype.OperationType
 import com.example.interview.views.adapters.base.BaseAdapter
-import com.example.interview.views.adapters.operation.OperationAdapter
+import com.example.interview.views.adapters.operationcrud.OperationCRUDAdapter
 
 class OperationTypeAdapder : BaseAdapter<OperationType, OperationTypeAdapder.OperationTypeViewHolder>() {
 
@@ -29,7 +29,7 @@ class OperationTypeAdapder : BaseAdapter<OperationType, OperationTypeAdapder.Ope
         holder.itemBinding.itemtextView.text = item.text
         holder.itemBinding.itemimageView.setImageResource(item.image)
 
-        val adapter = OperationAdapter { selectedItemText ->
+        val adapter = OperationCRUDAdapter { selectedItemText ->
             itemClickHandler?.invoke(selectedItemText, item.text)
         }
 

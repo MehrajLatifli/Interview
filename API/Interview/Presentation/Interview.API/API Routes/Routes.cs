@@ -69,7 +69,7 @@ namespace Interview.API.API_Routes
 
         public const string RandomQuestionById = RandomQuestion;
 
-        public const string RandomQuestion2 = "randomQuestion2";
+        public const string CreateRandomQuestion = "createrandomQuestion";
 
         public const string Profile = "profile";
 

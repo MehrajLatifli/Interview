@@ -117,14 +117,14 @@ namespace Interview.API.Controllers.Operations
 
         }
 
-        [HttpPost(Routes.RandomQuestion2)]
-        public async Task<IActionResult> GetRandomQuestion2([FromQuery] RandomQuestionRequestModel2 request)
+        [HttpPost(Routes.CreateRandomQuestion)]
+        public async Task<IActionResult> CreateRandomQuestion([FromBody] RandomQuestionRequestModel2 request)
         {
 
-            var data = await _sessionQuestionService.GetRandomQuestion2(request, User);
+           await _sessionQuestionService.CreateRandomQuestion(request, User);
 
 
-            return Ok(data);
+            return Ok(new Response { Status = "Success", Message = "The RandomQuestion created successfully!" });
 
         }
 

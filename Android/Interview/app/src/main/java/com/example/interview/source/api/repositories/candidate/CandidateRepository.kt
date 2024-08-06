@@ -1,6 +1,6 @@
 package com.example.interview.source.api.repositories.candidate
 import android.util.Log
-import com.example.interview.models.responses.get.candidate.CandidateDocumentResponse
+import com.example.interview.models.responses.get.candidatedocument.CandidateDocumentResponse
 import com.example.interview.models.responses.get.candidate.CandidateResponse
 import com.example.interview.models.responses.get.error.ErrorResponse
 import com.example.interview.models.responses.post.candidate.CandidateRequest

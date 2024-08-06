@@ -1,16 +1,14 @@
-package com.example.interview.models.responses.get.sessionquestion
+package com.example.interview.models.responses.post.sessionquestion
 
 
 import com.google.gson.annotations.SerializedName
 
-data class SessionQuestionResponse(
-    @SerializedName("id")
-    val id: Int?,
-    @SerializedName("Value")
+data class SessionQuestionRequest(
+    @SerializedName("value")
     val value: Int?,
-    @SerializedName("SessionId")
+    @SerializedName("sessionId")
     val sessionId: Int?,
-    @SerializedName("QuestionId")
+    @SerializedName("questionId")
     val questionId: Int?,
 
 )

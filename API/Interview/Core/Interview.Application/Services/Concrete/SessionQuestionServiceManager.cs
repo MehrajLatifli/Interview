@@ -933,7 +933,7 @@ namespace Interview.Application.Services.Concrete
             }
         }
 
-        public async Task<List<QuestionDTOforGetandGetAll>> GetRandomQuestion2(RandomQuestionRequestModel2 model, ClaimsPrincipal claimsPrincipal)
+        public async Task CreateRandomQuestion(RandomQuestionRequestModel2 model, ClaimsPrincipal claimsPrincipal)
         {
             if (!_userReadRepository.GetAll(false).AsEnumerable().Any(i => string.IsNullOrEmpty(i.RefreshToken) && i.UserName == claimsPrincipal.Identity.Name))
             {
@@ -1214,7 +1214,6 @@ namespace Interview.Application.Services.Concrete
 
 
 
-                    return randomList;
                 }
                 else
                 {

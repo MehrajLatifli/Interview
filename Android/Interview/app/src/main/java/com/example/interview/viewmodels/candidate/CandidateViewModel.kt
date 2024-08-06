@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.interview.models.responses.get.candidate.CandidateDocumentResponse
+import com.example.interview.models.responses.get.candidatedocument.CandidateDocumentResponse
 import com.example.interview.models.responses.get.candidate.CandidateResponse
 import com.example.interview.models.responses.post.candidatedocument.CandidateDocumentRequest
 import com.example.interview.source.api.Resource

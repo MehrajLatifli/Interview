@@ -1,4 +1,4 @@
-package com.example.interview.models.responses.get.candidate
+package com.example.interview.models.responses.get.candidatedocument
 
 
 import com.google.gson.annotations.SerializedName

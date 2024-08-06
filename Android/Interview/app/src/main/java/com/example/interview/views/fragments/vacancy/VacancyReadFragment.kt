@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.interview.R
 import com.example.interview.databinding.CustomresultdialogBinding
 import com.example.interview.databinding.FragmentCandidateReadBinding
@@ -38,6 +39,8 @@ class VacancyReadFragment : BaseFragment<FragmentVacancyReadBinding>(FragmentVac
 
     var vacancyAdapter = VacancyAdapter()
 
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -46,6 +49,15 @@ class VacancyReadFragment : BaseFragment<FragmentVacancyReadBinding>(FragmentVac
 
         viewModel.getAllVacancies()
 
+
+        swipeRefreshLayout = binding.swipeRefreshLayout
+        swipeRefreshLayout.setColorSchemeColors(ContextCompat.getColor(requireContext(), R.color.ComingUpRoses))
+
+        swipeRefreshLayout.setOnRefreshListener {
+
+            viewModel.getAllVacancies()
+            swipeRefreshLayout.isRefreshing = false
+        }
 
         observeData()
 

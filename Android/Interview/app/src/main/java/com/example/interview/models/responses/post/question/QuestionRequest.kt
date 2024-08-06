@@ -1,4 +1,4 @@
-package com.example.interview.models.responses.post.sessionquestion
+package com.example.interview.models.responses.post.question
 
 
 import com.google.gson.annotations.SerializedName

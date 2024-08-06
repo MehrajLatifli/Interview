@@ -29,7 +29,6 @@ class ProfileRepository  @Inject constructor(private val api: IApiManager) {
 
 
 
-
     private suspend fun <T> safeApiRequest(request: suspend () -> Response<T>) = flow<Resource<T>> {
         try {
             val response = request.invoke()
@@ -38,7 +37,7 @@ class ProfileRepository  @Inject constructor(private val api: IApiManager) {
             } else {
                 val errorBody = response.errorBody()?.string() ?: "Unknown error"
                 val errorResponse = Gson().fromJson(errorBody, ErrorResponse::class.java)
-                val errorMessage = errorResponse.title ?: "Unknown error"
+                val errorMessage = "Message: ${errorResponse.title}" ?: "Unknown error"
                 Log.e("Response error", errorMessage)
                 emit(Resource.Error(errorMessage))
             }

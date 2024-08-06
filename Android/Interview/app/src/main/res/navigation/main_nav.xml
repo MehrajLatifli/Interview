@@ -233,7 +233,18 @@
         android:id="@+id/sessionCreateFragment"
         android:name="com.example.interview.views.fragments.session.SessionCreateFragment"
         android:label="fragment_session_create"
-        tools:layout="@layout/fragment_session_create" />
+        tools:layout="@layout/fragment_session_create" >
+        <action
+            android:id="@+id/action_sessionCreateFragment_to_sessionReadFragment"
+            app:destination="@id/sessionReadFragment"
+            app:popUpTo="@id/sessionCreateFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_sessionCreateFragment_to_operationFragment"
+            app:destination="@id/operationFragment"
+            app:popUpTo="@id/sessionCreateFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
     <fragment
         android:id="@+id/sessionUpdateFragment"
         android:name="com.example.interview.views.fragments.session.SessionUpdateFragment"

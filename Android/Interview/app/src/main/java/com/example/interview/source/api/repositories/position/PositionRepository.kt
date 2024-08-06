@@ -1,7 +1,6 @@
 package com.example.interview.source.api.repositories.position
 
 import android.util.Log
-import com.example.interview.models.responses.get.candidate.CandidateDocumentResponse
 import com.example.interview.models.responses.get.error.ErrorResponse
 import com.example.interview.models.responses.get.position.PositionResponse
 import com.example.interview.source.api.IApiManager
@@ -12,11 +11,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.withContext
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.MultipartBody
-import okhttp3.RequestBody.Companion.asRequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Response
 import javax.inject.Inject
 

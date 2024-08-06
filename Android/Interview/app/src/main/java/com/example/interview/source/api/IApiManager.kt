@@ -1,17 +1,22 @@
 package com.example.interview.source.api
 
-import com.example.interview.models.responses.get.candidate.CandidateDocumentResponse
+import com.example.interview.models.localadapdermodels.question.Question
+import com.example.interview.models.responses.get.candidatedocument.CandidateDocumentResponse
 import com.example.interview.models.responses.get.candidate.CandidateResponse
 import com.example.interview.models.responses.get.login.LoginResponse
 import com.example.interview.models.responses.get.position.PositionResponse
 import com.example.interview.models.responses.get.profile.ProfileResponse
+import com.example.interview.models.responses.get.question.QuestionResponse
 import com.example.interview.models.responses.get.session.SessionResponse
+import com.example.interview.models.responses.get.sessionquestion.SessionQuestionResponse
 import com.example.interview.models.responses.get.structure.StructureResponse
 import com.example.interview.models.responses.get.token.TokenResponse
 import com.example.interview.models.responses.get.vacancy.VacancyResponse
 import com.example.interview.models.responses.post.candidate.CandidateRequest
 import com.example.interview.models.responses.post.login.LoginRequest
 import com.example.interview.models.responses.post.session.SessionRequest
+import com.example.interview.models.responses.post.sessionquestion.RandomQuestionRequest2
+import com.example.interview.models.responses.post.sessionquestion.SessionQuestionRequest
 import com.example.interview.models.responses.post.token.RefreshTokenRequest
 import com.example.interview.models.responses.post.vacancy.VacancyRequest
 import okhttp3.MultipartBody
@@ -26,6 +31,7 @@ import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface IApiManager {
 
@@ -182,4 +188,39 @@ interface IApiManager {
         @Path("id") id: Int
     ): Response<Unit>
 
+
+    @GET("SessionQuestion/sessionQuestion")
+    suspend fun getAllSessionQuestion(): Response<List<SessionQuestionResponse>>
+
+    @GET("SessionQuestion/sessionQuestion/{id}")
+    suspend fun getSessionQuestionByID(
+        @Path("id") id: Int
+    ): Response<SessionQuestionResponse>
+
+    @GET("SessionQuestion/sessionId/{sessionId}")
+    suspend fun getSessionQuestionBySessionId(
+        @Path("sessionId") sessionId: Int
+    ): Response<List<SessionQuestionResponse>>
+
+
+    @POST("SessionQuestion/sessionQuestion")
+    suspend fun addSessionQuestion(@Body sessionRequest: SessionQuestionRequest): Response<Unit>
+
+    @PUT("SessionQuestion/sessionQuestion")
+    suspend fun updateSessionQuestion(@Body session: SessionQuestionResponse): Response<Unit>
+
+    @DELETE("SessionQuestion/sessionQuestion/{id}")
+    suspend fun deleteSessionQuestionById(
+        @Path("id") id: Int
+    ): Response<Unit>
+
+    @POST("SessionQuestion/createrandomQuestion")
+    suspend fun addRandomSessionQuestion(
+        @Body randomQuestionRequest2: RandomQuestionRequest2): Response<Unit>
+
+
+    @GET("Question/question/{id}")
+    suspend fun getQuestionByID(
+        @Path("id") id: Int
+    ): Response<QuestionResponse>
 }

@@ -4,8 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.interview.databinding.ItemCandidateBinding
-import com.example.interview.models.responses.get.candidate.CandidateDocumentResponse
-import com.example.interview.models.responses.get.profile.Role
+import com.example.interview.models.responses.get.candidatedocument.CandidateDocumentResponse
 import com.example.interview.views.adapters.base.BaseAdapter
 
 class CandidateAdapter: BaseAdapter<CandidateDocumentResponse, CandidateAdapter.CandidateViewHolder>() {

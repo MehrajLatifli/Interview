@@ -18,7 +18,6 @@ import javax.inject.Inject
 
 class SessionRepository @Inject constructor(private val api: IApiManager) {
 
-    // These functions are declared as suspend, which is correct
     suspend fun getAllSession() = safeApiRequest {
         api.getAllSession()
     }
@@ -48,6 +47,8 @@ class SessionRepository @Inject constructor(private val api: IApiManager) {
     suspend fun updateSession(sessionResponse: SessionResponse) = safeApiRequest {
         api.updateSession(sessionResponse)
     }
+
+
 
     private suspend fun <T> safeApiRequest(request: suspend () -> Response<T>) = flow<Resource<T>> {
         try {

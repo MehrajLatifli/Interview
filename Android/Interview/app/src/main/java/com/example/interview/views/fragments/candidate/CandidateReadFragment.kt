@@ -15,6 +15,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.interview.R
 import com.example.interview.databinding.CustomresultdialogBinding
 import com.example.interview.databinding.FragmentCandidateReadBinding
@@ -40,9 +41,25 @@ class CandidateReadFragment  : BaseFragment<FragmentCandidateReadBinding>(Fragme
     var candidateAdapter = CandidateAdapter()
 
 
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
+        viewModel.getAllCandidateDocuments()
+
+        observeData()
+
+
+        swipeRefreshLayout = binding.swipeRefreshLayout
+        swipeRefreshLayout.setColorSchemeColors(ContextCompat.getColor(requireContext(), R.color.ThickBlue))
+
+        swipeRefreshLayout.setOnRefreshListener {
+
+            viewModel.getAllCandidateDocuments()
+            swipeRefreshLayout.isRefreshing = false
+        }
 
 
 
@@ -84,11 +101,7 @@ class CandidateReadFragment  : BaseFragment<FragmentCandidateReadBinding>(Fragme
 
 
 
-        viewModel.getAllCandidateDocuments()
 
-
-
-        observeData()
 
 
     }

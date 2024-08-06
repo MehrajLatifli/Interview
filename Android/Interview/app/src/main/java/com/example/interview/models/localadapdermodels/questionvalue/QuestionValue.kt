@@ -1,4 +1,9 @@
 package com.example.interview.models.localadapdermodels.questionvalue
 
-class QuestionValue {
-}
+import com.example.interview.models.localadapdermodels.operationcrud.Operation
+
+data class QuestionValue (
+
+    val value: Int,
+
+)

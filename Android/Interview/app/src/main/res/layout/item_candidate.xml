@@ -7,7 +7,7 @@
     <data>
         <variable
             name="item"
-            type="com.example.interview.models.responses.get.candidate.CandidateDocumentResponse" />
+            type="com.example.interview.models.responses.get.candidatedocument.CandidateDocumentResponse" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
