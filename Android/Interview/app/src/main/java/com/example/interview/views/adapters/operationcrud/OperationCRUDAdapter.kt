@@ -9,9 +9,9 @@ import com.example.interview.databinding.ItemOperationBinding
 import com.example.interview.models.localadapdermodels.operationcrud.Operation
 import com.example.interview.views.adapters.base.BaseAdapter
 
-class OperationAdapter(
+class OperationCRUDAdapter(
     private val onClickItem: (String) -> Unit
-) : BaseAdapter<Operation, OperationAdapter.OperationCRUDViewHolder>() {
+) : BaseAdapter<Operation, OperationCRUDAdapter.OperationCRUDViewHolder>() {
 
     inner class OperationCRUDViewHolder(val itemBinding: ItemOperationBinding) :
         RecyclerView.ViewHolder(itemBinding.root)
