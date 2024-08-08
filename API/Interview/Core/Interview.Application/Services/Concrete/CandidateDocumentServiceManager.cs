@@ -288,7 +288,7 @@ namespace Interview.Application.Services.Concrete
 
                         if (_sessionReadRepository.GetAll(false).AsEnumerable().Any(i => i.CandidateId == candidateId))
                         {
-                            throw new ForbiddenException("The vacancy cannot be deleted because a session corresponding to the vacancy exists.");
+                            throw new ForbiddenException("The candidate cannot be deleted because a session corresponding to the vacancy exists.");
                         }
                         else
                         {
