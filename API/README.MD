@@ -7,7 +7,7 @@
 <a href="./Assets/InsertExample.sql">InsertExample SQL file</a>
 </br>
 </br>
-<p>If Id's jumping up 1000 ->  ALTER DATABASE SCOPED CONFIGURATION SET IDENTITY_CACHE = OFF   GO</p>
+<p>If Id's jumping up 1000 ->  ALTER DATABASE SCOPED CONFIGURATION SET IDENTITY_CACHE = OFF /p>
 </br>
 <img src="./Assets/İnterview%20diagram.png" alt="Diagram" width="500">
 
