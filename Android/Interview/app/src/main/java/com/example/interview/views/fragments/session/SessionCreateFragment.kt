@@ -65,7 +65,7 @@ class SessionCreateFragment : BaseFragment<FragmentSessionCreateBinding>(Fragmen
 
 
             viewModel.getprofile()
-            viewModel.getAllSession()
+
             observeData()
 
            size=viewModel.getAllOwnSession().size

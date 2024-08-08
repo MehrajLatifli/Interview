@@ -252,7 +252,8 @@
         tools:layout="@layout/fragment_session_update" >
         <action
             android:id="@+id/action_sessionUpdateFragment_to_sessionReadFragment"
-            app:destination="@id/sessionReadFragment" />
+            app:destination="@id/sessionReadFragment"
+            app:popUpToInclusive="false" />
         <argument
             android:name="session"
             app:argType="com.example.interview.models.responses.get.session.SessionResponse" />

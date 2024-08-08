@@ -1,10 +1,14 @@
 package com.example.interview.source.api
 
 import android.content.Context
+import android.content.Intent
 import android.os.HandlerThread
 import android.util.Log
+import androidx.core.content.ContextCompat.startActivity
+import com.example.interview.models.responses.get.login.LoginResponse
 import com.example.interview.models.responses.post.token.RefreshTokenRequest
 import com.example.interview.source.api.IApiManager
+import com.example.interview.views.fragments.auth.login.LogInFragment
 import kotlinx.coroutines.*
 import java.util.concurrent.Semaphore
 import javax.inject.Inject
@@ -16,8 +20,6 @@ class RefreshTokenDetector @Inject constructor(
 
     private var job: Job? = null
     private var handlerThread: HandlerThread? = null
-
-
     private val semaphore = Semaphore(1)
 
     init {
@@ -45,37 +47,60 @@ class RefreshTokenDetector @Inject constructor(
 
     private suspend fun refreshToken() {
         try {
-
             val accessToken = getApiKey()
             val refreshToken = getRefreshToken()
 
-            if (getUserAuth() == true) {
-                if (accessToken != null && refreshToken != null) {
-
-                    val response = apiManager.refreshToken(RefreshTokenRequest(accessToken, refreshToken))
-                    if (response.isSuccessful) {
-                        val tokenResponse = response.body()
-                        if (tokenResponse != null) {
-
-                            saveTokens(tokenResponse.accessToken, tokenResponse.refreshToken)
-                            Log.e("RefreshTokenDetector", "Tokens refreshed successfully")
-                        } else {
-                            Log.e("RefreshTokenDetector", "Token response body is null")
-                        }
+            if (accessToken != null && refreshToken != null) {
+                val response = apiManager.refreshToken(RefreshTokenRequest(accessToken, refreshToken))
+                if (response.isSuccessful) {
+                    val tokenResponse = response.body()
+                    if (tokenResponse != null) {
+                        saveTokens(tokenResponse.accessToken, tokenResponse.refreshToken)
+                        Log.d("RefreshTokenDetector", "Tokens refreshed successfully")
                     } else {
-                        Log.e("RefreshTokenDetector", "Failed to refresh tokens ${response.code()} - ${response.message()}")
+                        Log.e("RefreshTokenDetector", "Token response body is null")
                     }
                 } else {
-                    Log.e("RefreshTokenDetector", "Access token or refresh token is null")
+                    handleTokenRefreshFailure(response.code())
                 }
+            } else {
+                Log.e("RefreshTokenDetector", "Access token or refresh token is null")
             }
         } catch (e: Exception) {
             Log.e("RefreshTokenDetector", "Exception refreshing tokens: ${e.message}")
         }
     }
 
-    private suspend fun saveTokens(accessToken: String, refreshToken: String) {
+    private fun handleTokenRefreshFailure(statusCode: Int) {
+        when (statusCode) {
+            401 -> {
+                Log.e("RefreshTokenDetector", "Unauthorized access - Tokens might be expired")
 
+                clearTokens()
+                navigateToLogin()
+            }
+            else -> {
+                Log.e("RefreshTokenDetector", "Failed to refresh tokens: HTTP $statusCode")
+            }
+        }
+    }
+
+    private fun clearTokens() {
+        val sharedPreferences = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+        with(sharedPreferences.edit()) {
+            remove("api_key")
+            remove("refresh_token")
+            apply()
+        }
+    }
+
+    private fun navigateToLogin() {
+        val intent = Intent(context, LogInFragment::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(context, intent, null)
+    }
+
+    private suspend fun saveTokens(accessToken: String, refreshToken: String) {
         val sharedPreferences = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
         with(sharedPreferences.edit()) {
             putString("api_key", accessToken)

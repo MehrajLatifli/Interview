@@ -10,7 +10,7 @@ data class SessionResponse(
     @SerializedName("id")
     val id: Int?,
     @SerializedName("endValue")
-    val endValue: Int?,
+    val endValue: Double?,
     @SerializedName("startDate")
     val startDate: String?,
     @SerializedName("endDate")

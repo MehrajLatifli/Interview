@@ -24,10 +24,13 @@ namespace Interview.Application.Services.Concrete
         private readonly IPositionWriteRepository _positionWriteRepository;
         private readonly IPositionReadRepository _positionReadRepository;
 
+        private readonly ISessionWriteRepository _sessionWriteRepository;
+        private readonly ISessionReadRepository  _sessionReadRepository;
+
 
         private readonly IUserReadRepository _userReadRepository;
 
-        public VacancyServiceManager(IMapper mapper, IVacancyWriteRepository vacancyWriteRepository, IVacancyReadRepository vacancyReadRepository, IStructureWriteRepository structureWriteRepository, IStructureReadRepository structureReadRepository, IPositionWriteRepository positionWriteRepository, IPositionReadRepository positionReadRepository, IUserReadRepository userReadRepository)
+        public VacancyServiceManager(IMapper mapper, IVacancyWriteRepository vacancyWriteRepository, IVacancyReadRepository vacancyReadRepository, IStructureWriteRepository structureWriteRepository, IStructureReadRepository structureReadRepository, IPositionWriteRepository positionWriteRepository, IPositionReadRepository positionReadRepository, IUserReadRepository userReadRepository, ISessionWriteRepository sessionWriteRepository, ISessionReadRepository sessionReadRepository)
         {
             _mapper = mapper;
             _vacancyWriteRepository = vacancyWriteRepository;
@@ -37,6 +40,8 @@ namespace Interview.Application.Services.Concrete
             _positionWriteRepository = positionWriteRepository;
             _positionReadRepository = positionReadRepository;
             _userReadRepository = userReadRepository;
+            _sessionWriteRepository = sessionWriteRepository;
+            _sessionReadRepository = sessionReadRepository;
         }
 
 
@@ -241,19 +246,30 @@ namespace Interview.Application.Services.Concrete
                 if (claimsPrincipal.Identity.IsAuthenticated)
                 {
 
-                    if (_vacancyReadRepository.GetAll().Any(i => i.Id == Convert.ToInt32(id)))
+                    if (_sessionReadRepository.GetAll(false).AsEnumerable().Any(i => i.VacancyId == id))
                     {
-
-                        await _vacancyWriteRepository.RemoveByIdAsync(id.ToString());
-                        await _vacancyWriteRepository.SaveAsync();
-
-                        return null;
-
+                        throw new ForbiddenException("The vacancy cannot be deleted because a session corresponding to the vacancy exists.");
                     }
-
                     else
                     {
-                        throw new NotFoundException("Vacancy not found");
+
+                        if (_vacancyReadRepository.GetAll().Any(i => i.Id == Convert.ToInt32(id)))
+                        {
+
+
+
+
+                            await _vacancyWriteRepository.RemoveByIdAsync(id.ToString());
+                            await _vacancyWriteRepository.SaveAsync();
+
+                            return null;
+
+                        }
+
+                        else
+                        {
+                            throw new NotFoundException("Vacancy not found");
+                        }
                     }
                 }
                 else

@@ -13,6 +13,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.interview.R
 import com.example.interview.databinding.CustomresultdialogBinding
@@ -38,15 +39,19 @@ class SessionReadFragment : BaseFragment<FragmentSessionReadBinding>(FragmentSes
     private val sessionAdapder = SessionAdapder()
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
 
-    private val lock = ReentrantLock()
+    private var size: Int = 0
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
         binding.rvSessions.adapter = sessionAdapder
         observeData()
 
-        viewModel.getAllOwnSession()
+
+        size=viewModel.getAllOwnSession().size
+
+
 
         swipeRefreshLayout = binding.swipeRefreshLayout
         swipeRefreshLayout.setColorSchemeColors(
@@ -56,6 +61,8 @@ class SessionReadFragment : BaseFragment<FragmentSessionReadBinding>(FragmentSes
             viewModel.getAllOwnSession()
             swipeRefreshLayout.isRefreshing = false
         }
+
+
 
         sessionAdapder.onClickDeleteItem = { id ->
             val position = sessionAdapder.list.indexOfFirst { it.id == id }
@@ -156,8 +163,11 @@ class SessionReadFragment : BaseFragment<FragmentSessionReadBinding>(FragmentSes
 
         viewModel.error.observe(viewLifecycleOwner) { errorMessage ->
             if (!errorMessage.isNullOrBlank() && sessionAdapder.list.isNotEmpty()) {
-                Log.e("SessionViewModel", errorMessage)
-                customresultdialog("Unsuccessful!", errorMessage, R.color.MellowMelon)
+
+                if (size>0) {
+                    Log.e("SessionViewModel", errorMessage)
+                    customresultdialog("Unsuccessful!", errorMessage, R.color.MellowMelon)
+                }
             }
         }
     }

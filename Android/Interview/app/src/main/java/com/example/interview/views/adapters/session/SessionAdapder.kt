@@ -1,6 +1,7 @@
 package com.example.interview.views.adapters.session
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.interview.databinding.ItemSessionBinding
@@ -12,6 +13,7 @@ class SessionAdapder : BaseAdapter<SessionResponse, SessionAdapder.SessionViewHo
     lateinit var onClickDeleteItem: (Int?) -> Unit
     lateinit var onClickDetailItem: (SessionResponse) -> Unit
     lateinit var onClickStartExemItem: (SessionResponse) -> Unit
+    var isStartExamVisible: Boolean = true
 
     inner class SessionViewHolder(val itemBinding: ItemSessionBinding) :
         RecyclerView.ViewHolder(itemBinding.root)
@@ -25,6 +27,13 @@ class SessionAdapder : BaseAdapter<SessionResponse, SessionAdapder.SessionViewHo
         val item = list[position]
         holder.itemBinding.item = item
 
+        // Update visibility based on the item
+        if (updateVisibility(item)) {
+            holder.itemBinding.buttonStartExam.visibility = View.INVISIBLE
+        } else {
+            holder.itemBinding.buttonStartExam.visibility = View.VISIBLE
+        }
+
         holder.itemBinding.buttonDelete.setOnClickListener {
             onClickDeleteItem.invoke(item.id)
         }
@@ -33,8 +42,15 @@ class SessionAdapder : BaseAdapter<SessionResponse, SessionAdapder.SessionViewHo
             onClickDetailItem.invoke(item)
         }
 
-        holder.itemBinding.buttonUpdate.setOnClickListener {
+        holder.itemBinding.buttonStartExam.setOnClickListener {
             onClickStartExemItem.invoke(item)
         }
     }
+
+    fun updateVisibility(item: SessionResponse): Boolean {
+        return item.endValue != null && item.endValue > 0
+    }
+
+
+
 }

@@ -94,6 +94,7 @@ class SessionViewModel @Inject constructor(
     private val _roles = MutableLiveData<List<Role>>()
     val roles: LiveData<List<Role>> = _roles
 
+    
     fun addSession(sessionRequest: SessionRequest) {
         _loading.value = true
 
@@ -103,7 +104,29 @@ class SessionViewModel @Inject constructor(
                     is Resource.Success -> {
                         delay(500) // Simulate network delay
                         _completeResult.postValue(true)
-                        Log.d("SessionViewModel", "Vacancy created: ${result.data}")
+                        Log.d("SessionViewModel", "Session created: ${result.data}")
+                    }
+                    is Resource.Error -> {
+                        _loading.postValue(false)
+                        _error.postValue(result.message ?: "Unknown error")
+                        _completeResult.postValue(false)
+                        Log.e("SessionViewModel", result.message ?: "Unknown error")
+                    }
+                }
+            }
+        }
+    }
+
+    fun updateSession(sessionresponse: SessionResponse) {
+        _loading.value = true
+
+        viewModelScope.launch {
+            sessionRepository.updateSession(sessionresponse).collect { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        delay(500) // Simulate network delay
+                        _completeResult.postValue(true)
+                        Log.d("SessionViewModel", "Session updated: ${result.data}")
                     }
                     is Resource.Error -> {
                         _loading.postValue(false)
@@ -125,7 +148,7 @@ class SessionViewModel @Inject constructor(
                     is Resource.Success -> {
                         delay(500) // Simulate network delay
                         _completeResult.postValue(true)
-                        Log.d("SessionViewModel", "Vacancy created: ${result.data}")
+                        Log.d("SessionViewModel", "SessionQuestion created: ${result.data}")
                     }
                     is Resource.Error -> {
                         _loading.postValue(false)

@@ -11,6 +11,7 @@ import android.view.animation.AnimationUtils
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.interview.R
@@ -21,7 +22,9 @@ import com.example.interview.models.localadapdermodels.operationcrud.Operation
 import com.example.interview.models.localadapdermodels.operationtype.OperationType
 import com.example.interview.models.localadapdermodels.question.Question
 import com.example.interview.models.localadapdermodels.questionvalue.QuestionValue
+import com.example.interview.models.responses.get.session.SessionResponse
 import com.example.interview.models.responses.get.sessionquestion.SessionQuestionResponse
+import com.example.interview.models.responses.post.session.SessionRequest
 import com.example.interview.utilities.gone
 import com.example.interview.utilities.loadImageWithGlideAndResize
 import com.example.interview.utilities.visible
@@ -34,6 +37,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
 
 @AndroidEntryPoint
 class SessionUpdateFragment : BaseFragment<FragmentSessionUpdateBinding>(FragmentSessionUpdateBinding::inflate) {
@@ -86,6 +90,36 @@ class SessionUpdateFragment : BaseFragment<FragmentSessionUpdateBinding>(Fragmen
         }
 
         binding.rvQuestion.adapter = questionAdapter
+
+        binding.buttonFinishExam.setOnClickListener {
+
+
+            lifecycleScope.launch {
+                val sessionResponse = SessionResponse(
+                    id = args.session.id,
+                    endValue = args.session.endValue,
+                    startDate = LocalDateTime.now().toString(),
+                    endDate = LocalDateTime.now().toString(),
+                    vacancyId = args.session.vacancyId?.toInt(),
+                    candidateId = args.session.candidateId?.toInt(),
+                    userId = args.session.userId?.toInt()
+                )
+
+
+
+                viewModel.updateSession(sessionResponse)
+
+                delay(1000)
+
+                val navOptions = NavOptions.Builder()
+                    .setPopUpTo(R.id.sessionUpdateFragment, true)
+                    .setLaunchSingleTop(true)
+                    .build()
+
+                findNavController().navigate(SessionUpdateFragmentDirections.actionSessionUpdateFragmentToSessionReadFragment(),navOptions)
+            }
+
+        }
     }
 
     private fun observeData() {

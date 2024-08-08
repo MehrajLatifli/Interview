@@ -28,7 +28,10 @@ namespace Interview.Application.Services.Concrete
         private readonly ICandidateWriteRepository _candidateWriteRepository;
         private readonly ICandidateReadRepository _candidateReadRepository;
 
-        public CandidateDocumentServiceManager(IMapper mapper, ICandidateDocumentWriteRepository candidateDocumentWriteRepository, ICandidateDocumentReadRepository candidateDocumentReadRepository, IUserReadRepository userReadRepository, ICandidateWriteRepository candidateWriteRepository, ICandidateReadRepository candidateReadRepository)
+        private readonly ISessionWriteRepository _sessionWriteRepository;
+        private readonly ISessionReadRepository _sessionReadRepository;
+
+        public CandidateDocumentServiceManager(IMapper mapper, ICandidateDocumentWriteRepository candidateDocumentWriteRepository, ICandidateDocumentReadRepository candidateDocumentReadRepository, IUserReadRepository userReadRepository, ICandidateWriteRepository candidateWriteRepository, ICandidateReadRepository candidateReadRepository, ISessionWriteRepository sessionWriteRepository, ISessionReadRepository sessionReadRepository)
         {
             _mapper = mapper;
             _candidateDocumentWriteRepository = candidateDocumentWriteRepository;
@@ -36,6 +39,8 @@ namespace Interview.Application.Services.Concrete
             _userReadRepository = userReadRepository;
             _candidateWriteRepository = candidateWriteRepository;
             _candidateReadRepository = candidateReadRepository;
+            _sessionWriteRepository = sessionWriteRepository;
+            _sessionReadRepository = sessionReadRepository;
         }
 
 
@@ -266,6 +271,7 @@ namespace Interview.Application.Services.Concrete
 
         public async Task<CandidateDocumentDTOforGetandGetAll> DeleteCandidateDocumentById(int id, ClaimsPrincipal claimsPrincipal)
         {
+
           if (!_userReadRepository.GetAll(false).AsEnumerable().Any(i => string.IsNullOrEmpty(i.RefreshToken) && i.UserName == claimsPrincipal.Identity.Name))
             {
                 if (claimsPrincipal.Identity.IsAuthenticated)
@@ -279,24 +285,35 @@ namespace Interview.Application.Services.Concrete
                         var candidateDocumentId = _mapper.Map<List<CandidateDocumentDTOforGetandGetAll>>(_candidateDocumentReadRepository.GetAll(false)).Where(i=>i.Id==id).FirstOrDefault().Id;
                         var candidateId = _mapper.Map<List<CandidateDTOforGetandGetAll>>(_candidateReadRepository.GetAll(false)).Where(i => i.CandidateDocumentId == id).FirstOrDefault().Id;
 
-                        var entity2 = new Candidate
+
+                        if (_sessionReadRepository.GetAll(false).AsEnumerable().Any(i => i.CandidateId == candidateId))
                         {
-                            Id = candidateId,
-                            CandidateDocumentId = candidateDocumentId,
+                            throw new ForbiddenException("The vacancy cannot be deleted because a session corresponding to the vacancy exists.");
+                        }
+                        else
+                        {
 
-                        };
+                            var entity2 = new Candidate
+                            {
+                                Id = candidateId,
+                                CandidateDocumentId = candidateDocumentId,
 
-                        await _candidateWriteRepository.RemoveByIdAsync(entity2.Id.ToString());
-
-                        await _candidateWriteRepository.SaveAsync();
-
-
-
-                        await _candidateDocumentWriteRepository.RemoveByIdAsync(id.ToString());
-                        await _candidateDocumentWriteRepository.SaveAsync();
+                            };
 
 
-                        return null;
+
+                            await _candidateWriteRepository.RemoveByIdAsync(entity2.Id.ToString());
+
+                            await _candidateWriteRepository.SaveAsync();
+
+
+
+                            await _candidateDocumentWriteRepository.RemoveByIdAsync(id.ToString());
+                            await _candidateDocumentWriteRepository.SaveAsync();
+
+
+                            return null;
+                        }
 
                     }
 
