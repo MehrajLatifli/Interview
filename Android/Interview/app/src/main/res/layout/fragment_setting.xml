@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/White"
+    android:id="@+id/Main"
+    tools:context=".views.fragments.setting.SettingFragment">
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/NestedScrollView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="45dp"
+        android:layout_marginBottom="105dp"
+        android:background="@color/White"
+        android:clipToPadding="false"
+        android:fillViewport="true"
+        android:paddingRight="0dp"
+        android:scrollbarThumbVertical="@drawable/scrollview_thumb_vertical"
+        android:scrollbarTrackVertical="@drawable/scrollview_traack_vertical"
+        android:scrollbars="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/ConstraintLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/ConstraintLayout_1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+            <TextView
+                android:id="@+id/primaryfontsizetextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="16dp"
+                android:fontFamily="@font/nunito_bold"
+                android:paddingVertical="5dp"
+                android:text="Primary font size:"
+                android:textColor="@color/DeepPurple"
+                android:textSize="20sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <TextView
+                android:id="@+id/fontsizecounttextView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:fontFamily="@font/nunito_bold"
+                android:paddingVertical="5dp"
+                android:text="0"
+                android:textColor="@color/DeepPurple"
+                android:textSize="20sp"
+                app:layout_constraintStart_toEndOf="@+id/primaryfontsizetextView"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/sliderPrimaryFontSize"
+                    style="@style/Widget.App.Slider"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:contentDescription="Slider for font size"
+                    android:stepSize="1.0"
+                    android:value="8.0"
+                    android:valueFrom="8.0"
+                    android:valueTo="20.0"
+                    app:labelBehavior="visible"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/primaryfontsizetextView"
+                    app:thumbColor="@color/DeepPurple"
+                    app:thumbElevation="4dp"
+                    app:tickColor="@color/Transparent"
+                    app:trackColorActive="@color/DeepPurple"
+                    app:trackColorInactive="@color/LavenderTonic"
+                    app:trackHeight="5.0dp" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/ConstraintLayout_2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ConstraintLayout_1">
+
+                <TextView
+                    android:id="@+id/secondaryfontsizetextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="@font/nunito_bold"
+                    android:paddingVertical="5dp"
+                    android:text="Secondary font size:"
+                    android:textColor="@color/DeepPurple"
+                    android:textSize="20sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+                <TextView
+                    android:id="@+id/fontsizecounttextView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="@font/nunito_bold"
+                    android:paddingVertical="5dp"
+                    android:text="0"
+                    android:textColor="@color/DeepPurple"
+                    android:textSize="20sp"
+                    app:layout_constraintStart_toEndOf="@+id/secondaryfontsizetextView"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/sliderSecondaryFontSize"
+                    style="@style/Widget.App.Slider"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:contentDescription="Slider for font size"
+                    android:stepSize="1.0"
+                    android:valueFrom="8.0"
+                    android:valueTo="20.0"
+                    app:labelBehavior="visible"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/secondaryfontsizetextView"
+                    app:thumbColor="@color/DeepPurple"
+                    app:tickColor="@color/Transparent"
+                    app:trackColorActive="@color/DeepPurple"
+                    app:trackColorInactive="@color/LavenderTonic"
+                    app:trackHeight="5.0dp" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/ConstraintLayout_3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ConstraintLayout_2">
+
+                <TextView
+                    android:id="@+id/themetextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:fontFamily="@font/nunito_bold"
+                    android:paddingVertical="5dp"
+                    android:text="Theme:"
+                    android:textColor="@color/DeepPurple"
+                    android:textSize="20sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/themeswitch" />
+
+                <TextView
+                    android:id="@+id/themeNametextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:fontFamily="@font/nunito_bold"
+                    android:paddingVertical="5dp"
+                    android:text="Primary"
+                    android:textColor="@color/DeepPurple"
+                    android:textSize="20sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/themetextView"
+                    app:layout_constraintTop_toTopOf="@+id/themeswitch" />
+
+                <com.google.android.material.materialswitch.MaterialSwitch
+                    android:id="@+id/themeswitch"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:padding="0dp"
+                    android:textOff=""
+                    android:textOn=""
+                    android:textColor="@color/White"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:thumbTint="@color/DeepPurple"
+                    app:trackTint="@color/LavenderTonic" />
+
+
+
+
+
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonReset"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:backgroundTint="@color/DeepPurple"
+                android:fontFamily="@font/nunito_bold"
+                android:paddingLeft="60dp"
+                android:paddingTop="18dp"
+                android:paddingRight="60dp"
+                android:paddingBottom="18dp"
+                android:textSize="20dp"
+                android:text="Reset"
+                android:textColor="@color/White"
+                app:cornerRadius="25dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ConstraintLayout_3" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

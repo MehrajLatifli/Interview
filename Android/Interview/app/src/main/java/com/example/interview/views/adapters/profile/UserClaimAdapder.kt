@@ -1,5 +1,6 @@
 package com.example.interview.views.adapters.profile
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.compose.animation.core.Animation
@@ -10,6 +11,9 @@ import com.example.interview.views.adapters.base.BaseAdapter
 import com.google.android.material.animation.AnimationUtils
 
 class UserClaimAdapder : BaseAdapter<UserClaim, UserClaimAdapder.UserClaimViewHolder>() {
+
+    private var primaryFontSize: Float = 16.0F
+    private var secondaryFontSize: Float = 12.0F
 
     inner class UserClaimViewHolder(val itemBinding: ItemProfileuserclaimsBinding) :
         RecyclerView.ViewHolder(itemBinding.root)
@@ -24,5 +28,15 @@ class UserClaimAdapder : BaseAdapter<UserClaim, UserClaimAdapder.UserClaimViewHo
         holder.itemBinding.item = item
 
 
+        holder.itemBinding?.claimTypetextView?.textSize = primaryFontSize
+        holder.itemBinding?.claimValuetextView?.textSize = secondaryFontSize
     }
+
+    fun setFontSizes(primary: Float, secondary: Float) {
+        primaryFontSize = primary
+        secondaryFontSize = secondary
+        notifyDataSetChanged()
+    }
+
+
 }

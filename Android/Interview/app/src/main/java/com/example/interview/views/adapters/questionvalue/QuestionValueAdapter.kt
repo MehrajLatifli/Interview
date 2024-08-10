@@ -15,6 +15,10 @@ class QuestionValueAdapter(
 
     private var selectedItemValue: String? = null
 
+
+    private var primaryFontSize: Float = 16.0F
+    private var secondaryFontSize: Float = 12.0F
+
     inner class QuestionValueViewHolder(val itemBinding: ItemQuestionvalueBinding) :
         RecyclerView.ViewHolder(itemBinding.root)
 
@@ -26,6 +30,8 @@ class QuestionValueAdapter(
     override fun onBindViewHolder(holder: QuestionValueViewHolder, position: Int) {
         val item = list[position]
         holder.itemBinding.itemtextView.text = item.value.toString()
+
+        holder.itemBinding.itemtextView.textSize=secondaryFontSize
 
         // Highlight the selected item
         val isSelected = item.value.toString() == selectedItemValue
@@ -70,6 +76,12 @@ class QuestionValueAdapter(
 
     fun setSelectedItem(selectedValue: String?) {
         selectedItemValue = selectedValue
+        notifyDataSetChanged()
+    }
+
+    fun setFontSizes(primary: Float, secondary: Float) {
+        primaryFontSize = primary
+        secondaryFontSize = secondary
         notifyDataSetChanged()
     }
 }

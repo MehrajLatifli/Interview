@@ -1,14 +1,18 @@
 package com.example.interview.views.fragments.session
 
 import android.app.AlertDialog
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
+import android.util.TypedValue
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AutoCompleteTextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import com.example.interview.R
@@ -26,6 +30,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -38,93 +43,175 @@ class SessionDetailFragment : BaseFragment<FragmentSessionDetailBinding>(Fragmen
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Ensure binding is not null and view is created
+        binding?.let { bitem ->
+            bitem.includeProgressbar.progressBar.visible()
+            bitem.NestedScrollView.gone()
 
-        binding.includeProgressbar.progressBar.visible()
-        binding.NestedScrollView.gone()
+            lifecycleScope.launch {
+                delay(200)
+
+                args.session.id?.let { sessionId -> viewModel.getSessionByID(sessionId) }
+                args.session.vacancyId?.let { vacancyId -> viewModel.getVacancyByID(vacancyId) }
+                args.session.candidateId?.let { candidateId -> viewModel.getCandidateDocumentByID(candidateId) }
+                args.session.userId?.let { viewModel.getprofile() }
+
+                // Observe data after loading
+                observeData()
+
+                // Ensure UI updates are performed on the main thread
+                withContext(Dispatchers.Main) {
+                    binding?.includeProgressbar?.progressBar?.gone()
+                    binding?.NestedScrollView?.visible()
+                }
+            }
+        }
+        val themeName = getThemeName() ?: "Primary"
+        applyTheme(themeName)
+
+        applySize(getPrimaryFontsize(), getSecondaryFontsize())
+    }
+
+    private fun applySize(savedPrimaryFontSize: Float, savedSecondaryFontSize:Float) {
+
 
         lifecycleScope.launch {
-            delay(2000)
-
-            args.session.id?.let { sessionId -> viewModel.getSessionByID(sessionId) }
-            args.session.vacancyId?.let { vacancyId -> viewModel.getVacancyByID(vacancyId) }
-            args.session.candidateId?.let { candidateId -> viewModel.getCandidateDocumentByID(candidateId) }
-            args.session.userId?.let { viewModel.getprofile() }
 
 
-            observeData()
 
-            binding.includeProgressbar.progressBar.gone()
-            binding.NestedScrollView.visible()
+            binding.titletextView.textSize=savedPrimaryFontSize
+
+            binding.titletextView2.textSize=savedPrimaryFontSize
+
+            binding.titletextView3.textSize=savedPrimaryFontSize
+
+            binding.titletextView4.textSize=savedPrimaryFontSize
+
+            binding.titletextView5.textSize=savedPrimaryFontSize
+
+            binding.titletextView6.textSize=savedPrimaryFontSize
+
+
+            binding.textView1.textSize=savedSecondaryFontSize
+
+            binding.textView2.textSize=savedSecondaryFontSize
+
+            binding.textView3.textSize=savedSecondaryFontSize
+
+            binding.textView4.textSize=savedSecondaryFontSize
+
+            binding.textView5.textSize=savedSecondaryFontSize
+
+            binding.textView6.textSize=savedSecondaryFontSize
+
+
         }
 
 
 
+    }
+
+    private fun getPrimaryFontsize(): Float {
+        val sp = requireActivity().getSharedPreferences("setting_prefs", Context.MODE_PRIVATE)
+        return sp.getFloat("primaryFontsize", 16.0F)
+    }
+
+    private fun getSecondaryFontsize(): Float {
+        val sp = requireActivity().getSharedPreferences("setting_prefs", Context.MODE_PRIVATE)
+
+        return sp.getFloat("secondaryFontsize", 12.0F)
+    }
 
 
 
+    private fun applyTheme(themeName: String) {
+        lifecycleScope.launch {
+            if (themeName == "Secondary") {
+                binding.Main.background = ContextCompat.getDrawable(
+                    requireContext(),
+                    R.color.bottom_nav_color2_2
+                )
+                binding.NestedScrollView.background = ContextCompat.getDrawable(
+                    requireContext(),
+                    R.color.bottom_nav_color2_2
+                )
+            }
+        }
+    }
+
+
+    private fun getThemeName(): String? {
+        val sharedPreferences = requireContext().getSharedPreferences("setting_prefs", Context.MODE_PRIVATE)
+        return sharedPreferences.getString("themeName", null)
     }
 
     private fun observeData() {
-
-        viewModel.loading.observe(viewLifecycleOwner) { isLoading ->
-            if (isLoading) {
-                binding.includeProgressbar.progressBar.visible()
-                binding.NestedScrollView.gone()
-            } else {
-                binding.includeProgressbar.progressBar.gone()
-                binding.NestedScrollView.visible()
-            }
-        }
-
-        viewModel.error.observe(viewLifecycleOwner) { errorMessage ->
-            if (!errorMessage.isNullOrBlank()) {
-                Log.e("VacancyViewModel", errorMessage)
-                customresultdialog("Unsuccessful!", errorMessage, R.color.MellowMelon)
-
-            }
-        }
-
-        viewModel.session.observe(viewLifecycleOwner) { item ->
-            item?.let {
-
-                binding.textView1.text = it.endValue.toString() ?: ""
-
-                if(!it.startDate.isNullOrEmpty())
-                {
-                    binding.textView2.text = formatDateTime(it.startDate ?: "")
-                }
-
-                if(!it.endDate.isNullOrEmpty()) {
-
-                    binding.textView3.text = formatDateTime(it.endDate ?: "")
+        // Check if view is valid before observing
+        if (viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+            viewModel.loading.observe(viewLifecycleOwner) { isLoading ->
+                // Use 'binding?.let' to ensure binding is valid
+                binding?.let { bitem ->
+                    if (isLoading) {
+                        bitem.includeProgressbar.progressBar.visible()
+                        bitem.NestedScrollView.gone()
+                    } else {
+                        bitem.includeProgressbar.progressBar.gone()
+                        bitem.NestedScrollView.visible()
+                    }
                 }
             }
-        }
 
-        viewModel.vacancy.observe(viewLifecycleOwner) { vacancy ->
-            binding.textView4.text = vacancy?.title ?: ""
-        }
+            viewModel.error.observe(viewLifecycleOwner) { errorMessage ->
+                if (!errorMessage.isNullOrBlank()) {
+                    Log.e("SessionDetailFragment", errorMessage)
+                    customresultdialog("Unsuccessful!", errorMessage, R.color.MellowMelon)
+                }
+            }
 
-        viewModel.candidateDocument.observe(viewLifecycleOwner) { candidateDocument ->
-            binding.textView5.text = candidateDocument?.name ?: ""
-        }
+            viewModel.session.observe(viewLifecycleOwner) { item ->
+                item?.let {
+                    binding?.let { bitem ->
+                        bitem.textView1.text = it.endValue.toString() ?: ""
 
-        viewModel.profiles.observe(viewLifecycleOwner) { profiles ->
-            val profilesText = profiles.map { profile ->
-                "${profile.username ?: ""}"
-            }.joinToString(separator = "\n\n")
+                        if (!it.startDate.isNullOrEmpty()) {
+                            bitem.textView2.text = formatDateTime(it.startDate)
+                        }
 
-            binding.textView6.text = profilesText
+                        if (!it.endDate.isNullOrEmpty()) {
+                            bitem.textView3.text = formatDateTime(it.endDate)
+                        }
+                    }
+                }
+            }
+
+            viewModel.vacancy.observe(viewLifecycleOwner) { vacancy ->
+                binding?.let { bitem ->
+                    bitem.textView4.text = vacancy?.title ?: ""
+                }
+            }
+
+            viewModel.candidateDocument.observe(viewLifecycleOwner) { candidateDocument ->
+                binding?.let { bitem ->
+                    bitem.textView5.text = candidateDocument?.name ?: ""
+                }
+            }
+
+            viewModel.profiles.observe(viewLifecycleOwner) { profiles ->
+                val profilesText = profiles.map { profile -> "${profile.username ?: ""}" }
+                    .joinToString(separator = "\n\n")
+
+                binding?.let { bitem ->
+                    bitem.textView6.text = profilesText
+                }
+            }
         }
     }
 
-    fun formatDateTime(dateTimeString: String): String {
+    private fun formatDateTime(dateTimeString: String): String {
         val inputFormatter = DateTimeFormatter.ISO_DATE_TIME
         val outputFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy   HH:mm:ss.SSS")
 
-
         val dateTime = LocalDateTime.parse(dateTimeString, inputFormatter)
-
         return dateTime.format(outputFormatter)
     }
 
@@ -147,3 +234,4 @@ class SessionDetailFragment : BaseFragment<FragmentSessionDetailBinding>(Fragmen
         }
     }
 }
+

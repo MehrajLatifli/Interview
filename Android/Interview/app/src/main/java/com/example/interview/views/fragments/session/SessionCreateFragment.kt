@@ -1,14 +1,18 @@
 package com.example.interview.views.fragments.session
 
 import android.app.AlertDialog
+import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
+import android.util.TypedValue
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -107,6 +111,75 @@ class SessionCreateFragment : BaseFragment<FragmentSessionCreateBinding>(Fragmen
         }
 
 
+        val themeName = getThemeName() ?: "Primary"
+        applyTheme(themeName)
+
+        applySize(getPrimaryFontsize(), getSecondaryFontsize())
+    }
+
+    private fun applySize(savedPrimaryFontSize: Float, savedSecondaryFontSize:Float) {
+
+
+        lifecycleScope.launch {
+
+            val textInputEditText: AutoCompleteTextView =  binding.autocompleteVacancytextview
+            textInputEditText.setTextSize(TypedValue.COMPLEX_UNIT_SP, savedPrimaryFontSize)
+
+            val textInputEditText2: AutoCompleteTextView =  binding.autocompleteCandidatetextview
+            textInputEditText2.setTextSize(TypedValue.COMPLEX_UNIT_SP, savedPrimaryFontSize)
+
+
+            val hintTextView = binding.textInputLayout1.editText as? AutoCompleteTextView
+            hintTextView?.setTextSize(TypedValue.COMPLEX_UNIT_SP, savedPrimaryFontSize)
+
+            val hintTextView2 = binding.textInputLayout2.editText as? AutoCompleteTextView
+            hintTextView2?.setTextSize(TypedValue.COMPLEX_UNIT_SP, savedPrimaryFontSize)
+
+            binding.buttonCreate.textSize=savedPrimaryFontSize
+
+        }
+
+
+
+    }
+
+    private fun getPrimaryFontsize(): Float {
+        val sp = requireActivity().getSharedPreferences("setting_prefs", Context.MODE_PRIVATE)
+        return sp.getFloat("primaryFontsize", 16.0F)
+    }
+
+    private fun getSecondaryFontsize(): Float {
+        val sp = requireActivity().getSharedPreferences("setting_prefs", Context.MODE_PRIVATE)
+
+        return sp.getFloat("secondaryFontsize", 12.0F)
+    }
+
+    private fun applyTheme(themeName: String) {
+        lifecycleScope.launch {
+            if (themeName == "Secondary") {
+                binding.Main.background = ContextCompat.getDrawable(
+                    requireContext(),
+                    R.color.bottom_nav_color2_2
+                )
+                binding.NestedScrollView.background = ContextCompat.getDrawable(
+                    requireContext(),
+                    R.color.bottom_nav_color2_2
+                )
+
+
+                val colorStateList =
+                    ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.Black))
+
+
+                binding.textInputLayout1.setHintTextColor(colorStateList)
+                binding.textInputLayout2.setHintTextColor(colorStateList)
+            }
+        }
+    }
+
+    private fun getThemeName(): String? {
+        val sharedPreferences = requireContext().getSharedPreferences("setting_prefs", Context.MODE_PRIVATE)
+        return sharedPreferences.getString("themeName", null)
     }
 
     private fun observeData() {

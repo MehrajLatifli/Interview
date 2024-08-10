@@ -25,9 +25,16 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>(FragmentSplashBinding
     private fun navigateScreen() {
         lifecycleScope.launch {
             val isAuth = getUserAuth()
+            val accessToken = getApiKey()
+            val refreshToken = getRefreshToken()
             delay(3000)
             if (isAuth) {
-                findNavController().navigate(SplashFragmentDirections.actionSplashFragmentToHomeFragment())
+                if (accessToken != null && refreshToken != null) {
+                    findNavController().navigate(SplashFragmentDirections.actionSplashFragmentToHomeFragment())
+                }
+                else {
+                    findNavController().navigate(SplashFragmentDirections.actionSplashFragmentToWalkthroughFragment())
+                }
             } else {
                 findNavController().navigate(SplashFragmentDirections.actionSplashFragmentToWalkthroughFragment())
             }
@@ -40,6 +47,16 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>(FragmentSplashBinding
     private fun getUserAuth(): Boolean {
         val sp = requireActivity().getSharedPreferences("authresult_local", Context.MODE_PRIVATE)
         return sp.getBoolean("isAuth", false)
+    }
+
+    private fun getApiKey(): String? {
+        val sharedPreferences = requireActivity().getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+        return sharedPreferences.getString("api_key", null)
+    }
+
+    private fun getRefreshToken(): String? {
+        val sharedPreferences = requireActivity().getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+        return sharedPreferences.getString("refresh_token", null)
     }
 
 }

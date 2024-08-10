@@ -3,6 +3,7 @@ package com.example.interview.views.adapters.operationtype
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.interview.R
@@ -10,8 +11,12 @@ import com.example.interview.databinding.ItemOperationtypeBinding
 import com.example.interview.models.localadapdermodels.operationtype.OperationType
 import com.example.interview.views.adapters.base.BaseAdapter
 import com.example.interview.views.adapters.operationcrud.OperationCRUDAdapter
+import kotlinx.coroutines.launch
 
 class OperationTypeAdapder : BaseAdapter<OperationType, OperationTypeAdapder.OperationTypeViewHolder>() {
+
+    private var primaryFontSize: Float = 16.0F
+    private var secondaryFontSize: Float = 12.0F
 
     var itemClickHandler: ((selectedItemText: String, operationTypeText: String) -> Unit)? = null
 
@@ -40,17 +45,15 @@ class OperationTypeAdapder : BaseAdapter<OperationType, OperationTypeAdapder.Ope
             false
         )
         adapter.updateList(item.operations)
+        adapter.setFontSizes(primaryFontSize, secondaryFontSize)
+
+        holder.itemBinding.itemtextView.textSize = primaryFontSize
 
         // Set color based on item.text
         val context = holder.itemView.context
         val (bgColor, cardColor, textColor) = when (item.text) {
             "Candidate" -> Triple(R.color.ThickBlue, R.color.Indigo, R.color.ThickBlue)
             "Vacancy" -> Triple(R.color.ComingUpRoses, R.color.PinkDazzle, R.color.ComingUpRoses)
-            "Question" -> Triple(R.color.Patrice, R.color.FoulGreen, R.color.Patrice)
-            "Category" -> Triple(R.color.TulipTree, R.color.AlamedaOchre, R.color.TulipTree)
-            "Structure" -> Triple(R.color.ThickBlue, R.color.Indigo, R.color.ThickBlue)
-            "Position" -> Triple(R.color.ComingUpRoses, R.color.PinkDazzle, R.color.ComingUpRoses)
-            "Level" -> Triple(R.color.Patrice, R.color.FoulGreen, R.color.Patrice)
             else -> Triple(R.color.Transparent, R.color.Transparent, R.color.Transparent)
         }
 
@@ -59,4 +62,11 @@ class OperationTypeAdapder : BaseAdapter<OperationType, OperationTypeAdapder.Ope
         holder.itemBinding.mainMaterialCardView.setStrokeColor(ContextCompat.getColor(context, bgColor))
         holder.itemBinding.itemtextView.setTextColor(ContextCompat.getColor(context, textColor))
     }
+
+    fun setFontSizes(primary: Float, secondary: Float) {
+        primaryFontSize = primary
+        secondaryFontSize = secondary
+        notifyDataSetChanged()
+    }
 }
+

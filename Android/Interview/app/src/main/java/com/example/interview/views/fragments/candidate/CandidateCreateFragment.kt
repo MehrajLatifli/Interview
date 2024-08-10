@@ -2,6 +2,7 @@ package com.example.interview.views.fragments.candidate
 
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -97,6 +98,38 @@ class CandidateCreateFragment : BaseFragment<FragmentCandidateCreateBinding>(
         }
 
 
+        val themeName = getThemeName() ?: "Primary"
+        applyTheme(themeName)
+    }
+
+    private fun applyTheme(themeName: String) {
+        lifecycleScope.launch {
+            if (themeName == "Secondary") {
+                binding.Main.background = ContextCompat.getDrawable(
+                    requireContext(),
+                    R.color.bottom_nav_color2_2
+                )
+                binding.NestedScrollView.background = ContextCompat.getDrawable(
+                    requireContext(),
+                    R.color.bottom_nav_color2_2
+                )
+
+                val hintColor = ContextCompat.getColor(requireContext(), R.color.White)
+
+                binding.editText.setHintTextColor(hintColor)
+                binding.editText2.setHintTextColor(hintColor)
+                binding.editText3.setHintTextColor(hintColor)
+                binding.editText4.setHintTextColor(hintColor)
+                binding.editText5.setHintTextColor(hintColor)
+                binding.editText6.setHintTextColor(hintColor)
+                binding.editText7.setHintTextColor(hintColor)
+            }
+        }
+    }
+
+    private fun getThemeName(): String? {
+        val sharedPreferences = requireContext().getSharedPreferences("setting_prefs", Context.MODE_PRIVATE)
+        return sharedPreferences.getString("themeName", null)
     }
 
     private fun obseveData() {

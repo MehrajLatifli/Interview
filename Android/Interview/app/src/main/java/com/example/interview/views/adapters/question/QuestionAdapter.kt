@@ -19,6 +19,10 @@ class QuestionAdapter : BaseAdapter<Question, QuestionAdapter.QuestionViewHolder
     // Track selected item state for each question
     private val selectedItems = mutableMapOf<Int, String>()
 
+
+    private var primaryFontSize: Float = 16.0F
+    private var secondaryFontSize: Float = 12.0F
+
     inner class QuestionViewHolder(val itemBinding: ItemQuestionBinding) :
         RecyclerView.ViewHolder(itemBinding.root)
 
@@ -45,6 +49,10 @@ class QuestionAdapter : BaseAdapter<Question, QuestionAdapter.QuestionViewHolder
         )
         questionValueAdapter.updateList(item.questionvalues)
 
+        questionValueAdapter.setFontSizes(secondaryFontSize, secondaryFontSize)
+
+        holder.itemBinding.itemtextView.textSize = primaryFontSize
+
 
         questionValueAdapter.setSelectedItem(selectedItems[item.id])
 
@@ -58,6 +66,13 @@ class QuestionAdapter : BaseAdapter<Question, QuestionAdapter.QuestionViewHolder
 
     fun setSelectedItem(questionId: Int, selectedValue: String) {
         selectedItems[questionId] = selectedValue
+        notifyDataSetChanged()
+    }
+
+
+    fun setFontSizes(primary: Float, secondary: Float) {
+        primaryFontSize = primary
+        secondaryFontSize = secondary
         notifyDataSetChanged()
     }
 }

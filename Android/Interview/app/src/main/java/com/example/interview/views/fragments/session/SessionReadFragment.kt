@@ -1,6 +1,7 @@
 package com.example.interview.views.fragments.session
 
 import android.app.AlertDialog
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -40,128 +41,207 @@ class SessionReadFragment : BaseFragment<FragmentSessionReadBinding>(FragmentSes
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
 
     private var size: Int = 0
+    private val bindingLock = ReentrantLock()
+    private val bindingLock2 = ReentrantLock()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
 
-        binding.rvSessions.adapter = sessionAdapder
-        observeData()
+
+        binding?.let { bitem ->
+
+            bitem?.rvSessions?.adapter = sessionAdapder
+
+            observeData()
 
 
-        size=viewModel.getAllOwnSession().size
-
-
-
-        swipeRefreshLayout = binding.swipeRefreshLayout
-        swipeRefreshLayout.setColorSchemeColors(
-            ContextCompat.getColor(requireContext(), R.color.DeepPurple)
-        )
-        swipeRefreshLayout.setOnRefreshListener {
-            viewModel.getAllOwnSession()
-            swipeRefreshLayout.isRefreshing = false
-        }
+            size = viewModel?.getAllOwnSession()?.size ?: 0
 
 
 
-        sessionAdapder.onClickDeleteItem = { id ->
-            val position = sessionAdapder.list.indexOfFirst { it.id == id }
-            if (id != null && position != -1) {
-                sessionAdapder.deleteItem(position)
-                viewModel.deleteSessionById(id)
-            }
-        }
-
-        sessionAdapder.onClickDetailItem = { session ->
-            findNavController().navigate(
-                SessionReadFragmentDirections.actionSessionReadFragmentToSessionDetailFragment(session)
+            swipeRefreshLayout = bitem.swipeRefreshLayout
+            swipeRefreshLayout.setColorSchemeColors(
+                ContextCompat.getColor(requireContext(), R.color.DeepPurple)
             )
-        }
 
-        sessionAdapder.onClickStartExemItem = { session ->
-            Log.d("SessionReadFragment", "Adding new questions for sessionId: ${session.id}, vacancyId: ${session.vacancyId}")
+            swipeRefreshLayout.setOnRefreshListener {
+                viewModel?.getAllOwnSession()
+                swipeRefreshLayout.isRefreshing = false
+            }
 
-            viewModel.getSessionQuestionBySessionId(session.id!!)
 
-            viewModel.sessionquestions.observe(viewLifecycleOwner) { questions ->
-                lifecycleScope.launch {
-                    if (questions.isEmpty()) {
 
-                        viewModel.addRandomSessionQuestion(
-                            10,
-                            session.vacancyId!!,
-                            session.id!!
-                        )
 
-                        delay(2000)
+            sessionAdapder.onClickDeleteItem = { id ->
+                val position = sessionAdapder.list.indexOfFirst { it.id == id }
+                if (id != null && position != -1) {
+                    sessionAdapder.deleteItem(position)
+                    viewModel?.deleteSessionById(id)
+                }
+            }
 
-                        findNavController().navigate(
-                            SessionReadFragmentDirections.actionSessionReadFragmentToSessionUpdateFragment(session)
-                        )
+            sessionAdapder.onClickDetailItem = { session ->
+                findNavController().navigate(
+                    SessionReadFragmentDirections.actionSessionReadFragmentToSessionDetailFragment(
+                        session
+                    )
+                )
+            }
 
-                        Toast.makeText(
-                            requireContext(),
-                            "Added questions for this session",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    } else {
+            sessionAdapder.onClickStartExemItem = { session ->
+                Log.d(
+                    "SessionReadFragment",
+                    "Adding new questions for sessionId: ${session.id}, vacancyId: ${session.vacancyId}"
+                )
 
-                        delay(1000)
-                        findNavController().navigate(
-                            SessionReadFragmentDirections.actionSessionReadFragmentToSessionUpdateFragment(session)
-                        )
+                viewModel.getSessionQuestionBySessionId(session.id!!)
+
+                viewModel?.sessionquestions?.observe(viewLifecycleOwner) { questions ->
+                    lifecycleScope.launch {
+                        if (questions.isEmpty()) {
+
+                            viewModel.addRandomSessionQuestion(
+                                10,
+                                session.vacancyId!!,
+                                session.id!!
+                            )
+
+                            delay(2000)
+
+                            findNavController().navigate(
+                                SessionReadFragmentDirections.actionSessionReadFragmentToSessionUpdateFragment(
+                                    session
+                                )
+                            )
+
+                            Toast.makeText(
+                                requireContext(),
+                                "Added questions for this session",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        } else {
+
+                            delay(1000)
+                            findNavController().navigate(
+                                SessionReadFragmentDirections.actionSessionReadFragmentToSessionUpdateFragment(
+                                    session
+                                )
+                            )
+                        }
                     }
                 }
             }
+
+
+
+
+
+
+            binding.createButton.setOnClickListener {
+                findNavController().navigate(SessionReadFragmentDirections.actionSessionReadFragmentToSessionCreateFragment())
+            }
+
+
+            val themeName = getThemeName() ?: "Primary"
+            applyTheme(themeName)
+
+
+                applySize(getPrimaryFontsize(), getSecondaryFontsize())
+
+        }
+    }
+
+    private fun applySize(savedPrimaryFontSize: Float, savedSecondaryFontSize:Float) {
+
+
+        binding?.let { bitem ->
+
+
+            lifecycleScope.launch {
+                sessionAdapder?.setFontSizes(savedPrimaryFontSize, savedSecondaryFontSize)
+            }
+
+
         }
 
 
 
+    }
 
+    private fun getPrimaryFontsize(): Float {
+        val sp = requireActivity().getSharedPreferences("setting_prefs", Context.MODE_PRIVATE)
+        return sp.getFloat("primaryFontsize", 16.0F)
+    }
 
-        binding.createButton.setOnClickListener {
-            findNavController().navigate(SessionReadFragmentDirections.actionSessionReadFragmentToSessionCreateFragment())
+    private fun getSecondaryFontsize(): Float {
+        val sp = requireActivity().getSharedPreferences("setting_prefs", Context.MODE_PRIVATE)
+
+        return sp.getFloat("secondaryFontsize", 12.0F)
+    }
+
+    private fun applyTheme(themeName: String) {
+        lifecycleScope.launch {
+            if (themeName == "Secondary") {
+                binding.Main.background = ContextCompat.getDrawable(
+                    requireContext(),
+                    R.color.bottom_nav_color2_2
+                )
+                binding.NestedScrollView.background = ContextCompat.getDrawable(
+                    requireContext(),
+                    R.color.bottom_nav_color2_2
+                )
+            }
         }
+    }
+
+    private fun getThemeName(): String? {
+        val sharedPreferences = requireContext().getSharedPreferences("setting_prefs", Context.MODE_PRIVATE)
+        return sharedPreferences.getString("themeName", null)
     }
 
 
     override fun onResume() {
         super.onResume()
 
-        viewModel.getAllOwnSession()
 
 
     }
 
 
+
     private fun observeData() {
-        viewModel.sessions.observe(viewLifecycleOwner) { item ->
+        viewModel?.sessions?.observe(viewLifecycleOwner) { item ->
             lifecycleScope.launch {
                 delay(500)
-                sessionAdapder.updateList(item)
-                val layoutAnimationController =
-                    AnimationUtils.loadLayoutAnimation(context, R.anim.item_layout_animation)
-                binding.rvSessions.layoutAnimation = layoutAnimationController
-            }
-        }
-
-        viewModel.loading.observe(viewLifecycleOwner) { isLoading ->
-            lifecycleScope.launch {
-                if (isLoading) {
-                    binding.includeProgressbar.progressBar.visible()
-                    binding.NestedScrollView.gone()
-                    binding.createButton.gone()
-                    delay(1000)
-                } else {
-                    delay(1000)
-                    binding.includeProgressbar.progressBar.gone()
-                    binding.NestedScrollView.visible()
-                    binding.createButton.visible()
+                binding?.let { bitem ->
+                    sessionAdapder.updateList(item)
+                    val layoutAnimationController =
+                        AnimationUtils.loadLayoutAnimation(context, R.anim.item_layout_animation)
+                    bitem?.rvSessions?.layoutAnimation = layoutAnimationController
                 }
             }
         }
 
-        viewModel.error.observe(viewLifecycleOwner) { errorMessage ->
+        viewModel?.loading?.observe(viewLifecycleOwner) { isLoading ->
+            lifecycleScope.launch {
+                binding?.let { bitem ->
+                    if (isLoading) {
+                        bitem.includeProgressbar.progressBar.visible()
+                        bitem.NestedScrollView.gone()
+                        bitem.createButton.gone()
+                        delay(2000)
+                    } else {
+                        bitem.includeProgressbar.progressBar.gone()
+                        bitem.NestedScrollView.visible()
+                        bitem.createButton.visible()
+                        delay(2000)
+                    }
+                }
+            }
+        }
+
+        viewModel?.error?.observe(viewLifecycleOwner) { errorMessage ->
             if (!errorMessage.isNullOrBlank() && sessionAdapder.list.isNotEmpty()) {
 
                 if (size>0) {

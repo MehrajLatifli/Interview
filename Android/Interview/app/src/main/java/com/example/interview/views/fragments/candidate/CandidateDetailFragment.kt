@@ -2,6 +2,7 @@ package com.example.interview.views.fragments.candidate
 
 import android.app.AlertDialog
 import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -53,6 +54,30 @@ class CandidateDetailFragment  : BaseFragment<FragmentCandidateDetailBinding>(
 
         }
 
+        val themeName = getThemeName() ?: "Primary"
+        applyTheme(themeName)
+    }
+
+
+    private fun applyTheme(themeName: String) {
+        lifecycleScope.launch {
+            if (themeName == "Secondary") {
+                binding.Main.background = ContextCompat.getDrawable(
+                    requireContext(),
+                    R.color.bottom_nav_color2_2
+                )
+                binding.NestedScrollView.background = ContextCompat.getDrawable(
+                    requireContext(),
+                    R.color.bottom_nav_color2_2
+                )
+            }
+        }
+    }
+
+
+    private fun getThemeName(): String? {
+        val sharedPreferences = requireContext().getSharedPreferences("setting_prefs", Context.MODE_PRIVATE)
+        return sharedPreferences.getString("themeName", null)
     }
 
     private fun observeData() {

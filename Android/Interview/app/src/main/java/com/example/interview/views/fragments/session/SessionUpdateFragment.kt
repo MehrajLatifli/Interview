@@ -1,6 +1,8 @@
 package com.example.interview.views.fragments.session
 
 import android.app.AlertDialog
+import android.content.Context
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -120,6 +122,48 @@ class SessionUpdateFragment : BaseFragment<FragmentSessionUpdateBinding>(Fragmen
             }
 
         }
+        val themeName = getThemeName() ?: "Primary"
+        applyTheme(themeName)
+
+        applySize(getPrimaryFontsize(), getSecondaryFontsize())
+    }
+
+    private fun applyTheme(themeName: String) {
+        lifecycleScope.launch {
+            if (themeName == "Secondary") {
+                binding.Main.background = ContextCompat.getDrawable(
+                    requireContext(),
+                    R.color.bottom_nav_color2_2
+                )
+                binding.NestedScrollView.background = ContextCompat.getDrawable(
+                    requireContext(),
+                    R.color.bottom_nav_color2_2
+                )
+
+
+            }
+        }
+    }
+
+    private fun applySize(primaryFontSize: Float, secondaryFontSize: Float) {
+        binding?.let {
+            questionAdapter.setFontSizes(primaryFontSize, secondaryFontSize)
+        }
+    }
+
+    private fun getPrimaryFontsize(): Float {
+        val sp = requireActivity().getSharedPreferences("setting_prefs", Context.MODE_PRIVATE)
+        return sp.getFloat("primaryFontsize", 16.0F)
+    }
+
+    private fun getSecondaryFontsize(): Float {
+        val sp = requireActivity().getSharedPreferences("setting_prefs", Context.MODE_PRIVATE)
+        return sp.getFloat("secondaryFontsize", 12.0F)
+    }
+
+    private fun getThemeName(): String? {
+        val sharedPreferences = requireContext().getSharedPreferences("setting_prefs", Context.MODE_PRIVATE)
+        return sharedPreferences.getString("themeName", null)
     }
 
     private fun observeData() {

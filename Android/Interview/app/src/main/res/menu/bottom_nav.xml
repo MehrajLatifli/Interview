@@ -26,7 +26,7 @@
 
     </item>
     <item
-        android:id="@+id/setting"
+        android:id="@+id/settingFragment"
         android:icon="@drawable/setting"
         android:layout_height="20dp">
 

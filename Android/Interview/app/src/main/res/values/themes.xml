@@ -73,5 +73,30 @@
     </style>
 
 
+
+    <style name="Widget.App.Slider" parent="Widget.Material3.Slider.Legacy">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.Slider</item>
+        <item name="labelStyle">@style/Widget.App.Tooltip</item>
+    </style>
+
+    <style name="ThemeOverlay.App.Slider" parent="">
+        <item name="colorPrimary">@color/LavenderTonic</item>
+        <item name="colorOnPrimary">@color/DeepPurple</item>
+        <item name="colorOnSurface">@color/ComingUpRoses</item>
+    </style>
+
+    <style name="Widget.App.Tooltip" parent="Widget.Material3.Tooltip">
+        <item name="android:textAppearance">@style/TextAppearance.App.Tooltip</item>
+        <item name="backgroundTint">@color/LavenderTonic</item>
+    </style>
+
+    <style name="TextAppearance.App.Tooltip" parent="TextAppearance.Material3.BodySmall">
+        <item name="android:textColor">@color/DeepPurple</item>
+        <item name="fontFamily">@font/nunito_black</item>
+        <item name="android:textSize">12dp</item>
+        <item name="android:fontFamily">@font/nunito_black</item>
+    </style>
+
+
     <style name="Theme.Interview" parent="Base.Theme.Interview" />
 </resources>

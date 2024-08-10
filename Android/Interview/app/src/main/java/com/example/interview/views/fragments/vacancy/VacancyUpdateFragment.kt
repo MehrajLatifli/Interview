@@ -3,6 +3,8 @@ package com.example.interview.views.fragments.vacancy
 import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.Context
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -152,6 +154,40 @@ class VacancyUpdateFragment : BaseFragment<FragmentVacancyUpdateBinding>(Fragmen
 
 
         }
+
+        val themeName = getThemeName() ?: "Primary"
+        applyTheme(themeName)
+    }
+
+    private fun applyTheme(themeName: String) {
+        lifecycleScope.launch {
+            if (themeName == "Secondary") {
+                binding.Main.background = ContextCompat.getDrawable(
+                    requireContext(),
+                    R.color.bottom_nav_color2_2
+                )
+                binding.NestedScrollView.background = ContextCompat.getDrawable(
+                    requireContext(),
+                    R.color.bottom_nav_color2_2
+                )
+
+                val hintColor = ContextCompat.getColor(requireContext(), R.color.White)
+
+                val colorStateList =
+                    ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.Black))
+
+                binding.editText.setHintTextColor(hintColor)
+                binding.editText2.setHintTextColor(hintColor)
+                binding.editText3.setHintTextColor(hintColor)
+                binding.textInputLayout1.setHintTextColor(colorStateList)
+                binding.textInputLayout2.setHintTextColor(colorStateList)
+            }
+        }
+    }
+
+    private fun getThemeName(): String? {
+        val sharedPreferences = requireContext().getSharedPreferences("setting_prefs", Context.MODE_PRIVATE)
+        return sharedPreferences.getString("themeName", null)
     }
 
     private fun observeData() {

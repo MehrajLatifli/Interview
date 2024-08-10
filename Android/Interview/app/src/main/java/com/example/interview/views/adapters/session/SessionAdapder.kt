@@ -15,6 +15,9 @@ class SessionAdapder : BaseAdapter<SessionResponse, SessionAdapder.SessionViewHo
     lateinit var onClickStartExemItem: (SessionResponse) -> Unit
     var isStartExamVisible: Boolean = true
 
+    private var primaryFontSize: Float = 16.0F
+    private var secondaryFontSize: Float = 12.0F
+
     inner class SessionViewHolder(val itemBinding: ItemSessionBinding) :
         RecyclerView.ViewHolder(itemBinding.root)
 
@@ -26,6 +29,13 @@ class SessionAdapder : BaseAdapter<SessionResponse, SessionAdapder.SessionViewHo
     override fun onBindViewHolder(holder: SessionViewHolder, position: Int) {
         val item = list[position]
         holder.itemBinding.item = item
+
+        holder.itemBinding?.textView1?.textSize = primaryFontSize
+        holder.itemBinding?.textView2?.textSize = secondaryFontSize
+
+        holder.itemBinding.buttonDetail.textSize=secondaryFontSize
+        holder.itemBinding.buttonStartExam.textSize=secondaryFontSize
+        holder.itemBinding.buttonDelete.textSize=secondaryFontSize
 
         // Update visibility based on the item
         if (updateVisibility(item)) {
@@ -51,6 +61,11 @@ class SessionAdapder : BaseAdapter<SessionResponse, SessionAdapder.SessionViewHo
         return item.endValue != null && item.endValue > 0
     }
 
+    fun setFontSizes(primary: Float, secondary: Float) {
+        primaryFontSize = primary
+        secondaryFontSize = secondary
+        notifyDataSetChanged()
+    }
 
 
 }
