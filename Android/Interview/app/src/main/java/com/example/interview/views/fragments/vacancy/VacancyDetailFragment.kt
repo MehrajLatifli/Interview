@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import com.example.interview.R
@@ -58,6 +59,64 @@ class VacancyDetailFragment : BaseFragment<FragmentVacancyDetailBinding>(Fragmen
 
         val themeName = getThemeName() ?: "Primary"
         applyTheme(themeName)
+        applySize(getPrimaryFontsize(), getSecondaryFontsize())
+    }
+
+    override fun onDestroyView() {
+        viewModel?.vacancies?.removeObservers(viewLifecycleOwner)
+        viewModel?.positions?.removeObservers(viewLifecycleOwner)
+        viewModel?.structures?.removeObservers(viewLifecycleOwner)
+        super.onDestroyView()
+    }
+
+    private fun applySize(savedPrimaryFontSize: Float, savedSecondaryFontSize:Float) {
+
+
+        lifecycleScope.launch {
+
+
+
+            binding.titletextView.textSize=savedPrimaryFontSize
+
+            binding.titletextView2.textSize=savedPrimaryFontSize
+
+            binding.titletextView3.textSize=savedPrimaryFontSize
+
+            binding.titletextView4.textSize=savedPrimaryFontSize
+
+            binding.titletextView5.textSize=savedPrimaryFontSize
+
+            binding.titletextView6.textSize=savedPrimaryFontSize
+
+
+            binding.textView1.textSize=savedSecondaryFontSize
+
+            binding.textView2.textSize=savedSecondaryFontSize
+
+            binding.textView3.textSize=savedSecondaryFontSize
+
+            binding.textView4.textSize=savedSecondaryFontSize
+
+            binding.textView5.textSize=savedSecondaryFontSize
+
+            binding.textView6.textSize=savedSecondaryFontSize
+
+
+        }
+
+
+
+    }
+
+    private fun getPrimaryFontsize(): Float {
+        val sp = requireActivity().getSharedPreferences("setting_prefs", Context.MODE_PRIVATE)
+        return sp.getFloat("primaryFontsize", 16.0F)
+    }
+
+    private fun getSecondaryFontsize(): Float {
+        val sp = requireActivity().getSharedPreferences("setting_prefs", Context.MODE_PRIVATE)
+
+        return sp.getFloat("secondaryFontsize", 12.0F)
     }
 
 
@@ -84,36 +143,55 @@ class VacancyDetailFragment : BaseFragment<FragmentVacancyDetailBinding>(Fragmen
 
     private fun observeData() {
         viewModel.vacancy.observe(viewLifecycleOwner) { item ->
-            item?.let {
-                binding.textView1.text = it.title ?: ""
-                binding.textView2.text = it.description ?: ""
-                binding.textView3.text = formatDateTime(it.startDate ?: "")
-                binding.textView4.text = formatDateTime(it.endDate ?: "")
+            if (isAdded && viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+                item?.let {
+
+                    binding?.let { bitem ->
+                        bitem.textView1.text = it.title ?: ""
+                        bitem.textView2.text = it.description ?: ""
+                        bitem.textView3.text = formatDateTime(it.startDate ?: "")
+                        bitem.textView4.text = formatDateTime(it.endDate ?: "")
+                    }
+                }
             }
         }
 
         viewModel.position.observe(viewLifecycleOwner) { position ->
-            binding.textView5.text = position?.name ?: ""
+            if (isAdded && viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+                binding?.let { bitem ->
+                    bitem.textView5.text = position?.name ?: ""
+                }
+            }
         }
 
         viewModel.structure.observe(viewLifecycleOwner) { structure ->
-            binding.textView6.text = structure?.name ?: ""
+            if (isAdded && viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+                binding?.let { bitem ->
+                    bitem.textView6.text = structure?.name ?: ""
+                }
+            }
         }
 
         viewModel.loading.observe(viewLifecycleOwner) { isLoading ->
-            if (isLoading) {
-                binding.includeProgressbar.progressBar.visible()
-                binding.NestedScrollView.gone()
-            } else {
-                binding.includeProgressbar.progressBar.gone()
-                binding.NestedScrollView.visible()
+            if (isAdded && viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+                binding?.let { bitem ->
+                    if (isLoading) {
+                        bitem.includeProgressbar.progressBar.visible()
+                        bitem.NestedScrollView.gone()
+                    } else {
+                        bitem.includeProgressbar.progressBar.gone()
+                        bitem.NestedScrollView.visible()
+                    }
+                }
             }
         }
 
         viewModel.error.observe(viewLifecycleOwner) { errorMessage ->
-            if (!errorMessage.isNullOrBlank()) {
-                Log.e("VacancyViewModel", errorMessage)
-                customresultdialog("Unsuccessful!", errorMessage, R.color.MellowMelon)
+            if (isAdded && viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+                if (!errorMessage.isNullOrBlank()) {
+                    Log.e("VacancyViewModel", errorMessage)
+                    customresultdialog("Unsuccessful!", errorMessage, R.color.MellowMelon)
+                }
             }
         }
     }

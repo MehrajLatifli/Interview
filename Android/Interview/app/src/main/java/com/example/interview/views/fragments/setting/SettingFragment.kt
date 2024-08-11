@@ -113,8 +113,8 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
 
         binding.buttonReset.setOnClickListener {
             // Define default values
-            val defaultPrimaryFontSize = 16.0F
-            val defaultSecondaryFontSize = 12.0F
+            val defaultPrimaryFontSize = 20.0F
+            val defaultSecondaryFontSize = 16.0F
             val defaultThemeName = "Primary"
 
             // Reset SharedPreferences
@@ -127,28 +127,32 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
             }
 
             // Reset ViewModel
-            viewModel.setPrimaryFontSize(defaultPrimaryFontSize / 8.0f)
-            viewModel.setSecondaryFontSize(defaultSecondaryFontSize / 8.0f)
+            viewModel?.setPrimaryFontSize(defaultPrimaryFontSize / 8.0f)
+            viewModel?.setSecondaryFontSize(defaultSecondaryFontSize / 8.0f)
 
             // Update UI
-            binding.fontsizecounttextView1.text = String.format("%.1f", defaultPrimaryFontSize)
-            binding.sliderPrimaryFontSize.value = defaultPrimaryFontSize
-            binding.primaryfontsizetextView.textSize=savedPrimaryFontSize
-
-            binding.fontsizecounttextView2.text = String.format("%.1f", defaultSecondaryFontSize)
-            binding.sliderSecondaryFontSize.value = defaultSecondaryFontSize
-            binding.secondaryfontsizetextView.textSize=savedSecondaryFontSize
-
-            savePrimaryFontsize(defaultPrimaryFontSize)
-            saveSecondaryFontsize(defaultSecondaryFontSize)
+            binding?.let {
 
 
+                it.fontsizecounttextView1.text = String.format("%.1f", defaultPrimaryFontSize)
+                it.sliderPrimaryFontSize.value = defaultPrimaryFontSize
+                it.primaryfontsizetextView.textSize = savedPrimaryFontSize
 
-            binding.themeNametextView.text = defaultThemeName
-            binding.themeswitch.isChecked = false
+                it.fontsizecounttextView2.text =String.format("%.1f", defaultSecondaryFontSize)
+                it.sliderSecondaryFontSize.value = defaultSecondaryFontSize
+                it.secondaryfontsizetextView.textSize = savedSecondaryFontSize
 
-            // Optionally, you might want to call updateThemeUI if needed
-            updateThemeUI(false)
+
+                savePrimaryFontsize(defaultPrimaryFontSize)
+                saveSecondaryFontsize(defaultSecondaryFontSize)
+
+
+
+                it.themeNametextView.text = defaultThemeName
+                it.themeswitch.isChecked = false
+
+                updateThemeUI(false)
+            }
         }
 
 
@@ -161,15 +165,17 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
 
     private fun applySize(savedPrimaryFontSize: Float, savedSecondaryFontSize:Float) {
 
-        binding.primaryfontsizetextView.textSize=savedPrimaryFontSize
-        binding.fontsizecounttextView1.textSize=savedPrimaryFontSize
+        binding?.let {
+            it.primaryfontsizetextView.textSize = savedPrimaryFontSize
+            it.fontsizecounttextView1.textSize = savedPrimaryFontSize
 
-        binding.secondaryfontsizetextView.textSize=savedPrimaryFontSize
-        binding.fontsizecounttextView2.textSize=savedPrimaryFontSize
+            it.secondaryfontsizetextView.textSize = savedPrimaryFontSize
+            it.fontsizecounttextView2.textSize = savedPrimaryFontSize
 
-        binding.themetextView.textSize=savedPrimaryFontSize
-        binding.themeNametextView.textSize=savedPrimaryFontSize
+            it.themetextView.textSize = savedPrimaryFontSize
+            it.themeNametextView.textSize = savedPrimaryFontSize
 
+        }
     }
 
     private fun applyTheme(themeName: String) {
@@ -193,12 +199,12 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
 
     private fun updateThemeUI(isSecondaryTheme: Boolean) {
         if (isSecondaryTheme) {
-            binding.themeswitch.thumbTintList = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.FernGreen))
-            binding.themeswitch.trackTintList = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.Chartreuse))
+            binding.themeswitch.thumbTintList = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.Black))
+            binding.themeswitch.trackTintList = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.DeepPurple))
 
         } else {
             binding.themeswitch.thumbTintList = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.DeepPurple))
-            binding.themeswitch.trackTintList = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.LavenderTonic))
+            binding.themeswitch.trackTintList = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.Black))
         }
     }
 

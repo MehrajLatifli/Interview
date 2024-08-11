@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
@@ -128,6 +129,13 @@ class SessionUpdateFragment : BaseFragment<FragmentSessionUpdateBinding>(Fragmen
         applySize(getPrimaryFontsize(), getSecondaryFontsize())
     }
 
+    override fun onDestroyView() {
+        viewModel?.vacancies?.removeObservers(viewLifecycleOwner)
+        viewModel?.sessions?.removeObservers(viewLifecycleOwner)
+        viewModel?.profiles?.removeObservers(viewLifecycleOwner)
+        super.onDestroyView()
+    }
+
     private fun applyTheme(themeName: String) {
         lifecycleScope.launch {
             if (themeName == "Secondary") {
@@ -139,6 +147,8 @@ class SessionUpdateFragment : BaseFragment<FragmentSessionUpdateBinding>(Fragmen
                     requireContext(),
                     R.color.bottom_nav_color2_2
                 )
+
+
 
 
             }
@@ -168,40 +178,46 @@ class SessionUpdateFragment : BaseFragment<FragmentSessionUpdateBinding>(Fragmen
 
     private fun observeData() {
         viewModel.sessionquestions.observe(viewLifecycleOwner) { sessionQuestions ->
+            if (isAdded && viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
             Log.d("SessionUpdateFragment", "Session questions updated: $sessionQuestions")
             lifecycleScope.launch {
                 val updatedQuestions = mutableListOf<Question>()
                 for (sessionQuestion in sessionQuestions) {
                     sessionQuestion.questionId?.let { id ->
-                        viewModel.getQuestionByID(id.toInt()).observe(viewLifecycleOwner) { question ->
-                            question?.let {
-                                Log.d("SessionUpdateFragment", "Mapping question ID: ${it.id}")
-                                val mappedQuestion = Question(
-                                    it.id!!,
-                                    sessionQuestion.id!!,
-                                    R.drawable.question,
-                                    it.text.toString(),
-                                    questionValues
-                                )
-                                updatedQuestions.add(mappedQuestion)
-                                questionList = updatedQuestions
-                                questionAdapter.updateList(questionList)
+                        viewModel.getQuestionByID(id.toInt())
+                            .observe(viewLifecycleOwner) { question ->
+                                question?.let {
+                                    Log.d("SessionUpdateFragment", "Mapping question ID: ${it.id}")
+                                    val mappedQuestion = Question(
+                                        it.id!!,
+                                        sessionQuestion.id!!,
+                                        R.drawable.question,
+                                        it.text.toString(),
+                                        questionValues
+                                    )
+                                    updatedQuestions.add(mappedQuestion)
+                                    questionList = updatedQuestions
+                                    questionAdapter.updateList(questionList)
 
-                                // Restore the selected item state
-                                val selectedItem = sessionQuestions.find { sq -> sq.questionId == it.id }?.value?.toString()
-                                questionAdapter.setSelectedItem(it.id, selectedItem.toString())
+                                    // Restore the selected item state
+                                    val selectedItem =
+                                        sessionQuestions.find { sq -> sq.questionId == it.id }?.value?.toString()
+                                    questionAdapter.setSelectedItem(it.id, selectedItem.toString())
+                                }
                             }
-                        }
                     }
                 }
+            }
             }
         }
 
 
         viewModel.error.observe(viewLifecycleOwner) { errorMessage ->
-            if (!errorMessage.isNullOrBlank() && questionAdapter.list.isNotEmpty()) {
-                Log.e("SessionViewModel", errorMessage)
-                customresultdialog("Unsuccessful!", errorMessage, R.color.MellowMelon)
+            if (isAdded && viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+                if (!errorMessage.isNullOrBlank() && questionAdapter.list.isNotEmpty()) {
+                    Log.e("SessionViewModel", errorMessage)
+                    customresultdialog("Unsuccessful!", errorMessage, R.color.MellowMelon)
+                }
             }
         }
     }

@@ -72,6 +72,13 @@ class SessionDetailFragment : BaseFragment<FragmentSessionDetailBinding>(Fragmen
         applySize(getPrimaryFontsize(), getSecondaryFontsize())
     }
 
+    override fun onDestroyView() {
+        viewModel?.vacancies?.removeObservers(viewLifecycleOwner)
+        viewModel?.sessions?.removeObservers(viewLifecycleOwner)
+        viewModel?.profiles?.removeObservers(viewLifecycleOwner)
+        super.onDestroyView()
+    }
+
     private fun applySize(savedPrimaryFontSize: Float, savedSecondaryFontSize:Float) {
 
 
@@ -147,7 +154,8 @@ class SessionDetailFragment : BaseFragment<FragmentSessionDetailBinding>(Fragmen
 
     private fun observeData() {
         // Check if view is valid before observing
-        if (viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+        if (isAdded && viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)){
+
             viewModel.loading.observe(viewLifecycleOwner) { isLoading ->
                 // Use 'binding?.let' to ensure binding is valid
                 binding?.let { bitem ->
@@ -162,46 +170,56 @@ class SessionDetailFragment : BaseFragment<FragmentSessionDetailBinding>(Fragmen
             }
 
             viewModel.error.observe(viewLifecycleOwner) { errorMessage ->
-                if (!errorMessage.isNullOrBlank()) {
-                    Log.e("SessionDetailFragment", errorMessage)
-                    customresultdialog("Unsuccessful!", errorMessage, R.color.MellowMelon)
+                if (isAdded && viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+                    if (!errorMessage.isNullOrBlank()) {
+                        Log.e("SessionDetailFragment", errorMessage)
+                        customresultdialog("Unsuccessful!", errorMessage, R.color.MellowMelon)
+                    }
                 }
             }
 
             viewModel.session.observe(viewLifecycleOwner) { item ->
-                item?.let {
-                    binding?.let { bitem ->
-                        bitem.textView1.text = it.endValue.toString() ?: ""
+                if (isAdded && viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+                    item?.let {
+                        binding?.let { bitem ->
+                            bitem.textView1.text = it.endValue.toString() ?: ""
 
-                        if (!it.startDate.isNullOrEmpty()) {
-                            bitem.textView2.text = formatDateTime(it.startDate)
-                        }
+                            if (!it.startDate.isNullOrEmpty()) {
+                                bitem.textView2.text = formatDateTime(it.startDate)
+                            }
 
-                        if (!it.endDate.isNullOrEmpty()) {
-                            bitem.textView3.text = formatDateTime(it.endDate)
+                            if (!it.endDate.isNullOrEmpty()) {
+                                bitem.textView3.text = formatDateTime(it.endDate)
+                            }
                         }
                     }
                 }
             }
 
             viewModel.vacancy.observe(viewLifecycleOwner) { vacancy ->
-                binding?.let { bitem ->
-                    bitem.textView4.text = vacancy?.title ?: ""
+                if (isAdded && viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+                    binding?.let { bitem ->
+                        bitem.textView4.text = vacancy?.title ?: ""
+                    }
                 }
             }
 
             viewModel.candidateDocument.observe(viewLifecycleOwner) { candidateDocument ->
-                binding?.let { bitem ->
-                    bitem.textView5.text = candidateDocument?.name ?: ""
+                if (isAdded && viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+                    binding?.let { bitem ->
+                        bitem.textView5.text = candidateDocument?.name ?: ""
+                    }
                 }
             }
 
             viewModel.profiles.observe(viewLifecycleOwner) { profiles ->
-                val profilesText = profiles.map { profile -> "${profile.username ?: ""}" }
-                    .joinToString(separator = "\n\n")
+                if (isAdded && viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+                    val profilesText = profiles.map { profile -> "${profile.username ?: ""}" }
+                        .joinToString(separator = "\n\n")
 
-                binding?.let { bitem ->
-                    bitem.textView6.text = profilesText
+                    binding?.let { bitem ->
+                        bitem.textView6.text = profilesText
+                    }
                 }
             }
         }

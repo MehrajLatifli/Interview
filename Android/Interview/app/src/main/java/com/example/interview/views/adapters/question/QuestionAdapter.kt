@@ -20,8 +20,8 @@ class QuestionAdapter : BaseAdapter<Question, QuestionAdapter.QuestionViewHolder
     private val selectedItems = mutableMapOf<Int, String>()
 
 
-    private var primaryFontSize: Float = 16.0F
-    private var secondaryFontSize: Float = 12.0F
+    private var primaryFontSize: Float = 20.0F
+    private var secondaryFontSize: Float = 16.0F
 
     inner class QuestionViewHolder(val itemBinding: ItemQuestionBinding) :
         RecyclerView.ViewHolder(itemBinding.root)

@@ -15,8 +15,8 @@ import kotlinx.coroutines.launch
 
 class OperationTypeAdapder : BaseAdapter<OperationType, OperationTypeAdapder.OperationTypeViewHolder>() {
 
-    private var primaryFontSize: Float = 16.0F
-    private var secondaryFontSize: Float = 12.0F
+    private var primaryFontSize: Float = 20.0F
+    private var secondaryFontSize: Float = 16.0F
 
     var itemClickHandler: ((selectedItemText: String, operationTypeText: String) -> Unit)? = null
 
@@ -45,7 +45,6 @@ class OperationTypeAdapder : BaseAdapter<OperationType, OperationTypeAdapder.Ope
             false
         )
         adapter.updateList(item.operations)
-        adapter.setFontSizes(primaryFontSize, secondaryFontSize)
 
         holder.itemBinding.itemtextView.textSize = primaryFontSize
 

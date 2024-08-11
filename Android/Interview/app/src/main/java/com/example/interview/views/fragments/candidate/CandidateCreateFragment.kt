@@ -13,6 +13,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.interview.R
@@ -100,29 +101,83 @@ class CandidateCreateFragment : BaseFragment<FragmentCandidateCreateBinding>(
 
         val themeName = getThemeName() ?: "Primary"
         applyTheme(themeName)
+
+        applySize(getPrimaryFontsize(), getSecondaryFontsize())
+    }
+
+    private fun applySize(savedPrimaryFontSize: Float, savedSecondaryFontSize:Float) {
+
+
+        lifecycleScope.launch {
+
+            binding.let { bindingitem ->
+
+                bindingitem.editText.textSize = savedPrimaryFontSize
+                bindingitem.editText2.textSize = savedPrimaryFontSize
+                bindingitem.editText3.textSize = savedSecondaryFontSize
+
+                bindingitem.editText4.textSize = savedPrimaryFontSize
+                bindingitem.editText5.textSize = savedPrimaryFontSize
+                bindingitem.editText6.textSize = savedSecondaryFontSize
+                bindingitem.editText7.textSize = savedSecondaryFontSize
+            }
+
+        }
+
+
+
+    }
+
+    private fun getPrimaryFontsize(): Float {
+        val sp = requireActivity().getSharedPreferences("setting_prefs", Context.MODE_PRIVATE)
+        return sp.getFloat("primaryFontsize", 16.0F)
+    }
+
+    private fun getSecondaryFontsize(): Float {
+        val sp = requireActivity().getSharedPreferences("setting_prefs", Context.MODE_PRIVATE)
+
+        return sp.getFloat("secondaryFontsize", 12.0F)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        viewModel.complateResult.removeObservers(viewLifecycleOwner)
+
     }
 
     private fun applyTheme(themeName: String) {
         lifecycleScope.launch {
             if (themeName == "Secondary") {
-                binding.Main.background = ContextCompat.getDrawable(
-                    requireContext(),
-                    R.color.bottom_nav_color2_2
-                )
-                binding.NestedScrollView.background = ContextCompat.getDrawable(
-                    requireContext(),
-                    R.color.bottom_nav_color2_2
-                )
 
-                val hintColor = ContextCompat.getColor(requireContext(), R.color.White)
+                binding.let {
+                    it.Main.background = ContextCompat.getDrawable(
+                        requireContext(),
+                        R.color.bottom_nav_color2_2
+                    )
+                    it.NestedScrollView.background = ContextCompat.getDrawable(
+                        requireContext(),
+                        R.color.bottom_nav_color2_2
+                    )
 
-                binding.editText.setHintTextColor(hintColor)
-                binding.editText2.setHintTextColor(hintColor)
-                binding.editText3.setHintTextColor(hintColor)
-                binding.editText4.setHintTextColor(hintColor)
-                binding.editText5.setHintTextColor(hintColor)
-                binding.editText6.setHintTextColor(hintColor)
-                binding.editText7.setHintTextColor(hintColor)
+                    val hintColor = ContextCompat.getColor(requireContext(), R.color.White)
+
+                    it.editText.setHintTextColor(hintColor)
+                    it.editText2.setHintTextColor(hintColor)
+                    it.editText3.setHintTextColor(hintColor)
+                    it.editText4.setHintTextColor(hintColor)
+                    it.editText5.setHintTextColor(hintColor)
+                    it.editText6.setHintTextColor(hintColor)
+                    it.editText7.setHintTextColor(hintColor)
+
+                    it.editText.setTextColor(hintColor)
+                    it.editText2.setTextColor(hintColor)
+                    it.editText3.setTextColor(hintColor)
+                    it.editText4.setTextColor(hintColor)
+                    it.editText5.setTextColor(hintColor)
+                    it.editText6.setTextColor(hintColor)
+                    it.editText7.setTextColor(hintColor)
+                    it.textView.setTextColor(hintColor)
+                }
             }
         }
     }
@@ -134,18 +189,21 @@ class CandidateCreateFragment : BaseFragment<FragmentCandidateCreateBinding>(
 
     private fun obseveData() {
         viewModel.loading.observe(viewLifecycleOwner) { isLoading ->
-
-            if (isLoading) {
-                binding.includeProgressbar.progressBar.visible()
-            } else {
-                binding.includeProgressbar.progressBar.gone()
+            if (isAdded && viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+                if (isLoading) {
+                    binding.includeProgressbar.progressBar.visible()
+                } else {
+                    binding.includeProgressbar.progressBar.gone()
+                }
             }
         }
 
         viewModel.error.observe(viewLifecycleOwner) { errorMessage ->
-            if (!errorMessage.isNullOrBlank()) {
-                Log.e("CandidateViewModel", errorMessage)
-                customresultdialog("Unsuccessful!", errorMessage, R.color.MellowMelon)
+            if (isAdded && viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+                if (!errorMessage.isNullOrBlank()) {
+                    Log.e("CandidateViewModel", errorMessage)
+                    customresultdialog("Unsuccessful!", errorMessage, R.color.MellowMelon)
+                }
             }
         }
 
@@ -157,25 +215,26 @@ class CandidateCreateFragment : BaseFragment<FragmentCandidateCreateBinding>(
 
         viewModel.complateResult.observe(viewLifecycleOwner) { complateResult ->
             lifecycleScope.launch {
-                if (complateResult) {
-                    customresultdialog(
-                        "Successful!",
-                        "Please wait a moment, we are preparing for you...",
-                        R.color.DeepPurple
-                    )
+                if (isAdded && viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+                    if (complateResult) {
+                        customresultdialog(
+                            "Successful!",
+                            "Please wait a moment, we are preparing for you...",
+                            R.color.DeepPurple
+                        )
 
 
 
-                    delay(2500)
+                        delay(2500)
 
 
-                    findNavController().navigate(CandidateCreateFragmentDirections.actionCandidateCreateFragmentToCandidateReadFragment())
+                        findNavController().navigate(CandidateCreateFragmentDirections.actionCandidateCreateFragmentToCandidateReadFragment())
 
 
-                }
-                else{
-                    delay(2500)
-                    findNavController().navigate(CandidateCreateFragmentDirections.actionCandidateCreateFragmentToOperationFragment())
+                    } else {
+                        delay(2500)
+                        findNavController().navigate(CandidateCreateFragmentDirections.actionCandidateCreateFragmentToOperationFragment())
+                    }
                 }
             }
         }
@@ -185,6 +244,7 @@ class CandidateCreateFragment : BaseFragment<FragmentCandidateCreateBinding>(
 
     private fun customresultdialog(title: String, text: String, colorId: Int) {
         lifecycleScope.launch(Dispatchers.Main) {
+
             val dialogBinding =
                 CustomresultdialogBinding.inflate(LayoutInflater.from(requireContext()))
             val dialog = AlertDialog.Builder(requireContext()).apply {

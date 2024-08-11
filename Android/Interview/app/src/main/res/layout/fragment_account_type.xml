@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/White"
-    android:backgroundTint="@color/White"
+    android:id="@+id/Main"
     tools:context=".views.fragments.accounttype.AccountTypeFragment">
 
     <include

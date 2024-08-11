@@ -163,6 +163,8 @@ class RegistrationFragment : BaseFragment<FragmentRegistrationBinding>(FragmentR
         }
 
 
+
+
         viewModel.loading.observe(viewLifecycleOwner) { isLoading ->
 
             if (isLoading) {
@@ -213,9 +215,44 @@ class RegistrationFragment : BaseFragment<FragmentRegistrationBinding>(FragmentR
                 }
             }
         }
+
+
+
+        val themeName = getThemeName() ?: "Primary"
+        applyTheme(themeName)
     }
 
+    private fun getThemeName(): String? {
+        val sharedPreferences = requireContext().getSharedPreferences("setting_prefs", Context.MODE_PRIVATE)
+        return sharedPreferences.getString("themeName", null)
+    }
 
+    private fun applyTheme(themeName: String) {
+        if (themeName == "Secondary") {
+            binding?.apply {
+                Main.background = ContextCompat.getDrawable(requireContext(), R.color.bottom_nav_color2_2)
+                NestedScrollView.background = ContextCompat.getDrawable(
+                    requireContext(),
+                    R.color.bottom_nav_color2_2
+                )
+
+                editText.setTextColor(ContextCompat.getColor(requireContext(), R.color.White))
+                editText2.setTextColor(ContextCompat.getColor(requireContext(), R.color.White))
+                editText3.setTextColor(ContextCompat.getColor(requireContext(), R.color.White))
+                editText4.setTextColor(ContextCompat.getColor(requireContext(), R.color.White))
+                editText5.setTextColor(ContextCompat.getColor(requireContext(), R.color.White))
+                editText6.setTextColor(ContextCompat.getColor(requireContext(), R.color.White))
+                editText.setHintTextColor(ContextCompat.getColor(requireContext(), R.color.White))
+                editText2.setHintTextColor(ContextCompat.getColor(requireContext(), R.color.White))
+                editText3.setHintTextColor(ContextCompat.getColor(requireContext(), R.color.White))
+                editText4.setHintTextColor(ContextCompat.getColor(requireContext(), R.color.White))
+                editText5.setHintTextColor(ContextCompat.getColor(requireContext(), R.color.White))
+                editText6.setHintTextColor(ContextCompat.getColor(requireContext(), R.color.White))
+                textView.setTextColor(ContextCompat.getColor(requireContext(), R.color.White))
+                textView4.setTextColor(ContextCompat.getColor(requireContext(), R.color.White))
+            }
+        }
+    }
 
     private fun customresultdialog(context: Context, title:String, text:String, colorId: Int) {
 

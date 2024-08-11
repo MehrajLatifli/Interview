@@ -12,8 +12,8 @@ import com.google.android.material.animation.AnimationUtils
 
 class UserClaimAdapder : BaseAdapter<UserClaim, UserClaimAdapder.UserClaimViewHolder>() {
 
-    private var primaryFontSize: Float = 16.0F
-    private var secondaryFontSize: Float = 12.0F
+    private var primaryFontSize: Float = 20.0F
+    private var secondaryFontSize: Float = 16.0F
 
     inner class UserClaimViewHolder(val itemBinding: ItemProfileuserclaimsBinding) :
         RecyclerView.ViewHolder(itemBinding.root)

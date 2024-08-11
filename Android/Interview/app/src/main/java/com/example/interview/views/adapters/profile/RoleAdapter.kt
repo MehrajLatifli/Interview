@@ -9,8 +9,8 @@ import com.example.interview.views.adapters.base.BaseAdapter
 
 class RoleAdapter : BaseAdapter<Role, RoleAdapter.RoleViewHolder>() {
 
-    private var primaryFontSize: Float = 16.0F
-    private var secondaryFontSize: Float = 12.0F
+    private var primaryFontSize: Float = 20.0F
+    private var secondaryFontSize: Float = 16.0F
 
     inner class RoleViewHolder(val itemBinding: ItemProfilerolesBinding) :
         RecyclerView.ViewHolder(itemBinding.root)
@@ -24,7 +24,7 @@ class RoleAdapter : BaseAdapter<Role, RoleAdapter.RoleViewHolder>() {
         val item = list[position]
         holder.itemBinding.item = item
 
-        holder.itemBinding?.roletextView?.textSize = primaryFontSize
+        holder.itemBinding?.roletextView?.textSize = secondaryFontSize
     }
 
     fun setFontSizes(primary: Float, secondary: Float) {

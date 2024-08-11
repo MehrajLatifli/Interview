@@ -12,6 +12,7 @@ import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -152,6 +153,13 @@ class SessionReadFragment : BaseFragment<FragmentSessionReadBinding>(FragmentSes
         }
     }
 
+    override fun onDestroyView() {
+        viewModel?.vacancies?.removeObservers(viewLifecycleOwner)
+        viewModel?.sessions?.removeObservers(viewLifecycleOwner)
+        viewModel?.profiles?.removeObservers(viewLifecycleOwner)
+        super.onDestroyView()
+    }
+
     private fun applySize(savedPrimaryFontSize: Float, savedSecondaryFontSize:Float) {
 
 
@@ -212,45 +220,56 @@ class SessionReadFragment : BaseFragment<FragmentSessionReadBinding>(FragmentSes
 
     private fun observeData() {
         viewModel?.sessions?.observe(viewLifecycleOwner) { item ->
-            lifecycleScope.launch {
-                delay(500)
-                binding?.let { bitem ->
-                    sessionAdapder.updateList(item)
-                    val layoutAnimationController =
-                        AnimationUtils.loadLayoutAnimation(context, R.anim.item_layout_animation)
-                    bitem?.rvSessions?.layoutAnimation = layoutAnimationController
+            viewLifecycleOwner.lifecycleScope.launch {
+                if (isAdded && viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+                    delay(500)
+                    binding?.let { bitem ->
+                        sessionAdapder.updateList(item)
+                        val layoutAnimationController =
+                            AnimationUtils.loadLayoutAnimation(
+                                context,
+                                R.anim.item_layout_animation
+                            )
+                        bitem.rvSessions.layoutAnimation = layoutAnimationController
+                    }
                 }
             }
         }
 
         viewModel?.loading?.observe(viewLifecycleOwner) { isLoading ->
-            lifecycleScope.launch {
-                binding?.let { bitem ->
-                    if (isLoading) {
-                        bitem.includeProgressbar.progressBar.visible()
-                        bitem.NestedScrollView.gone()
-                        bitem.createButton.gone()
-                        delay(2000)
-                    } else {
-                        bitem.includeProgressbar.progressBar.gone()
-                        bitem.NestedScrollView.visible()
-                        bitem.createButton.visible()
-                        delay(2000)
+            viewLifecycleOwner.lifecycleScope.launch {
+                if (isAdded && viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+                    binding?.let { bitem ->
+                        if (isLoading) {
+                            bitem.includeProgressbar.progressBar.visible()
+                            bitem.NestedScrollView.gone()
+                            bitem.createButton.gone()
+                            delay(2000)
+                        } else {
+                            bitem.includeProgressbar.progressBar.gone()
+                            bitem.NestedScrollView.visible()
+                            bitem.createButton.visible()
+                            delay(2000)
+                        }
                     }
                 }
             }
         }
 
         viewModel?.error?.observe(viewLifecycleOwner) { errorMessage ->
-            if (!errorMessage.isNullOrBlank() && sessionAdapder.list.isNotEmpty()) {
-
-                if (size>0) {
-                    Log.e("SessionViewModel", errorMessage)
-                    customresultdialog("Unsuccessful!", errorMessage, R.color.MellowMelon)
+            viewLifecycleOwner.lifecycleScope.launch {
+                if (isAdded && viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+                    if (!errorMessage.isNullOrBlank() && sessionAdapder.list.isNotEmpty()) {
+                        if (size > 0) {
+                            Log.e("SessionViewModel", errorMessage)
+                            customresultdialog("Unsuccessful!", errorMessage, R.color.MellowMelon)
+                        }
+                    }
                 }
             }
         }
     }
+
 
     private fun customresultdialog(title: String, text: String, colorId: Int) {
         lifecycleScope.launch(Dispatchers.Main) {

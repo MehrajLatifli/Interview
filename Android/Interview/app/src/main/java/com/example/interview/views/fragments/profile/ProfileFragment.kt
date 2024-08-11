@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -78,6 +79,11 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
         }
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        viewModel.profiles.removeObservers(viewLifecycleOwner)
+    }
+
     private fun applySize(savedPrimaryFontSize: Float, savedSecondaryFontSize:Float) {
 
 
@@ -88,7 +94,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
                     bitem?.emailtextView?.textSize = savedSecondaryFontSize
                     bitem?.userClaimstextView?.textSize =savedPrimaryFontSize
                     bitem?.rolestextView?.textSize =savedPrimaryFontSize
-                    bitem?.LogOutButton?.textSize =savedPrimaryFontSize
+
                 }
                 lifecycleScope.launch {
                     userClaimAdapder?.setFontSizes(savedPrimaryFontSize, savedSecondaryFontSize)
@@ -137,18 +143,20 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
     private fun observeData() {
         viewModel.loading.observe(viewLifecycleOwner) { isLoading ->
             lifecycleScope.launch {
-                binding?.let { bitem ->
-                    if (isLoading) {
-                        delay(250)
-                        bitem?.includeProgressbar?.progressBar?.visible()
-                        delay(250)
-                    } else {
-                        bitem?.includeProgressbar?.progressBar?.gone()
-                        delay(250)
-                        bitem?.apply {
-                            Maincardview.visible()
-                            NestedScrollView.visible()
-                            LogOutButton.visible()
+                if (isAdded && viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+                    binding?.let { bitem ->
+                        if (isLoading) {
+                            delay(250)
+                            bitem?.includeProgressbar?.progressBar?.visible()
+                            delay(250)
+                        } else {
+                            bitem?.includeProgressbar?.progressBar?.gone()
+                            delay(250)
+                            bitem?.apply {
+                                Maincardview.visible()
+                                NestedScrollView.visible()
+                                LogOutButton.visible()
+                            }
                         }
                     }
                 }
@@ -157,30 +165,39 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
 
         viewModel.error.observe(viewLifecycleOwner) { errorMessage ->
             if (!errorMessage.isNullOrBlank()) {
-                binding?.let {
-                    customresultdialog(requireContext(), "UnSuccessful!", errorMessage, R.color.MellowMelon)
+                if (isAdded && viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+                    binding?.let {
+                        customresultdialog(
+                            requireContext(),
+                            "UnSuccessful!",
+                            errorMessage,
+                            R.color.MellowMelon
+                        )
+                    }
                 }
             }
         }
 
         viewModel.profiles.observe(viewLifecycleOwner) { items ->
-            items.forEach { profile ->
-                profile.let {
-                    binding?.let { bitem ->
-                        bitem?.profileimageView?.loadImageWithGlideAndResizeFromUrl(
-                            profile.imagePath,
-                            requireContext()
-                        )
-                        profile.permitions.forEach { permitions ->
-                            permitions.let {
-                                userClaimAdapder.updateList(permitions.userClaims)
-                                roleAdapter.updateList(permitions.roles)
+            if (isAdded && viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+                items.forEach { profile ->
+                    profile.let {
+                        binding?.let { bitem ->
+                            bitem?.profileimageView?.loadImageWithGlideAndResizeFromUrl(
+                                profile.imagePath,
+                                requireContext()
+                            )
+                            profile.permitions.forEach { permitions ->
+                                permitions.let {
+                                    userClaimAdapder.updateList(permitions.userClaims)
+                                    roleAdapter.updateList(permitions.roles)
+                                }
                             }
+                            bitem?.usernametextView?.text = profile.username
+                            bitem?.emailtextView?.text = profile.email
+                            Log.e("profile", profile.imagePath.toString())
+                            Log.e("profile", profile.username.toString())
                         }
-                        bitem?.usernametextView?.text = profile.username
-                        bitem?.emailtextView?.text = profile.email
-                        Log.e("profile", profile.imagePath.toString())
-                        Log.e("profile", profile.username.toString())
                     }
                 }
             }

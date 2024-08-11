@@ -8,11 +8,37 @@
     android:id="@+id/Main"
     tools:context=".views.fragments.setting.SettingFragment">
 
+    <ImageView
+        android:id="@+id/itemimageView"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="45dp"
+        android:background="@color/Transparent"
+        android:src="@drawable/logo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/itemtextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="56dp"
+        android:fontFamily="@font/nunito_medium"
+        android:text="Interview"
+        android:textColor="@color/DeepPurple"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@id/itemimageView"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <androidx.core.widget.NestedScrollView
         android:id="@+id/NestedScrollView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="45dp"
+        android:layout_marginTop="16dp"
         android:layout_marginBottom="105dp"
         android:background="@color/White"
         android:clipToPadding="false"
@@ -24,7 +50,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/itemimageView">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/ConstraintLayout"
@@ -38,34 +64,35 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
-            <TextView
-                android:id="@+id/primaryfontsizetextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="16dp"
-                android:fontFamily="@font/nunito_bold"
-                android:paddingVertical="5dp"
-                android:text="Primary font size:"
-                android:textColor="@color/DeepPurple"
-                android:textSize="20sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/primaryfontsizetextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="@font/nunito_bold"
+                    android:paddingVertical="5dp"
+                    android:text="Primary font size:"
+                    android:textColor="@color/DeepPurple"
+                    android:textSize="20sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
 
-            <TextView
-                android:id="@+id/fontsizecounttextView1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
-                android:fontFamily="@font/nunito_bold"
-                android:paddingVertical="5dp"
-                android:text="0"
-                android:textColor="@color/DeepPurple"
-                android:textSize="20sp"
-                app:layout_constraintStart_toEndOf="@+id/primaryfontsizetextView"
-                app:layout_constraintTop_toTopOf="parent" />
+                <TextView
+                    android:id="@+id/fontsizecounttextView1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="@font/nunito_bold"
+                    android:paddingVertical="5dp"
+                    android:text="0"
+                    android:textColor="@color/DeepPurple"
+                    android:textSize="20sp"
+                    app:layout_constraintStart_toEndOf="@+id/primaryfontsizetextView"
+                    app:layout_constraintTop_toTopOf="parent" />
 
 
                 <com.google.android.material.slider.Slider
@@ -203,19 +230,14 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="16dp"
                     android:padding="0dp"
+                    android:textColor="@color/White"
                     android:textOff=""
                     android:textOn=""
-                    android:textColor="@color/White"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:thumbTint="@color/DeepPurple"
-                    app:trackTint="@color/LavenderTonic" />
-
-
-
-
-
+                    app:trackTint="@color/Black" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -234,9 +256,9 @@
                 android:paddingTop="18dp"
                 android:paddingRight="60dp"
                 android:paddingBottom="18dp"
-                android:textSize="20dp"
                 android:text="Reset"
                 android:textColor="@color/White"
+                android:textSize="20dp"
                 app:cornerRadius="25dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -244,7 +266,6 @@
                 app:layout_constraintTop_toBottomOf="@+id/ConstraintLayout_3" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
 
 
     </androidx.core.widget.NestedScrollView>

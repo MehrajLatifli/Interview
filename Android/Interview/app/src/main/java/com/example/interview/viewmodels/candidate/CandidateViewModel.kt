@@ -71,7 +71,6 @@ class CandidateViewModel @Inject constructor(private val candidateRepository: Ca
             val result = candidateRepository.getCandidateDocumentByID(id)
             if (result is Resource.Success) {
 
-                delay(1000)
                 _loading.postValue(false)
                 val itemResponse = result.data
                 if (itemResponse != null) {

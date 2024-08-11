@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -106,6 +107,37 @@ class VacancyReadFragment : BaseFragment<FragmentVacancyReadBinding>(FragmentVac
 
         val themeName = getThemeName() ?: "Primary"
         applyTheme(themeName)
+
+        applySize(getPrimaryFontsize(), getSecondaryFontsize())
+
+    }
+
+    private fun applySize(savedPrimaryFontSize: Float, savedSecondaryFontSize:Float) {
+
+
+        binding?.let { bitem ->
+
+
+            lifecycleScope.launch {
+                vacancyAdapter?.setFontSizes(savedPrimaryFontSize, savedSecondaryFontSize)
+            }
+
+
+        }
+
+
+
+    }
+
+    private fun getPrimaryFontsize(): Float {
+        val sp = requireActivity().getSharedPreferences("setting_prefs", Context.MODE_PRIVATE)
+        return sp.getFloat("primaryFontsize", 16.0F)
+    }
+
+    private fun getSecondaryFontsize(): Float {
+        val sp = requireActivity().getSharedPreferences("setting_prefs", Context.MODE_PRIVATE)
+
+        return sp.getFloat("secondaryFontsize", 12.0F)
     }
 
     private fun applyTheme(themeName: String) {
@@ -132,19 +164,25 @@ class VacancyReadFragment : BaseFragment<FragmentVacancyReadBinding>(FragmentVac
 
 
 
-        viewModel.vacancies.observe(viewLifecycleOwner) { item ->
+        viewModel?.vacancies?.observe(viewLifecycleOwner) { item ->
+            if (isAdded) {
+                lifecycleScope.launch {
+                    if (isAdded && viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+                        binding?.let { bitem ->
+                            delay(500)
+                            vacancyAdapter.updateList(item)
 
-            lifecycleScope.launch {
-                binding?.let { bitem ->
-                    delay(500)
-                    vacancyAdapter.updateList(item)
 
+                            val layoutAnimationController =
+                                AnimationUtils.loadLayoutAnimation(
+                                    context,
+                                    R.anim.item_layout_animation
+                                )
+                            bitem?.rvVacancies?.layoutAnimation = layoutAnimationController
+                        }
 
-                    val layoutAnimationController =
-                        AnimationUtils.loadLayoutAnimation(context, R.anim.item_layout_animation)
-                    bitem?.rvVacancies?.layoutAnimation = layoutAnimationController
+                    }
                 }
-
             }
 
 
@@ -152,8 +190,8 @@ class VacancyReadFragment : BaseFragment<FragmentVacancyReadBinding>(FragmentVac
         }
 
 
-        viewModel.loading.observe(viewLifecycleOwner) { isLoading ->
-
+        viewModel?.loading?.observe(viewLifecycleOwner) { isLoading ->
+            if (isAdded && viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
             binding?.let { bitem ->
                 if (isLoading) {
 
@@ -172,17 +210,20 @@ class VacancyReadFragment : BaseFragment<FragmentVacancyReadBinding>(FragmentVac
                     bitem?.NestedScrollView?.visible()
                 }
             }
+            }
         }
 
         viewModel.error.observe(viewLifecycleOwner) { errorMessage ->
-            if (!errorMessage.isNullOrBlank()) {
-                Log.e("CandidateViewModel", errorMessage)
-                customresultdialog("Unsuccessful!", errorMessage, R.color.MellowMelon)
+            if (isAdded && viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+                if (!errorMessage.isNullOrBlank()) {
+                    Log.e("CandidateViewModel", errorMessage)
+                    customresultdialog("Unsuccessful!", errorMessage, R.color.MellowMelon)
 
 
 
-                if (viewModel?.getAllVacancies()?.size?:0 <= 0) {
-                    findNavController().navigate(CandidateReadFragmentDirections.actionCandidateReadFragmentToCandidateCreateFragment())
+                    if (viewModel?.getAllVacancies()?.size ?: 0 <= 0) {
+                        findNavController().navigate(CandidateReadFragmentDirections.actionCandidateReadFragmentToCandidateCreateFragment())
+                    }
                 }
             }
 

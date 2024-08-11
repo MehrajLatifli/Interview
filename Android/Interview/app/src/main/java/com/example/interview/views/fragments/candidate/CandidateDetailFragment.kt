@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -56,8 +57,51 @@ class CandidateDetailFragment  : BaseFragment<FragmentCandidateDetailBinding>(
 
         val themeName = getThemeName() ?: "Primary"
         applyTheme(themeName)
+
+        applySize(getPrimaryFontsize(), getSecondaryFontsize())
     }
 
+    private fun applySize(savedPrimaryFontSize: Float, savedSecondaryFontSize:Float) {
+
+
+        lifecycleScope.launch {
+
+
+            binding.let {
+
+                it.titletextView.textSize = savedPrimaryFontSize
+                it.titletextView2.textSize = savedPrimaryFontSize
+                it.titletextView3.textSize = savedPrimaryFontSize
+                it.titletextView4.textSize = savedPrimaryFontSize
+                it.titletextView5.textSize = savedPrimaryFontSize
+                it.titletextView6.textSize = savedPrimaryFontSize
+
+
+                it.textView1.textSize = savedSecondaryFontSize
+                it.textView2.textSize = savedSecondaryFontSize
+                it.textView3.textSize = savedSecondaryFontSize
+                it.textView4.textSize = savedSecondaryFontSize
+                it.textView5.textSize = savedSecondaryFontSize
+                it.textView6.textSize = savedSecondaryFontSize
+            }
+
+
+        }
+
+
+
+    }
+
+    private fun getPrimaryFontsize(): Float {
+        val sp = requireActivity().getSharedPreferences("setting_prefs", Context.MODE_PRIVATE)
+        return sp.getFloat("primaryFontsize", 16.0F)
+    }
+
+    private fun getSecondaryFontsize(): Float {
+        val sp = requireActivity().getSharedPreferences("setting_prefs", Context.MODE_PRIVATE)
+
+        return sp.getFloat("secondaryFontsize", 12.0F)
+    }
 
     private fun applyTheme(themeName: String) {
         lifecycleScope.launch {
@@ -83,42 +127,50 @@ class CandidateDetailFragment  : BaseFragment<FragmentCandidateDetailBinding>(
     private fun observeData() {
 
         viewModel.candidateDocument.observe(viewLifecycleOwner) { item ->
-            item?.let {
-                binding.textView1.text = it.surname ?: ""
-                binding.textView2.text = it.name ?: ""
-                binding.textView3.text = it.patronymic ?: ""
-                binding.textView4.text = it.phonenumber ?: ""
-                binding.textView5.text = it.email ?: ""
-                binding.textView6.text = it.address ?: ""
-                cvurl=it.cv?: ""
+            if (isAdded && viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+                item?.let {
+                    binding.textView1.text = it.surname ?: ""
+                    binding.textView2.text = it.name ?: ""
+                    binding.textView3.text = it.patronymic ?: ""
+                    binding.textView4.text = it.phonenumber ?: ""
+                    binding.textView5.text = it.email ?: ""
+                    binding.textView6.text = it.address ?: ""
+                    cvurl = it.cv ?: ""
+                }
             }
         }
 
 
         viewModel.loading.observe(viewLifecycleOwner) { isLoading ->
+            if (isAdded && viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+                if (isLoading) {
+                    binding.includeProgressbar.progressBar.visible()
+                    binding.NestedScrollView.gone()
 
-            if (isLoading) {
-                binding.includeProgressbar.progressBar.visible()
-                binding.NestedScrollView.gone()
 
-
-            } else {
-                binding.includeProgressbar.progressBar.gone()
-                binding.NestedScrollView.visible()
+                } else {
+                    binding.includeProgressbar.progressBar.gone()
+                    binding.NestedScrollView.visible()
+                }
             }
         }
 
         viewModel.error.observe(viewLifecycleOwner) { errorMessage ->
-            if (!errorMessage.isNullOrBlank()) {
-                Log.e("CandidateViewModel", errorMessage)
-                customresultdialog("Unsuccessful!", errorMessage, R.color.MellowMelon)
+            if (isAdded && viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+                if (!errorMessage.isNullOrBlank()) {
+                    Log.e("CandidateViewModel", errorMessage)
+                    customresultdialog("Unsuccessful!", errorMessage, R.color.MellowMelon)
 
-
-
-
+                }
             }
 
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        viewModel.candidateDocument.removeObservers(viewLifecycleOwner)
+
     }
 
     private fun customresultdialog(title: String, text: String, colorId: Int) {

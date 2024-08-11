@@ -13,10 +13,13 @@ class SessionAdapder : BaseAdapter<SessionResponse, SessionAdapder.SessionViewHo
     lateinit var onClickDeleteItem: (Int?) -> Unit
     lateinit var onClickDetailItem: (SessionResponse) -> Unit
     lateinit var onClickStartExemItem: (SessionResponse) -> Unit
-    var isStartExamVisible: Boolean = true
 
-    private var primaryFontSize: Float = 16.0F
-    private var secondaryFontSize: Float = 12.0F
+    private var primaryFontSize: Float = 20.0F
+    private var secondaryFontSize: Float = 16.0F
+
+    private var deleteButtonVisible: Boolean = true
+    private var detailButtonVisible: Boolean = true
+    private var startExamButtonVisible: Boolean = true
 
     inner class SessionViewHolder(val itemBinding: ItemSessionBinding) :
         RecyclerView.ViewHolder(itemBinding.root)
@@ -30,19 +33,21 @@ class SessionAdapder : BaseAdapter<SessionResponse, SessionAdapder.SessionViewHo
         val item = list[position]
         holder.itemBinding.item = item
 
-        holder.itemBinding?.textView1?.textSize = primaryFontSize
-        holder.itemBinding?.textView2?.textSize = secondaryFontSize
+        holder.itemBinding.buttonDelete.visibility = if (deleteButtonVisible) View.VISIBLE else View.GONE
+        holder.itemBinding.buttonDetail.visibility = if (detailButtonVisible) View.VISIBLE else View.GONE
 
-        holder.itemBinding.buttonDetail.textSize=secondaryFontSize
-        holder.itemBinding.buttonStartExam.textSize=secondaryFontSize
-        holder.itemBinding.buttonDelete.textSize=secondaryFontSize
-
-        // Update visibility based on the item
-        if (updateVisibility(item)) {
-            holder.itemBinding.buttonStartExam.visibility = View.INVISIBLE
-        } else {
-            holder.itemBinding.buttonStartExam.visibility = View.VISIBLE
+        holder.itemBinding.buttonStartExam.visibility = when {
+            !startExamButtonVisible -> View.GONE
+            updateVisibility(item) -> View.INVISIBLE
+            else -> View.VISIBLE
         }
+
+        holder.itemBinding.buttonDelete?.textSize = 14.0F
+        holder.itemBinding.buttonDetail?.textSize = 14.0F
+        holder.itemBinding.buttonStartExam?.textSize = 14.0F
+
+        holder.itemBinding.textView1.textSize = primaryFontSize
+        holder.itemBinding.textView2.textSize = secondaryFontSize
 
         holder.itemBinding.buttonDelete.setOnClickListener {
             onClickDeleteItem.invoke(item.id)
@@ -57,7 +62,7 @@ class SessionAdapder : BaseAdapter<SessionResponse, SessionAdapder.SessionViewHo
         }
     }
 
-    fun updateVisibility(item: SessionResponse): Boolean {
+    private fun updateVisibility(item: SessionResponse): Boolean {
         return item.endValue != null && item.endValue > 0
     }
 
@@ -67,5 +72,19 @@ class SessionAdapder : BaseAdapter<SessionResponse, SessionAdapder.SessionViewHo
         notifyDataSetChanged()
     }
 
+    fun setDeleteButtonVisibility(visible: Boolean) {
+        deleteButtonVisible = visible
+        notifyDataSetChanged()
+    }
 
+    fun setDetailButtonVisibility(visible: Boolean) {
+        detailButtonVisible = visible
+        notifyDataSetChanged()
+    }
+
+    fun setStartExamButtonVisibility(visible: Boolean) {
+        startExamButtonVisible = visible
+        notifyDataSetChanged()
+    }
 }
+

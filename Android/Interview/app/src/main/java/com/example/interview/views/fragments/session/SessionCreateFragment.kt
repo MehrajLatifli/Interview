@@ -15,22 +15,18 @@ import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.interview.R
 import com.example.interview.databinding.CustomresultdialogBinding
-import com.example.interview.databinding.FragmentHomeBinding
 import com.example.interview.databinding.FragmentSessionCreateBinding
 import com.example.interview.models.responses.post.session.SessionRequest
-import com.example.interview.models.responses.post.sessionquestion.RandomQuestionRequest2
-import com.example.interview.models.responses.post.vacancy.VacancyRequest
 import com.example.interview.utilities.gone
 import com.example.interview.utilities.loadImageWithGlideAndResize
 import com.example.interview.utilities.visible
 import com.example.interview.viewmodels.session.SessionViewModel
-import com.example.interview.viewmodels.vacancy.VacancyViewModel
 import com.example.interview.views.fragments.base.BaseFragment
-import com.example.interview.views.fragments.vacancy.VacancyCreateFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -50,44 +46,29 @@ class SessionCreateFragment : BaseFragment<FragmentSessionCreateBinding>(Fragmen
 
     private val viewModel by viewModels<SessionViewModel>()
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupUI()
+        observeData()
+
+        lifecycleScope.launch {
+            initializeData()
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        viewModel.vacancies.removeObservers(viewLifecycleOwner)
+        viewModel.sessions.removeObservers(viewLifecycleOwner)
+        viewModel.profiles.removeObservers(viewLifecycleOwner)
+    }
+
+    private fun setupUI() {
         val dropdownBackground: Drawable? =
             ContextCompat.getDrawable(requireContext(), R.drawable.autocompletetextview_radiuscolor)
         binding.autocompleteVacancytextview.setDropDownBackgroundDrawable(dropdownBackground)
         binding.autocompleteCandidatetextview.setDropDownBackgroundDrawable(dropdownBackground)
-
-
-        lifecycleScope.launch() {
-
-
-            binding.includeProgressbar.progressBar.visible()
-            binding.mainConstraintLayout.gone()
-            binding.NestedScrollView.gone()
-
-
-            viewModel.getprofile()
-
-            observeData()
-
-           size=viewModel.getAllOwnSession().size
-
-            fetchAndSetupData()
-
-            delay(2000)
-
-
-            binding.includeProgressbar.progressBar.gone()
-            binding.mainConstraintLayout.visible()
-            binding.NestedScrollView.visible()
-
-
-        }
-
-
-
 
         binding.autocompleteVacancytextview.setOnItemClickListener { _, _, position, _ ->
             val selectedItemName =
@@ -101,46 +82,47 @@ class SessionCreateFragment : BaseFragment<FragmentSessionCreateBinding>(Fragmen
             selectedCandidateId = candidateMap[selectedItemName] ?: ""
         }
 
-
         binding.buttonCreate.setOnClickListener {
             lifecycleScope.launch {
-
                 handleCreateSession()
-
             }
         }
 
-
         val themeName = getThemeName() ?: "Primary"
         applyTheme(themeName)
-
         applySize(getPrimaryFontsize(), getSecondaryFontsize())
     }
 
-    private fun applySize(savedPrimaryFontSize: Float, savedSecondaryFontSize:Float) {
+    private suspend fun initializeData() {
+        binding.includeProgressbar.progressBar.visible()
+        binding.mainConstraintLayout.gone()
+        binding.NestedScrollView.gone()
 
+        viewModel.getprofile()
 
-        lifecycleScope.launch {
+        size = viewModel.getAllOwnSession().size
 
-            val textInputEditText: AutoCompleteTextView =  binding.autocompleteVacancytextview
-            textInputEditText.setTextSize(TypedValue.COMPLEX_UNIT_SP, savedPrimaryFontSize)
+        fetchAndSetupData()
 
-            val textInputEditText2: AutoCompleteTextView =  binding.autocompleteCandidatetextview
-            textInputEditText2.setTextSize(TypedValue.COMPLEX_UNIT_SP, savedPrimaryFontSize)
+        delay(2000)
 
-
-            val hintTextView = binding.textInputLayout1.editText as? AutoCompleteTextView
-            hintTextView?.setTextSize(TypedValue.COMPLEX_UNIT_SP, savedPrimaryFontSize)
-
-            val hintTextView2 = binding.textInputLayout2.editText as? AutoCompleteTextView
-            hintTextView2?.setTextSize(TypedValue.COMPLEX_UNIT_SP, savedPrimaryFontSize)
-
-            binding.buttonCreate.textSize=savedPrimaryFontSize
-
+        if (isAdded) {
+            binding.includeProgressbar.progressBar.gone()
+            binding.mainConstraintLayout.visible()
+            binding.NestedScrollView.visible()
         }
+    }
 
-
-
+    private fun applySize(primaryFontSize: Float, secondaryFontSize: Float) {
+        lifecycleScope.launch {
+            if (isAdded) {
+                binding.autocompleteVacancytextview.setTextSize(TypedValue.COMPLEX_UNIT_SP, primaryFontSize)
+                binding.autocompleteCandidatetextview.setTextSize(TypedValue.COMPLEX_UNIT_SP, primaryFontSize)
+                binding.textInputLayout1.editText?.setTextSize(TypedValue.COMPLEX_UNIT_SP, primaryFontSize)
+                binding.textInputLayout2.editText?.setTextSize(TypedValue.COMPLEX_UNIT_SP, primaryFontSize)
+                binding.buttonCreate.textSize = primaryFontSize
+            }
+        }
     }
 
     private fun getPrimaryFontsize(): Float {
@@ -150,29 +132,51 @@ class SessionCreateFragment : BaseFragment<FragmentSessionCreateBinding>(Fragmen
 
     private fun getSecondaryFontsize(): Float {
         val sp = requireActivity().getSharedPreferences("setting_prefs", Context.MODE_PRIVATE)
-
         return sp.getFloat("secondaryFontsize", 12.0F)
     }
 
     private fun applyTheme(themeName: String) {
         lifecycleScope.launch {
-            if (themeName == "Secondary") {
-                binding.Main.background = ContextCompat.getDrawable(
-                    requireContext(),
-                    R.color.bottom_nav_color2_2
-                )
-                binding.NestedScrollView.background = ContextCompat.getDrawable(
-                    requireContext(),
-                    R.color.bottom_nav_color2_2
-                )
+            if (isAdded) {
 
+                if (themeName == "Secondary") {
 
-                val colorStateList =
-                    ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.Black))
+                    binding.Main.background = ContextCompat.getDrawable(
+                        requireContext(),
+                        R.color.bottom_nav_color2_2
+                    )
+                    binding.NestedScrollView.background = ContextCompat.getDrawable(
+                        requireContext(),
+                        R.color.bottom_nav_color2_2
+                    )
 
+                    val colorStateList = ColorStateList.valueOf(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.DeepPurple
+                        )
+                    )
 
-                binding.textInputLayout1.setHintTextColor(colorStateList)
-                binding.textInputLayout2.setHintTextColor(colorStateList)
+                    binding.textInputLayout1.setHintTextColor(colorStateList)
+                    binding.textInputLayout2.setHintTextColor(colorStateList)
+
+                    val autoCompleteTextView = binding.autocompleteCandidatetextview
+                    autoCompleteTextView.setTextColor(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.DeepPurple
+                        )
+                    )
+
+                    val autoCompleteTextView2 = binding.autocompleteVacancytextview
+                    autoCompleteTextView2.setTextColor(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.DeepPurple
+                        )
+                    )
+                }
+
             }
         }
     }
@@ -183,36 +187,33 @@ class SessionCreateFragment : BaseFragment<FragmentSessionCreateBinding>(Fragmen
     }
 
     private fun observeData() {
-
         viewModel.profiles.observe(viewLifecycleOwner) { profiles ->
-            if (profiles.isNotEmpty()) {
+            if (isAdded && viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
                 sessionOwnerId = profiles.firstOrNull()?.id.toString() ?: ""
                 Log.e("SessionOwner", sessionOwnerId.toString())
-            } else {
-                Log.e("SessionOwner", "No profiles found")
             }
         }
 
         viewModel.loading.observe(viewLifecycleOwner) { isLoading ->
-            lifecycleScope.launch(Dispatchers.Main) {
-                delay(2000)
-                if (isLoading) {
-                    binding.includeProgressbar.progressBar.visible()
-                    binding.mainConstraintLayout.gone()
-                    binding.NestedScrollView.gone()
-                } else {
-                    binding.includeProgressbar.progressBar.gone()
-                    binding.mainConstraintLayout.visible()
-                    binding.NestedScrollView.visible()
+            lifecycleScope.launch {
+                if (isAdded && viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+
+                    if (isLoading) {
+                        binding.includeProgressbar.progressBar.visible()
+                        binding.mainConstraintLayout.gone()
+                        binding.NestedScrollView.gone()
+                    } else {
+                        binding.includeProgressbar.progressBar.gone()
+                        binding.mainConstraintLayout.visible()
+                        binding.NestedScrollView.visible()
+                    }
                 }
             }
         }
 
         viewModel.error.observe(viewLifecycleOwner) { errorMessage ->
-            if (!errorMessage.isNullOrBlank()) {
-
-
-                if (size>0) {
+            if (!errorMessage.isNullOrBlank() && isAdded && viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+                if (size > 0) {
                     Log.e("VacancyCreate", errorMessage)
                     customResultDialog("Unsuccessful!", errorMessage, R.color.MellowMelon)
                 }
@@ -220,66 +221,71 @@ class SessionCreateFragment : BaseFragment<FragmentSessionCreateBinding>(Fragmen
         }
 
         viewModel.candidatedocuments.observe(viewLifecycleOwner) { candidatedocuments ->
-            candidateMap.clear()
-            candidatedocuments.forEach { candidatedocument ->
-                candidateMap[candidatedocument.name] = candidatedocument.id.toString()
+            if (isAdded && viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+                candidateMap.clear()
+                candidatedocuments.forEach { candidatedocument ->
+                    candidateMap[candidatedocument.name] = candidatedocument.id.toString()
+                }
+                setupAutoCompleteTextView()
             }
-            setupAutoCompleteTextView()
         }
 
         viewModel.vacancies.observe(viewLifecycleOwner) { vacancies ->
+            if (isAdded && viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+                vacancyMap.clear()
+                vacancies.forEach { vacancy ->
+                    vacancyMap[vacancy.title] = vacancy.id.toString()
+                }
+                setupAutoCompleteTextView()
+            }
+        }
+
+        viewModel.completeResult.observe(viewLifecycleOwner) { completeResult ->
+            lifecycleScope.launch {
+                if (isAdded && viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+                    if (completeResult) {
+                        customResultDialog(
+                            "Successful!",
+                            "Please wait a moment, we are preparing for you...",
+                            R.color.DeepPurple
+                        )
+                        delay(2500)
+                        findNavController().navigate(SessionCreateFragmentDirections.actionSessionCreateFragmentToSessionReadFragment())
+                    } else {
+                        delay(2500)
+                        findNavController().navigate(SessionCreateFragmentDirections.actionSessionCreateFragmentToOperationFragment())
+                    }
+                }
+            }
+        }
+    }
+
+    private suspend fun fetchAndSetupData() {
+        if (isAdded) {
+            val vacancies = viewModel.getAllVacancies()
             vacancyMap.clear()
             vacancies.forEach { vacancy ->
                 vacancyMap[vacancy.title] = vacancy.id.toString()
             }
             setupAutoCompleteTextView()
-        }
 
-
-
-
-        viewModel.completeResult.observe(viewLifecycleOwner) { completeResult ->
-            lifecycleScope.launch {
-                if (completeResult) {
-                    customResultDialog(
-                        "Successful!",
-                        "Please wait a moment, we are preparing for you...",
-                        R.color.DeepPurple
-                    )
-                    delay(2500)
-                    findNavController().navigate(SessionCreateFragmentDirections.actionSessionCreateFragmentToSessionReadFragment())
-                } else {
-                    delay(2500)
-                    findNavController().navigate(SessionCreateFragmentDirections.actionSessionCreateFragmentToOperationFragment())
-                }
+            val candidateDocuments = viewModel.getAllCandidateDocuments()
+            candidateMap.clear()
+            candidateDocuments.forEach { candidate ->
+                candidateMap[candidate.name] = candidate.id.toString()
             }
+            setupAutoCompleteTextView()
         }
-
-
-    }
-
-    private suspend fun fetchAndSetupData() {
-        val vacancies = viewModel.getAllVacancies()
-        vacancyMap.clear()
-        vacancies.forEach { vacancy ->
-            vacancyMap[vacancy.title] = vacancy.id.toString()
-        }
-        setupAutoCompleteTextView()
-
-        val candidateDocuments = viewModel.getAllCandidateDocuments()
-        candidateMap.clear()
-        candidateDocuments.forEach { candidate ->
-            candidateMap[candidate.name] = candidate.id.toString()
-        }
-        setupAutoCompleteTextView()
     }
 
     private fun setupAutoCompleteTextView() {
-        val vacancyAdapter = ArrayAdapter(requireContext(), R.layout.item_dropdownlist, vacancyMap.keys.toList())
-        binding.autocompleteVacancytextview.setAdapter(vacancyAdapter)
+        if (isAdded) {
+            val vacancyAdapter = ArrayAdapter(requireContext(), R.layout.item_dropdownlist, vacancyMap.keys.toList())
+            binding.autocompleteVacancytextview.setAdapter(vacancyAdapter)
 
-        val candidateAdapter = ArrayAdapter(requireContext(), R.layout.item_dropdownlist, candidateMap.keys.toList())
-        binding.autocompleteCandidatetextview.setAdapter(candidateAdapter)
+            val candidateAdapter = ArrayAdapter(requireContext(), R.layout.item_dropdownlist, candidateMap.keys.toList())
+            binding.autocompleteCandidatetextview.setAdapter(candidateAdapter)
+        }
     }
 
     private fun customResultDialog(title: String, text: String, colorId: Int) {
@@ -303,11 +309,7 @@ class SessionCreateFragment : BaseFragment<FragmentSessionCreateBinding>(Fragmen
 
     private suspend fun handleCreateSession(): Boolean {
         if (selectedVacancyId.isBlank() || selectedCandidateId.isBlank() || sessionOwnerId.isBlank()) {
-            customResultDialog(
-                "Unsuccessful!",
-                "Please fill all required fields",
-                R.color.MellowMelon
-            )
+            customResultDialog("Unsuccessful!", "Please fill all required fields", R.color.MellowMelon)
             return false
         }
 
@@ -315,7 +317,7 @@ class SessionCreateFragment : BaseFragment<FragmentSessionCreateBinding>(Fragmen
         val candidateId = selectedCandidateId.toIntOrNull() ?: return false
         val userId = sessionOwnerId.toIntOrNull() ?: return false
 
-        try {
+        return try {
             val sessionRequest = SessionRequest(
                 endValue = 0,
                 startDate = LocalDateTime.now().toString(),
@@ -327,20 +329,11 @@ class SessionCreateFragment : BaseFragment<FragmentSessionCreateBinding>(Fragmen
 
             viewModel.addSession(sessionRequest)
             Log.d("SessionCreateFragment", "Session creation requested")
-
-            return true
-
-
+            true
         } catch (e: Exception) {
             Log.e("SessionCreateFragment", "Error: ${e.message}")
             customResultDialog("Unsuccessful!", "An error occurred", R.color.MellowMelon)
-            return false
+            false
         }
     }
-
-
-
-
-
-
 }

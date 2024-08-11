@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity() {
     private var isTransitionInProgress = false // Flag to track transition state
     private val handler = Handler(Looper.getMainLooper())
     private var isDebouncing = false
-    private val debounceDelay: Long = 1000 // 1 second
+    private val debounceDelay: Long = 100 // 1 second
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,31 +73,34 @@ class MainActivity : AppCompatActivity() {
             lifecycleScope.launch {
                 delay(1000) // 1-second delay
                 if (!supportFragmentManager.isStateSaved) {
-                    when (destination.id) {
-                        R.id.homeFragment,
-                        R.id.profileFragment,
-                        R.id.operationFragment,
-                        R.id.candidateReadFragment,
-                        R.id.candidateCreateFragment,
-                        R.id.candidateDetailFragment,
-                        R.id.candidateUpdateFragment,
-                        R.id.vacancyCreateFragment,
-                        R.id.vacancyReadFragment,
-                        R.id.vacancyUpdateFragment,
-                        R.id.vacancyDetailFragment,
-                        R.id.sessionCreateFragment,
-                        R.id.sessionReadFragment,
-                        R.id.sessionUpdateFragment,
-                        R.id.sessionDetailFragment,
-                        R.id.settingFragment -> {
-                            showBottomNavigationView()
-                        }
-                        else -> {
-                            hideBottomNavigationView()
+                    if (!isFinishing && !isDestroyed) {
+                        when (destination.id) {
+                            R.id.homeFragment,
+                            R.id.profileFragment,
+                            R.id.operationFragment,
+                            R.id.candidateReadFragment,
+                            R.id.candidateCreateFragment,
+                            R.id.candidateDetailFragment,
+                            R.id.candidateUpdateFragment,
+                            R.id.vacancyCreateFragment,
+                            R.id.vacancyReadFragment,
+                            R.id.vacancyUpdateFragment,
+                            R.id.vacancyDetailFragment,
+                            R.id.sessionCreateFragment,
+                            R.id.sessionReadFragment,
+                            R.id.sessionUpdateFragment,
+                            R.id.sessionDetailFragment,
+                            R.id.settingFragment -> {
+                                showBottomNavigationView()
+                            }
+
+                            else -> {
+                                hideBottomNavigationView()
+                            }
                         }
                     }
+                    isTransitionInProgress = false
                 }
-                isTransitionInProgress = false
             }
         }
 

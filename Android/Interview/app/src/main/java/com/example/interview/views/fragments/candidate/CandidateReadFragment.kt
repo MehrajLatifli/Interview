@@ -12,6 +12,7 @@ import android.view.animation.AnimationUtils
 import android.view.animation.LayoutAnimationController
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -114,6 +115,42 @@ class CandidateReadFragment  : BaseFragment<FragmentCandidateReadBinding>(Fragme
 
         val themeName = getThemeName() ?: "Primary"
         applyTheme(themeName)
+        applySize(getPrimaryFontsize(), getSecondaryFontsize())
+
+    }
+
+    private fun applySize(savedPrimaryFontSize: Float, savedSecondaryFontSize:Float) {
+
+
+        binding?.let { bitem ->
+
+
+            lifecycleScope.launch {
+                candidateAdapter?.setFontSizes(savedPrimaryFontSize, savedSecondaryFontSize)
+            }
+
+
+        }
+
+
+
+    }
+
+    private fun getPrimaryFontsize(): Float {
+        val sp = requireActivity().getSharedPreferences("setting_prefs", Context.MODE_PRIVATE)
+        return sp.getFloat("primaryFontsize", 16.0F)
+    }
+
+    private fun getSecondaryFontsize(): Float {
+        val sp = requireActivity().getSharedPreferences("setting_prefs", Context.MODE_PRIVATE)
+
+        return sp.getFloat("secondaryFontsize", 12.0F)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        viewModel.candidateDocument.removeObservers(viewLifecycleOwner)
+
     }
 
     private fun applyTheme(themeName: String) {
@@ -143,14 +180,19 @@ class CandidateReadFragment  : BaseFragment<FragmentCandidateReadBinding>(Fragme
         viewModel.candidateDocuments.observe(viewLifecycleOwner) { item ->
 
             lifecycleScope.launch {
-                binding?.let { bitem ->
-                    delay(500)
-                    candidateAdapter.updateList(item)
+                if (isAdded && viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+                    binding?.let { bitem ->
+                        delay(500)
+                        candidateAdapter.updateList(item)
 
 
-                    val layoutAnimationController =
-                        AnimationUtils.loadLayoutAnimation(context, R.anim.item_layout_animation)
-                    bitem?.rvCandidates?.layoutAnimation = layoutAnimationController
+                        val layoutAnimationController =
+                            AnimationUtils.loadLayoutAnimation(
+                                context,
+                                R.anim.item_layout_animation
+                            )
+                        bitem?.rvCandidates?.layoutAnimation = layoutAnimationController
+                    }
                 }
             }
 
@@ -160,11 +202,12 @@ class CandidateReadFragment  : BaseFragment<FragmentCandidateReadBinding>(Fragme
 
         viewModel.loading.observe(viewLifecycleOwner) { isLoading ->
 
-            binding?.let { bitem ->
+            if (isAdded && viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+                binding?.let { bitem ->
 
-                if (isLoading) {
-                    bitem?.includeProgressbar?.progressBar?.visible()
-                    bitem?.NestedScrollView?.gone()
+                    if (isLoading) {
+                        bitem?.includeProgressbar?.progressBar?.visible()
+                        bitem?.NestedScrollView?.gone()
 
 
 //                if(viewModel.getAllCandidateDocuments().isEmpty())
@@ -173,22 +216,25 @@ class CandidateReadFragment  : BaseFragment<FragmentCandidateReadBinding>(Fragme
 //
 //                }
 
-                } else {
-                    bitem?.includeProgressbar?.progressBar?.gone()
-                    bitem?.NestedScrollView?.visible()
+                    } else {
+                        bitem?.includeProgressbar?.progressBar?.gone()
+                        bitem?.NestedScrollView?.visible()
+                    }
                 }
             }
         }
 
         viewModel.error.observe(viewLifecycleOwner) { errorMessage ->
-            if (!errorMessage.isNullOrBlank()) {
-                Log.e("CandidateViewModel", errorMessage)
-                customresultdialog("Unsuccessful!", errorMessage, R.color.MellowMelon)
+            if (isAdded && viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+                if (!errorMessage.isNullOrBlank()) {
+                    Log.e("CandidateViewModel", errorMessage)
+                    customresultdialog("Unsuccessful!", errorMessage, R.color.MellowMelon)
 
 
 
-                if (viewModel.getAllCandidateDocuments().size <= 0) {
-                    findNavController().navigate(CandidateReadFragmentDirections.actionCandidateReadFragmentToCandidateCreateFragment())
+                    if (viewModel.getAllCandidateDocuments().size <= 0) {
+                        findNavController().navigate(CandidateReadFragmentDirections.actionCandidateReadFragmentToCandidateCreateFragment())
+                    }
                 }
             }
 

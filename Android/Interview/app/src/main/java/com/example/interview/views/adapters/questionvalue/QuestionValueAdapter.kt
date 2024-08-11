@@ -16,8 +16,8 @@ class QuestionValueAdapter(
     private var selectedItemValue: String? = null
 
 
-    private var primaryFontSize: Float = 16.0F
-    private var secondaryFontSize: Float = 12.0F
+    private var primaryFontSize: Float = 20.0F
+    private var secondaryFontSize: Float = 16.0F
 
     inner class QuestionValueViewHolder(val itemBinding: ItemQuestionvalueBinding) :
         RecyclerView.ViewHolder(itemBinding.root)

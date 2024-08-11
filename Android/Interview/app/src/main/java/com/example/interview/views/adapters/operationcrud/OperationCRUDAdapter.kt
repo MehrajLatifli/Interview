@@ -13,8 +13,8 @@ class OperationCRUDAdapter(
     private val onClickItem: (String) -> Unit
 ) : BaseAdapter<Operation, OperationCRUDAdapter.OperationCRUDViewHolder>() {
 
-    private var primaryFontSize: Float = 16.0F
-    private var secondaryFontSize: Float = 12.0F
+    private var primaryFontSize: Float = 20.0F
+    private var secondaryFontSize: Float = 16.0F
 
     inner class OperationCRUDViewHolder(val itemBinding: ItemOperationcrudBinding) :
         RecyclerView.ViewHolder(itemBinding.root)
@@ -34,6 +34,8 @@ class OperationCRUDAdapter(
             onClickItem(item.text)
         }
 
+        holder.itemBinding.itemtextView .textSize = 20.0F
+
         // Color setup based on item text (if needed)
         val context = holder.itemView.context
         val (bgColor, cardColor, textColor) = when (item.text) {
@@ -51,9 +53,5 @@ class OperationCRUDAdapter(
         holder.itemBinding?.itemtextView?.textSize = secondaryFontSize
     }
 
-    fun setFontSizes(primary: Float, secondary: Float) {
-        primaryFontSize = primary
-        secondaryFontSize = secondary
-        notifyDataSetChanged()
-    }
+
 }

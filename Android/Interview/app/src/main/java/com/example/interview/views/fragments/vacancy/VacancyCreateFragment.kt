@@ -8,13 +8,16 @@ import android.content.res.ColorStateList
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.DatePicker
 import android.widget.TimePicker
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.interview.R
@@ -51,58 +54,149 @@ class VacancyCreateFragment : BaseFragment<FragmentVacancyCreateBinding>(Fragmen
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val dropdownBackground: Drawable? = ContextCompat.getDrawable(requireContext(), R.drawable.autocompletetextview_radiuscolor)
-        binding.autocompletePositiontextview.setDropDownBackgroundDrawable(dropdownBackground)
-        binding.autocompleteStructuretextview.setDropDownBackgroundDrawable(dropdownBackground)
 
-        observeData()
+            binding.let { bindingitem ->
+                val dropdownBackground: Drawable? = ContextCompat.getDrawable(
+                    requireContext(),
+                    R.drawable.autocompletetextview_radiuscolor
+                )
+                bindingitem.autocompletePositiontextview.setDropDownBackgroundDrawable(
+                    dropdownBackground
+                )
+                bindingitem.autocompleteStructuretextview.setDropDownBackgroundDrawable(
+                    dropdownBackground
+                )
 
-        lifecycleScope.launch {
-            fetchAndSetupData()
-        }
+                observeData()
 
-        binding.buttonDateTime.setOnClickListener {
-            showDatePicker()
-        }
+                lifecycleScope.launch {
+                    fetchAndSetupData()
+                }
 
-        binding.autocompletePositiontextview.setOnItemClickListener { _, _, position, _ ->
-            val selectedItemName = binding.autocompletePositiontextview.adapter.getItem(position) as? String
-            selectedPositionId = positionMap[selectedItemName] ?: ""
-        }
+                bindingitem.buttonDateTime.setOnClickListener {
+                    showDatePicker()
+                }
 
-        binding.autocompleteStructuretextview.setOnItemClickListener { _, _, position, _ ->
-            val selectedItemName = binding.autocompleteStructuretextview.adapter.getItem(position) as? String
-            selectedStructureId = structureMap[selectedItemName] ?: ""
-        }
+                bindingitem.autocompletePositiontextview.setOnItemClickListener { _, _, position, _ ->
+                    val selectedItemName =
+                        bindingitem.autocompletePositiontextview.adapter.getItem(position) as? String
+                    selectedPositionId = positionMap[selectedItemName] ?: ""
+                }
 
-        binding.buttonCreate.setOnClickListener {
-            handleCreateVacancy()
-        }
-        val themeName = getThemeName() ?: "Primary"
-        applyTheme(themeName)
+                bindingitem.autocompleteStructuretextview.setOnItemClickListener { _, _, position, _ ->
+                    val selectedItemName =
+                        bindingitem.autocompleteStructuretextview.adapter.getItem(position) as? String
+                    selectedStructureId = structureMap[selectedItemName] ?: ""
+                }
+
+                bindingitem.buttonCreate.setOnClickListener {
+                    handleCreateVacancy()
+                }
+            }
+                val themeName = getThemeName() ?: "Primary"
+                applyTheme(themeName)
+                applySize(getPrimaryFontsize(), getSecondaryFontsize())
+
     }
 
+    private fun applySize(savedPrimaryFontSize: Float, savedSecondaryFontSize:Float) {
+
+
+        lifecycleScope.launch {
+
+            binding.let { bindingitem ->
+
+
+                val textInputEditText: AutoCompleteTextView = bindingitem.autocompletePositiontextview
+                textInputEditText.setTextSize(TypedValue.COMPLEX_UNIT_SP, savedPrimaryFontSize)
+
+                val textInputEditText2: AutoCompleteTextView = bindingitem.autocompleteStructuretextview
+                textInputEditText2.setTextSize(TypedValue.COMPLEX_UNIT_SP, savedPrimaryFontSize)
+
+
+                val hintTextView = bindingitem.textInputLayout1.editText as? AutoCompleteTextView
+                hintTextView?.setTextSize(TypedValue.COMPLEX_UNIT_SP, savedPrimaryFontSize)
+
+                val hintTextView2 = bindingitem.textInputLayout2.editText as? AutoCompleteTextView
+                hintTextView2?.setTextSize(TypedValue.COMPLEX_UNIT_SP, savedPrimaryFontSize)
+
+
+                bindingitem.editText.textSize = savedPrimaryFontSize
+                bindingitem.editText2.textSize = savedPrimaryFontSize
+                bindingitem.editText3.textSize = savedSecondaryFontSize
+            }
+
+        }
+
+
+
+    }
+
+    private fun getPrimaryFontsize(): Float {
+        val sp = requireActivity().getSharedPreferences("setting_prefs", Context.MODE_PRIVATE)
+        return sp.getFloat("primaryFontsize", 16.0F)
+    }
+
+    private fun getSecondaryFontsize(): Float {
+        val sp = requireActivity().getSharedPreferences("setting_prefs", Context.MODE_PRIVATE)
+
+        return sp.getFloat("secondaryFontsize", 12.0F)
+    }
     private fun applyTheme(themeName: String) {
         lifecycleScope.launch {
-            if (themeName == "Secondary") {
-                binding.Main.background = ContextCompat.getDrawable(
-                    requireContext(),
-                    R.color.bottom_nav_color2_2
-                )
-                binding.NestedScrollView.background = ContextCompat.getDrawable(
-                    requireContext(),
-                    R.color.bottom_nav_color2_2
-                )
 
-                val hintColor = ContextCompat.getColor(requireContext(), R.color.White)
+            binding.let { bindingitem ->
+                if (themeName == "Secondary") {
 
-                val colorStateList =ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.Black))
+                    bindingitem.textView.setTextColor(ContextCompat.getColor(requireContext(), R.color.White))
 
-                binding.editText.setHintTextColor(hintColor)
-                binding.editText2.setHintTextColor(hintColor)
-                binding.editText3.setHintTextColor(hintColor)
-                binding.textInputLayout1.setHintTextColor(colorStateList)
-                binding.textInputLayout2.setHintTextColor(colorStateList)
+                    bindingitem.Main.background = ContextCompat.getDrawable(
+                        requireContext(),
+                        R.color.bottom_nav_color2_2
+                    )
+                    bindingitem.NestedScrollView.background = ContextCompat.getDrawable(
+                        requireContext(),
+                        R.color.bottom_nav_color2_2
+                    )
+
+
+
+
+
+                    val hintColor = ContextCompat.getColor(requireContext(), R.color.White)
+
+                    val colorStateList = ColorStateList.valueOf(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.DeepPurple
+                        )
+                    )
+
+                    bindingitem.editText.setHintTextColor(hintColor)
+                    bindingitem.editText2.setHintTextColor(hintColor)
+                    bindingitem.editText3.setHintTextColor(hintColor)
+                    bindingitem.editText.setTextColor(hintColor)
+                    bindingitem.editText2.setTextColor(hintColor)
+                    bindingitem.editText3.setTextColor(hintColor)
+                    bindingitem.textInputLayout1.setHintTextColor(colorStateList)
+                    bindingitem.textInputLayout2.setHintTextColor(colorStateList)
+
+                    val autoCompleteTextView = binding.autocompletePositiontextview
+                    autoCompleteTextView.setTextColor(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.ComingUpRoses
+                        )
+                    )
+
+                    val autoCompleteTextView2 = binding.autocompleteStructuretextview
+                    autoCompleteTextView2.setTextColor(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.ComingUpRoses
+                        )
+                    )
+                }
             }
         }
     }
@@ -116,58 +210,79 @@ class VacancyCreateFragment : BaseFragment<FragmentVacancyCreateBinding>(Fragmen
         viewModel.loading.observe(viewLifecycleOwner) { isLoading ->
             lifecycleScope.launch(Dispatchers.Main) {
                 delay(2000)
-                if (isLoading) {
-                    binding.includeProgressbar.progressBar.visible()
-                    binding.mainConstraintLayout.gone()
-                    binding.NestedScrollView.gone()
-                } else {
-                    binding.includeProgressbar.progressBar.gone()
-                    binding.mainConstraintLayout.visible()
-                    binding.NestedScrollView.visible()
+                if (isAdded && viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)){
+                    binding?.let {
+                        if (isLoading) {
+                            it.includeProgressbar.progressBar.visible()
+                            it.mainConstraintLayout.gone()
+                            it.NestedScrollView.gone()
+                        } else {
+                            it.includeProgressbar.progressBar.gone()
+                            it.mainConstraintLayout.visible()
+                            it.NestedScrollView.visible()
+                        }
+                    }
                 }
             }
         }
 
         viewModel.error.observe(viewLifecycleOwner) { errorMessage ->
             if (!errorMessage.isNullOrBlank()) {
-                Log.e("VacancyCreate", errorMessage)
-                customResultDialog("Unsuccessful!", errorMessage, R.color.MellowMelon)
+                if (isAdded && viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)){
+                    Log.e("VacancyCreate", errorMessage)
+                    binding?.let {
+                        customResultDialog("Unsuccessful!", errorMessage, R.color.MellowMelon)
+                    }
+                }
             }
         }
 
         viewModel.positions.observe(viewLifecycleOwner) { positions ->
-            positionMap.clear()
-            positions.forEach { position ->
-                positionMap[position.name] = position.id.toString()
+            if (isAdded && viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)){
+                positionMap.clear()
+                positions.forEach { position ->
+                    positionMap[position.name] = position.id.toString()
+                }
+                binding?.let {
+                    setupAutoCompleteTextView()
+                }
             }
-            setupAutoCompleteTextView()
         }
 
         viewModel.structures.observe(viewLifecycleOwner) { structures ->
-            structureMap.clear()
-            structures.forEach { structure ->
-                structureMap[structure.name] = structure.id.toString()
+            if (isAdded && viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)){
+                structureMap.clear()
+                structures.forEach { structure ->
+                    structureMap[structure.name] = structure.id.toString()
+                }
+                binding?.let {
+                    setupAutoCompleteTextView()
+                }
             }
-            setupAutoCompleteTextView()
         }
 
         viewModel.completeResult.observe(viewLifecycleOwner) { completeResult ->
             lifecycleScope.launch {
-                if (completeResult) {
-                    customResultDialog(
-                        "Successful!",
-                        "Please wait a moment, we are preparing for you...",
-                        R.color.DeepPurple
-                    )
-                    delay(2500)
-                    findNavController().navigate(VacancyCreateFragmentDirections.actionVacancyCreateFragmentToVacancyReadFragment())
-                } else {
-                    delay(2500)
-                    findNavController().navigate(VacancyCreateFragmentDirections.actionVacancyCreateFragmentToOperationFragment())
+                if (isAdded && viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)){
+                    if (completeResult) {
+                        binding?.let {
+                            customResultDialog(
+                                "Successful!",
+                                "Please wait a moment, we are preparing for you...",
+                                R.color.DeepPurple
+                            )
+                        }
+                        delay(2500)
+                        findNavController().navigate(VacancyCreateFragmentDirections.actionVacancyCreateFragmentToVacancyReadFragment())
+                    } else {
+                        delay(2500)
+                        findNavController().navigate(VacancyCreateFragmentDirections.actionVacancyCreateFragmentToOperationFragment())
+                    }
                 }
             }
         }
     }
+
 
     private suspend fun fetchAndSetupData() {
         val positions = viewModel.getAllPositions()

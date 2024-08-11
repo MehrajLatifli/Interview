@@ -3,6 +3,7 @@ package com.example.interview.views.fragments.accounttype
 import android.content.Context
 import android.os.Bundle
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.interview.R
@@ -22,7 +23,7 @@ class AccountTypeFragment  : BaseFragment<FragmentAccountTypeBinding>(FragmentAc
 
 
     private var accountTypeList = arrayListOf(
-        AccountType(R.drawable.person_1, "Admin"),
+//        AccountType(R.drawable.person_1, "Admin"),
         AccountType(R.drawable.person_2, "HR"),
 
     )
@@ -65,8 +66,23 @@ class AccountTypeFragment  : BaseFragment<FragmentAccountTypeBinding>(FragmentAc
             }
         }
 
+        val themeName = getThemeName() ?: "Primary"
+        applyTheme(themeName)
+    }
 
+    private fun getThemeName(): String? {
+        val sharedPreferences = requireContext().getSharedPreferences("setting_prefs", Context.MODE_PRIVATE)
+        return sharedPreferences.getString("themeName", null)
+    }
 
+    private fun applyTheme(themeName: String) {
+        if (themeName == "Secondary") {
+            binding?.apply {
+                Main.background = ContextCompat.getDrawable(requireContext(), R.color.bottom_nav_color2_2)
+
+                textView.setTextColor(ContextCompat.getColor(requireContext(), R.color.White))
+            }
+        }
     }
 
 
