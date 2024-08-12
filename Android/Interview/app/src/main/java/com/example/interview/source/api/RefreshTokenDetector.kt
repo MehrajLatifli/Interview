@@ -29,11 +29,15 @@ class RefreshTokenDetector @Inject constructor(
 
     fun startTokenRefreshing() {
         job = CoroutineScope(Dispatchers.IO).launch {
-            delay(2 * 1000)
 
-            while (isActive) {
-                if (getUserAuth() == true) {
-                    delay(25 * 60 * 1000)
+            refreshToken()
+
+
+            delay(30 * 60 * 1000)
+
+            if (getUserAuth() == true) {
+                while (isActive) {
+                    delay(30 * 60 * 1000)
                     try {
                         semaphore.acquire()
                         refreshToken()
@@ -50,6 +54,7 @@ class RefreshTokenDetector @Inject constructor(
             val accessToken = getApiKey()
             val refreshToken = getRefreshToken()
 
+
             if (accessToken != null && refreshToken != null) {
                 val response = apiManager.refreshToken(RefreshTokenRequest(accessToken, refreshToken))
                 if (response.isSuccessful) {
@@ -65,9 +70,11 @@ class RefreshTokenDetector @Inject constructor(
                 }
             } else {
                 Log.e("RefreshTokenDetector", "Access token or refresh token is null")
+                handleTokenRefreshFailure(401)
             }
         } catch (e: Exception) {
             Log.e("RefreshTokenDetector", "Exception refreshing tokens: ${e.message}")
+            handleTokenRefreshFailure(500)
         }
     }
 
@@ -75,7 +82,6 @@ class RefreshTokenDetector @Inject constructor(
         when (statusCode) {
             401 -> {
                 Log.e("RefreshTokenDetector", "Unauthorized access - Tokens might be expired")
-
                 clearTokens()
                 navigateToLogin()
             }
@@ -90,6 +96,12 @@ class RefreshTokenDetector @Inject constructor(
         with(sharedPreferences.edit()) {
             remove("api_key")
             remove("refresh_token")
+            apply()
+        }
+
+        val sharedPreferences2 = context.getSharedPreferences("authresult_local", Context.MODE_PRIVATE)
+        with(sharedPreferences2.edit()) {
+            remove("isAuth")
             apply()
         }
     }
