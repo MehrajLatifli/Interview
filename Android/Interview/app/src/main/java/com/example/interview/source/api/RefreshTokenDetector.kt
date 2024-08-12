@@ -33,9 +33,9 @@ class RefreshTokenDetector @Inject constructor(
             refreshToken()
 
 
-            delay(30 * 60 * 1000)
+            delay(1 * 1000)
 
-            if (getUserAuth() == true) {
+
                 while (isActive) {
                     delay(30 * 60 * 1000)
                     try {
@@ -45,7 +45,6 @@ class RefreshTokenDetector @Inject constructor(
                         semaphore.release()
                     }
                 }
-            }
         }
     }
 
@@ -53,6 +52,7 @@ class RefreshTokenDetector @Inject constructor(
         try {
             val accessToken = getApiKey()
             val refreshToken = getRefreshToken()
+
 
 
             if (accessToken != null && refreshToken != null) {

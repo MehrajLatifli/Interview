@@ -14,7 +14,6 @@ import com.example.interview.source.api.Resource
 import com.example.interview.source.api.repositories.auth.AuthRepository
 import com.example.interview.source.api.repositories.profile.ProfileRepository
 import com.example.interview.source.local.repositories.EntityRepository
-import com.example.interview.utilities.Constants.API_KEY
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -48,7 +47,6 @@ class ProfileViewModel  @Inject constructor(private val profileRepository: Profi
 
         viewModelScope.launch {
 
-            Log.e("profiles API_kEY", API_KEY)
             delay(2500)
             profileRepository.getprofile().collectLatest { response: Resource<ProfileResponse> ->
 

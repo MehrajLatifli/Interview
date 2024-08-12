@@ -15,8 +15,6 @@ import com.example.interview.source.api.repositories.auth.AuthRepository
 import com.example.interview.source.local.mapping.toLoginEntity
 import com.example.interview.source.local.mapping.toLoginResponse
 import com.example.interview.source.local.repositories.EntityRepository
-import com.example.interview.utilities.Constants.API_KEY
-import com.example.interview.utilities.Constants.RefreshToken
 import com.example.interview.utilities.decryptWithAsync
 import com.example.interview.utilities.encryptWithAsync
 import com.example.interview.utilities.generateAESKey
@@ -112,15 +110,14 @@ class AuthViewModel @Inject constructor(
                     _decryptedText.value =
                         decryptWithAsync(response.token!!, _hash.value!!, secretKey)!!
 
-                    API_KEY = _decryptedText.value!!
-                    RefreshToken = itemResponse.refreshToken
+
 
                     _authResult.postValue(true)
 
                     deleteAllEntity()
                     saveEntity(entity)
 
-                    onCredentialsGenerated(API_KEY, RefreshToken)
+                    onCredentialsGenerated( _decryptedText.value!!, itemResponse.refreshToken)
                 } else {
                     _error.value = "No token found"
                     _loginResponses.value = emptyList()
