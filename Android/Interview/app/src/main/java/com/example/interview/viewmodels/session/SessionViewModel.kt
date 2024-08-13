@@ -187,32 +187,7 @@ class SessionViewModel @Inject constructor(
 
 
 
-    fun getAllSession(): List<SessionResponse> {
-        _loading.value = true
-        viewModelScope.launch {
 
-            sessionRepository.getAllSession().collect { result ->
-
-                when (result) {
-                    is Resource.Success -> {
-                        _loading.postValue(false)
-                        _sessions.postValue(result.data ?: emptyList())
-                        Log.d("SessionViewModel", "Sessions: ${result.data}")
-                    }
-
-                    is Resource.Error -> {
-                        _loading.postValue(false)
-                        _error.postValue(result.message ?: "Unknown error")
-                        Log.e("SessionViewModel", result.message ?: "Unknown error")
-                    }
-                }
-            }
-
-
-        }
-
-        return _sessions.value.orEmpty()
-    }
 
     fun getAllOwnSession(): List<SessionResponse> {
         _loading.value = true

@@ -7,12 +7,15 @@
 
         <domain includeSubdomains="true">192.168.0.189</domain>
         <domain includeSubdomains="true">192.168.22.189</domain>
+        <domain includeSubdomains="true">192.168.22.180</domain>
         <domain includeSubdomains="true">172.26.112.1</domain>
         <domain includeSubdomains="true">172.25.112.1</domain>
         <domain includeSubdomains="true">172.21.112.1</domain>
+        <domain includeSubdomains="true">172.24.176.1</domain>
         <domain includeSubdomains="true">192.168.22.6</domain>
         <domain includeSubdomains="true">host.docker.internal</domain>
         <domain includeSubdomains="true">192.168.0.175</domain>
+        <domain includeSubdomains="true">7339-185-146-112-100.ngrok-free.app</domain>
 
     </domain-config>
 

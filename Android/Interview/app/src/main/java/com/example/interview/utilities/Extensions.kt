@@ -96,18 +96,21 @@ fun downloadImage(imageUrl: String, callback: (Bitmap?) -> Unit) {
 }
 
 
+
 fun ImageView.loadImageWithGlideAndResizeFromUrl(imageUrl: String, context: Context) {
+
     // Define RequestOptions
     val options = RequestOptions()
-        .placeholder(R.drawable.ic_launcher_background) // Replace with actual drawable resource ID
-        .error(R.drawable.ic_launcher_background) // Replace with actual drawable resource ID
+        .placeholder(R.color.White) // Replace with actual drawable resource ID
+        .error(R.color.MellowMelon) // Replace with actual drawable resource ID
         .dontAnimate()
         .override(500,500)
         .diskCacheStrategy(DiskCacheStrategy.ALL)
 
     try {
 
-        val replacedUrl = imageUrl.replace("http://host.docker.internal", "http://10.0.2.2")
+//        val replacedUrl = imageUrl.replace("http://host.docker.internal", "http://10.0.2.2")
+       val replacedUrl = imageUrl.replace("http://host.docker.internal", "http://192.168.22.189")
 
         // Download the image
 

@@ -21,6 +21,8 @@ import com.example.interview.R
 import com.example.interview.databinding.CustomresultdialogBinding
 import com.example.interview.databinding.FragmentCandidateDetailBinding
 import com.example.interview.databinding.FragmentCandidateReadBinding
+import com.example.interview.utilities.Constants.FileURL
+import com.example.interview.utilities.Constants.HostURL
 import com.example.interview.utilities.gone
 import com.example.interview.utilities.loadImageWithGlideAndResize
 import com.example.interview.utilities.visible
@@ -196,7 +198,7 @@ class CandidateDetailFragment  : BaseFragment<FragmentCandidateDetailBinding>(
     private fun openFile(url: String) {
         if (url.isNotEmpty()) {
             try {
-                val replacedUrl = url.replace("http://host.docker.internal", "http://10.0.2.2")
+                val replacedUrl = url.replace("http://host.docker.internal", FileURL)
                 val intent = Intent(Intent.ACTION_VIEW).apply {
                     setDataAndType(Uri.parse(replacedUrl), getMimeType(replacedUrl))
                     flags = Intent.FLAG_ACTIVITY_NO_HISTORY or Intent.FLAG_GRANT_READ_URI_PERMISSION

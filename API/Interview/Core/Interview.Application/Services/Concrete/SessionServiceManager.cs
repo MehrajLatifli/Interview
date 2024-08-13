@@ -191,7 +191,7 @@ namespace Interview.Application.Services.Concrete
                     if (_sessionReadRepository.GetAll(false).AsEnumerable().Any(i => i.UserId == currentuserid))
                     {
 
-                        return datas;
+                        return datas.Where(i=>i.UserId==currentuserid).ToList();
                     }
                     else
                     {
@@ -338,7 +338,7 @@ namespace Interview.Application.Services.Concrete
                     {
                       var currentuserid =  _userReadRepository.GetAll(false).AsEnumerable().Where(i => i.UserName == claimsPrincipal.Identity.Name).FirstOrDefault().Id;
 
-                        if (_sessionReadRepository.GetAll(false).AsEnumerable().Any(i => i.UserId == currentuserid))
+                        if (_sessionReadRepository.GetAll(false).AsEnumerable().Any(i => i.UserId == currentuserid && i.Id==id))
                         {
                             var sessinquestions = _sessionQuestionReadRepository.GetAll(false).AsEnumerable().Where(i => i.SessionId == id);
                             foreach (var item in sessinquestions.ToList())
