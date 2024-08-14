@@ -119,9 +119,9 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
     private fun applyTheme(themeName: String) {
         if (themeName == "Secondary") {
             binding?.apply {
-                Main.background = ContextCompat.getDrawable(requireContext(), R.color.bottom_nav_color2_2)
-                rvVacancies.background = ContextCompat.getDrawable(requireContext(), R.color.bottom_nav_color2_2)
-                rvCandidates.background = ContextCompat.getDrawable(requireContext(), R.color.bottom_nav_color2_2)
+                Main.background = ContextCompat.getDrawable(requireContext(), R.color.Black)
+                rvVacancies.background = ContextCompat.getDrawable(requireContext(), R.color.Black)
+                rvCandidates.background = ContextCompat.getDrawable(requireContext(), R.color.Black)
             }
         }
     }

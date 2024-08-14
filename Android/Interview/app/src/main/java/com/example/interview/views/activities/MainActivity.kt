@@ -145,7 +145,7 @@ class MainActivity : AppCompatActivity() {
                         )
 
                 binding.includeBottomnav.BottomNavigationView.background =
-                    ContextCompat.getDrawable(this@MainActivity, R.color.bottom_nav_color2_2)
+                    ContextCompat.getDrawable(this@MainActivity, R.color.Black)
 
                 activeIndicatorColor = ColorStateList.valueOf(
                     ContextCompat.getColor(

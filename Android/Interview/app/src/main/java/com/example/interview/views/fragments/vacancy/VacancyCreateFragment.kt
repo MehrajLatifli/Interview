@@ -152,11 +152,11 @@ class VacancyCreateFragment : BaseFragment<FragmentVacancyCreateBinding>(Fragmen
 
                     bindingitem.Main.background = ContextCompat.getDrawable(
                         requireContext(),
-                        R.color.bottom_nav_color2_2
+                        R.color.Black
                     )
                     bindingitem.NestedScrollView.background = ContextCompat.getDrawable(
                         requireContext(),
-                        R.color.bottom_nav_color2_2
+                        R.color.Black
                     )
 
 

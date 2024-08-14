@@ -183,11 +183,11 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
             if (themeName == "Secondary") {
                 binding.Main.background = ContextCompat.getDrawable(
                     requireContext(),
-                    R.color.bottom_nav_color2_2
+                    R.color.Black
                 )
                 binding.NestedScrollView.background = ContextCompat.getDrawable(
                     requireContext(),
-                    R.color.bottom_nav_color2_2
+                    R.color.Black
                 )
             }
         }

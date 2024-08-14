@@ -74,8 +74,8 @@ class OperationFragment : BaseFragment<FragmentOperationBinding>(
     private fun applyTheme(themeName: String) {
         lifecycleScope.launch {
             if (themeName == "Secondary") {
-                binding.Main.background = ContextCompat.getDrawable(requireContext(), R.color.bottom_nav_color2_2)
-                binding.NestedScrollView.background = ContextCompat.getDrawable(requireContext(), R.color.bottom_nav_color2_2)
+                binding.Main.background = ContextCompat.getDrawable(requireContext(), R.color.Black)
+                binding.NestedScrollView.background = ContextCompat.getDrawable(requireContext(), R.color.Black)
             }
         }
     }

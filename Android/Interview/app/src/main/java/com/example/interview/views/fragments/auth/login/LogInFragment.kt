@@ -190,7 +190,7 @@ class LogInFragment : BaseFragment<FragmentLogInBinding>(FragmentLogInBinding::i
     private fun applyTheme(themeName: String) {
         if (themeName == "Secondary") {
             binding?.apply {
-                Main.background = ContextCompat.getDrawable(requireContext(), R.color.bottom_nav_color2_2)
+                Main.background = ContextCompat.getDrawable(requireContext(), R.color.Black)
                 editText.setTextColor(ContextCompat.getColor(requireContext(), R.color.White))
                 editText3.setTextColor(ContextCompat.getColor(requireContext(), R.color.White))
                 editText.setHintTextColor(ContextCompat.getColor(requireContext(), R.color.White))

@@ -152,11 +152,11 @@ class CandidateCreateFragment : BaseFragment<FragmentCandidateCreateBinding>(
                 binding.let {
                     it.Main.background = ContextCompat.getDrawable(
                         requireContext(),
-                        R.color.bottom_nav_color2_2
+                        R.color.Black
                     )
                     it.NestedScrollView.background = ContextCompat.getDrawable(
                         requireContext(),
-                        R.color.bottom_nav_color2_2
+                        R.color.Black
                     )
 
                     val hintColor = ContextCompat.getColor(requireContext(), R.color.White)
