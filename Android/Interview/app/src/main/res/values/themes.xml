@@ -1,9 +1,13 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.Interview" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary">@color/FernGreen</item>
+        <item name="colorPrimaryVariant">@color/FernGreen</item>
+        <item name="colorOnPrimary">@color/FernGreen</item>
     </style>
+
+
+
 
     <!-- Custom style for TextInputLayout with outlined box and exposed dropdown menu -->
     <style name="CustomTextInputLayoutStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">

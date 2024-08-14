@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.AnimationUtils
 import androidx.core.content.ContextCompat
+import androidx.core.view.WindowCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -70,7 +71,16 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
 
 
 
-
+            if (getThemeName() == "Secondary") {
+                activity?.window?.let { window ->
+                    WindowCompat.getInsetsController(window, window.decorView).apply {
+                        isAppearanceLightStatusBars = false
+                        isAppearanceLightNavigationBars = false
+                    }
+                    window.statusBarColor = ContextCompat.getColor(requireContext(), R.color.Black)
+                    window.navigationBarColor = ContextCompat.getColor(requireContext(), R.color.DeepPurple)
+                }
+            }
 
 
 
