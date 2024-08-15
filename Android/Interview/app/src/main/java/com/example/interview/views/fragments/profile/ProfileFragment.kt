@@ -2,6 +2,8 @@ package com.example.interview.views.fragments.profile
 
 import android.app.AlertDialog
 import android.content.Context
+import android.content.IntentFilter
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -15,6 +17,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.interview.R
 import com.example.interview.databinding.CustomresultdialogBinding
 import com.example.interview.databinding.FragmentProfileBinding
+import com.example.interview.models.responses.get.profile.ProfileResponse
+import com.example.interview.utilities.NetworkChangeReceiver
 import com.example.interview.utilities.gone
 import com.example.interview.utilities.loadImageWithGlideAndResize
 import com.example.interview.utilities.loadImageWithGlideAndResizeFromUrl
@@ -37,38 +41,47 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
     private val userClaimAdapder = UserClaimAdapder()
     private val roleAdapter = RoleAdapter()
 
+    private val networkChangeReceiver = NetworkChangeReceiver { isConnected ->
+        if (isAdded && isVisible) {
+            handleNetworkStatusChange(isConnected)
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         // Initial binding setup
 
-        binding?.includeProgressbar?.progressBar?.gone()
-        binding?.Maincardview?.gone()
-        binding?. NestedScrollView?.gone()
-        binding?. LogOutButton?.gone()
 
-            viewModel.getprofile()
-            observeData()
+        binding?.includeProgressbar?.progressBar?.gone()
+
+
 
         binding?.rvuserClaims?.adapter = userClaimAdapder
         binding?.rvroles?.adapter = roleAdapter
 
+        requireContext().registerReceiver(networkChangeReceiver, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
+
+
+
         binding?.LogOutButton?.setOnClickListener {
-                setUserAuth()
-                viewModel.logout()
-                lifecycleScope.launch {
-                    delay(250)
-                    customresultdialog(
-                        requireContext(),
-                        "Successful!",
-                        "Please wait a moment, we are preparing for you...",
-                        R.color.DeepPurple
-                    )
-                    delay(1500)
-                    findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToLogInFragment())
-                }
+            setUserAuth()
+            viewModel.logout()
+            lifecycleScope.launch {
+                delay(250)
+                customresultdialog(
+                    requireContext(),
+                    "Successful!",
+                    "Please wait a moment, we are preparing for you...",
+                    R.color.DeepPurple
+                )
+                delay(1500)
+                findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToLogInFragment())
+            }
 
         }
+
+
 
         val themeName = getThemeName() ?: "Primary"
         applyTheme(themeName)
@@ -81,8 +94,99 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
 
     override fun onDestroyView() {
         super.onDestroyView()
+        requireContext().unregisterReceiver(networkChangeReceiver)
         viewModel.profiles.removeObservers(viewLifecycleOwner)
+
     }
+
+    private fun handleNetworkStatusChange(isConnected: Boolean) {
+        // Safeguard against null binding
+        lifecycleScope.launch {
+            if (isAdded && viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+                binding?.let { bitem ->
+                    if (isConnected) {
+
+                        bitem.Maincardview.gone()
+                        bitem.NestedScrollView.gone()
+                        bitem.LogOutButton.visible()
+
+
+
+                        delay(200)
+
+
+                        viewModel.getprofile()
+                        observeData()
+
+
+
+
+                        // Update UI with profile data if available
+                        val profiles = viewModel.getprofile()?: emptyList()
+                        val userClaims = viewModel.userclaims.value ?: emptyList()
+                        val roles = viewModel.roles.value ?: emptyList()
+                        bitem.userClaimstextView.text = "Userclaims:"
+                        bitem.rolestextView.text = "Roles:"
+                        if (profiles.isNotEmpty()) {
+                            profiles.forEach { profile ->
+                                // Handle nullable imagePath
+                                val imagePath = profile.imagePath
+                                if (imagePath != null && imagePath.isNotBlank()) {
+                                    // Load image from URL
+                                    bitem.profileimageView.loadImageWithGlideAndResizeFromUrl(imagePath, requireContext())
+
+                                    bitem.usernametextView.text=profile.username
+                                    bitem.emailtextView.text=profile.email
+
+                                } else {
+                                    // Set default image or hide ImageView
+                                    bitem.profileimageView.setImageResource(R.color.MellowMelon)
+                                    // Alternatively, hide the ImageView
+                                    // bitem.profileimageView.visibility = View.GONE
+                                }
+                                profile.permitions.forEach { permissions ->
+                                    userClaimAdapder.updateList(permissions.userClaims)
+                                    roleAdapter.updateList(permissions.roles)
+                                }
+                            }
+
+
+                            userClaimAdapder.updateList(userClaims)
+                            roleAdapter.updateList(roles)
+
+
+
+
+                            bitem.Maincardview.visible()
+                            bitem.NestedScrollView.visible()
+                            bitem.LogOutButton.visible()
+
+
+                        }
+
+
+                    } else {
+
+
+                        bitem.Maincardview.gone()
+                        bitem.NestedScrollView.gone()
+                        bitem.LogOutButton.gone()
+                        // When disconnected from the network
+                        bitem.userClaimstextView.text = ""
+                        bitem.rolestextView.text = ""
+                        bitem.usernametextView.text = ""
+                        bitem.emailtextView.text = ""
+
+
+
+                        userClaimAdapder.updateList(emptyList())
+                        roleAdapter.updateList(emptyList())
+                    }
+                }
+            }
+            }
+    }
+
 
     private fun applySize(savedPrimaryFontSize: Float, savedSecondaryFontSize:Float) {
 
@@ -141,6 +245,9 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
     }
 
     private fun observeData() {
+
+
+
         viewModel.loading.observe(viewLifecycleOwner) { isLoading ->
             lifecycleScope.launch {
                 if (isAdded && viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
@@ -148,6 +255,9 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
                         if (isLoading) {
                             delay(250)
                             bitem?.includeProgressbar?.progressBar?.visible()
+                            bitem?.Maincardview?.gone()
+                            bitem?.NestedScrollView?.gone()
+
                             delay(250)
                         } else {
                             bitem?.includeProgressbar?.progressBar?.gone()
@@ -155,7 +265,6 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
                             bitem?.apply {
                                 Maincardview.visible()
                                 NestedScrollView.visible()
-                                LogOutButton.visible()
                             }
                         }
                     }
@@ -167,12 +276,14 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
             if (!errorMessage.isNullOrBlank()) {
                 if (isAdded && viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
                     binding?.let {
-                        customresultdialog(
-                            requireContext(),
-                            "UnSuccessful!",
-                            errorMessage,
-                            R.color.MellowMelon
-                        )
+                        if (viewModel?.profiles?.value?.isNullOrEmpty()==false) {
+                            customresultdialog(
+                                requireContext(),
+                                "UnSuccessful!",
+                                errorMessage,
+                                R.color.MellowMelon
+                            )
+                        }
                     }
                 }
             }

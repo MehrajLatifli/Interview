@@ -2,7 +2,9 @@ package com.example.interview.views.fragments.session
 
 import android.app.AlertDialog
 import android.content.Context
+import android.content.IntentFilter
 import android.content.res.ColorStateList
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -10,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import android.widget.ArrayAdapter
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -28,6 +31,7 @@ import com.example.interview.models.localadapdermodels.questionvalue.QuestionVal
 import com.example.interview.models.responses.get.session.SessionResponse
 import com.example.interview.models.responses.get.sessionquestion.SessionQuestionResponse
 import com.example.interview.models.responses.post.session.SessionRequest
+import com.example.interview.utilities.NetworkChangeReceiver
 import com.example.interview.utilities.gone
 import com.example.interview.utilities.loadImageWithGlideAndResize
 import com.example.interview.utilities.visible
@@ -51,6 +55,12 @@ class SessionUpdateFragment : BaseFragment<FragmentSessionUpdateBinding>(Fragmen
     private val args: SessionUpdateFragmentArgs by navArgs()
     private var sessionQuestionId: Int = 0
 
+    private val networkChangeReceiver = NetworkChangeReceiver { isConnected ->
+        if (isAdded && isVisible) {
+            handleNetworkStatusChange(isConnected)
+        }
+    }
+
     val questionValues = arrayListOf(
         QuestionValue(1),
         QuestionValue(2),
@@ -63,6 +73,9 @@ class SessionUpdateFragment : BaseFragment<FragmentSessionUpdateBinding>(Fragmen
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        requireContext().registerReceiver(networkChangeReceiver, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
+
 
         viewModel.getSessionQuestionBySessionId(args.session.id!!.toInt())
         observeData()
@@ -130,10 +143,27 @@ class SessionUpdateFragment : BaseFragment<FragmentSessionUpdateBinding>(Fragmen
     }
 
     override fun onDestroyView() {
+        requireContext().unregisterReceiver(networkChangeReceiver)
         viewModel?.vacancies?.removeObservers(viewLifecycleOwner)
         viewModel?.sessions?.removeObservers(viewLifecycleOwner)
         viewModel?.profiles?.removeObservers(viewLifecycleOwner)
         super.onDestroyView()
+    }
+
+
+    private fun handleNetworkStatusChange(isConnected: Boolean) {
+        binding?.let { bitem ->
+            if (isConnected) {
+
+              observeData()
+
+            } else {
+
+                questionAdapter.updateList(emptyList())
+                bitem.buttonFinishExam.gone()
+
+            }
+        }
     }
 
     private fun applyTheme(themeName: String) {

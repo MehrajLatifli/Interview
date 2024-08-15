@@ -42,7 +42,7 @@ class ProfileViewModel  @Inject constructor(private val profileRepository: Profi
 
 
 
-    fun getprofile() {
+    fun getprofile(): List<ProfileResponse> {
         _loading.value = true
 
         viewModelScope.launch {
@@ -92,6 +92,8 @@ class ProfileViewModel  @Inject constructor(private val profileRepository: Profi
             }
 
         }
+
+        return _profiles.value.orEmpty()
     }
 
 

@@ -2,6 +2,8 @@ package com.example.interview.views.fragments.home
 
 import android.app.AlertDialog
 import android.content.Context
+import android.content.IntentFilter
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -17,6 +19,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.interview.R
 import com.example.interview.databinding.CustomresultdialogBinding
 import com.example.interview.databinding.FragmentHomeBinding
+import com.example.interview.models.responses.get.vacancy.VacancyResponse
+import com.example.interview.utilities.NetworkChangeReceiver
 import com.example.interview.utilities.gone
 import com.example.interview.utilities.loadImageWithGlideAndResize
 import com.example.interview.utilities.visible
@@ -41,8 +45,16 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
     private var size2: Int = 0
     private var size3: Int = 0
 
+    private val networkChangeReceiver = NetworkChangeReceiver { isConnected ->
+        if (isAdded && isVisible) {
+            handleNetworkStatusChange(isConnected)
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        requireContext().registerReceiver(networkChangeReceiver, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
 
         binding?.let { bitem ->
             // Initialize adapters with visibility settings
@@ -68,9 +80,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
             size2 = viewModel.getAllCandidateDocuments().size
             size3 = viewModel.getAllOwnSession().size
 
-
-
-
             if (getThemeName() == "Secondary") {
                 activity?.window?.let { window ->
                     WindowCompat.getInsetsController(window, window.decorView).apply {
@@ -82,15 +91,9 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                 }
             }
 
-
-
-
-
-
             bitem.rvVacancies.adapter = vacancyAdapter
             bitem.rvCandidates.adapter = candidateAdapter
             bitem.rvSessions.adapter = sessionAdapder
-
 
             swipeRefreshLayout = bitem.swipeRefreshLayout
             swipeRefreshLayout.setColorSchemeColors(
@@ -104,16 +107,45 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
             observeData()
             val themeName = getThemeName() ?: "Primary"
             applyTheme(themeName)
-
-
         }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        // Unregister the receiver to avoid memory leaks and crashes
+        requireContext().unregisterReceiver(networkChangeReceiver)
         viewModel.vacancies.removeObservers(viewLifecycleOwner)
         viewModel.sessions.removeObservers(viewLifecycleOwner)
         viewModel.candidateDocuments.removeObservers(viewLifecycleOwner)
+    }
+
+    private fun handleNetworkStatusChange(isConnected: Boolean) {
+        binding?.let { bitem ->
+            if (isConnected) {
+
+                    bitem.sessiontextView.text = "Sessions:"
+                    bitem.vacancytextView.text = "Vacancies:"
+                    bitem.candidatetextView.text = "Candidates:"
+
+                val vacancies = viewModel.getAllVacancies() ?: emptyList()
+                val candidates = viewModel.getAllCandidateDocuments()?: emptyList()
+                val sessions = viewModel.getAllOwnSession() ?: emptyList()
+
+                vacancyAdapter.updateList(vacancies)
+                candidateAdapter.updateList(candidates)
+                sessionAdapder.updateList(sessions)
+
+
+                }else {
+                    bitem.sessiontextView.text = ""
+                    bitem.vacancytextView.text = ""
+                    bitem.candidatetextView.text = ""
+                    vacancyAdapter.updateList(emptyList())
+                    candidateAdapter.updateList(emptyList())
+                    sessionAdapder.updateList(emptyList())
+                }
+
+        }
     }
 
     private fun applyTheme(themeName: String) {
@@ -136,10 +168,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                         R.anim.item_layout_animation
                     )
                     bitem.rvVacancies.layoutAnimation = layoutAnimationController
-
-
-
-
                 }
             }
         }
@@ -153,8 +181,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                         R.anim.item_layout_animation
                     )
                     bitem.rvCandidates.layoutAnimation = layoutAnimationController
-
-
                 }
             }
         }
@@ -168,9 +194,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                         R.anim.item_layout_animation
                     )
                     bitem.rvSessions.layoutAnimation = layoutAnimationController
-
-
-
                 }
             }
         }

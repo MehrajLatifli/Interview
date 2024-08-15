@@ -2,8 +2,10 @@ package com.example.interview.views.fragments.session
 
 import android.app.AlertDialog
 import android.content.Context
+import android.content.IntentFilter
 import android.content.res.ColorStateList
 import android.graphics.drawable.Drawable
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.util.Log
 import android.util.TypedValue
@@ -12,7 +14,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -22,6 +23,7 @@ import com.example.interview.R
 import com.example.interview.databinding.CustomresultdialogBinding
 import com.example.interview.databinding.FragmentSessionCreateBinding
 import com.example.interview.models.responses.post.session.SessionRequest
+import com.example.interview.utilities.NetworkChangeReceiver
 import com.example.interview.utilities.gone
 import com.example.interview.utilities.loadImageWithGlideAndResize
 import com.example.interview.utilities.visible
@@ -44,10 +46,18 @@ class SessionCreateFragment : BaseFragment<FragmentSessionCreateBinding>(Fragmen
     private var sessionOwnerId: String = ""
     private var size: Int = 0
 
+    private val networkChangeReceiver = NetworkChangeReceiver { isConnected ->
+        if (isAdded && isVisible) {
+            handleNetworkStatusChange(isConnected)
+        }
+    }
+
     private val viewModel by viewModels<SessionViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        requireContext().registerReceiver(networkChangeReceiver, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
 
         setupUI()
         observeData()
@@ -59,26 +69,60 @@ class SessionCreateFragment : BaseFragment<FragmentSessionCreateBinding>(Fragmen
 
     override fun onDestroyView() {
         super.onDestroyView()
+        requireContext().unregisterReceiver(networkChangeReceiver)
         viewModel.vacancies.removeObservers(viewLifecycleOwner)
         viewModel.sessions.removeObservers(viewLifecycleOwner)
         viewModel.profiles.removeObservers(viewLifecycleOwner)
     }
 
+    private fun handleNetworkStatusChange(isConnected: Boolean) {
+        binding?.let { bitem ->
+            if (isConnected) {
+
+
+                val ft = parentFragmentManager.beginTransaction()
+                ft.detach(this@SessionCreateFragment).attach(this@SessionCreateFragment).commit()
+
+
+                val vacancyAdapter = ArrayAdapter(requireContext(), R.layout.item_dropdownlist, vacancyMap.keys.toList())
+                bitem.autocompleteVacancytextview.setAdapter(vacancyAdapter)
+
+                val candidateAdapter = ArrayAdapter(requireContext(), R.layout.item_dropdownlist, candidateMap.keys.toList())
+                bitem.autocompleteCandidatetextview.setAdapter(candidateAdapter)
+
+                bitem.mainConstraintLayout.visible()
+                bitem.NestedScrollView.visible()
+
+
+            } else {
+
+                val ft = parentFragmentManager.beginTransaction()
+                ft.detach(this@SessionCreateFragment).attach(this@SessionCreateFragment).commit()
+
+                val vacancyAdapter = ArrayAdapter<String>(requireContext(), R.layout.item_dropdownlist, emptyList())
+                bitem.autocompleteVacancytextview.setAdapter(vacancyAdapter)
+
+                val candidateAdapter = ArrayAdapter<String>(requireContext(), R.layout.item_dropdownlist, emptyList())
+                bitem.autocompleteCandidatetextview.setAdapter(candidateAdapter)
+
+                bitem.mainConstraintLayout.gone()
+                bitem.NestedScrollView.gone()
+            }
+        }
+    }
+
     private fun setupUI() {
-        val dropdownBackground: Drawable? =
-            ContextCompat.getDrawable(requireContext(), R.drawable.autocompletetextview_radiuscolor)
+        val dropdownBackground: Drawable? = ContextCompat.getDrawable(requireContext(), R.drawable.autocompletetextview_radiuscolor)
         binding.autocompleteVacancytextview.setDropDownBackgroundDrawable(dropdownBackground)
         binding.autocompleteCandidatetextview.setDropDownBackgroundDrawable(dropdownBackground)
 
         binding.autocompleteVacancytextview.setOnItemClickListener { _, _, position, _ ->
-            val selectedItemName =
-                binding.autocompleteVacancytextview.adapter.getItem(position) as? String
+            val selectedItemName = binding.autocompleteVacancytextview.adapter.getItem(position) as? String
             selectedVacancyId = vacancyMap[selectedItemName] ?: ""
         }
 
         binding.autocompleteCandidatetextview.setOnItemClickListener { _, _, position, _ ->
-            val selectedItemName =
-                binding.autocompleteCandidatetextview.adapter.getItem(position) as? String
+            val selectedItemName = binding.autocompleteCandidatetextview.adapter.getItem(position) as? String
             selectedCandidateId = candidateMap[selectedItemName] ?: ""
         }
 
@@ -99,7 +143,6 @@ class SessionCreateFragment : BaseFragment<FragmentSessionCreateBinding>(Fragmen
         binding.NestedScrollView.gone()
 
         viewModel.getprofile()
-
         size = viewModel.getAllOwnSession().size
 
         fetchAndSetupData()
@@ -138,45 +181,19 @@ class SessionCreateFragment : BaseFragment<FragmentSessionCreateBinding>(Fragmen
     private fun applyTheme(themeName: String) {
         lifecycleScope.launch {
             if (isAdded) {
-
                 if (themeName == "Secondary") {
+                    binding.Main.background = ContextCompat.getDrawable(requireContext(), R.color.Black)
+                    binding.NestedScrollView.background = ContextCompat.getDrawable(requireContext(), R.color.Black)
+                    binding.textView.setTextColor(ContextCompat.getColor(requireContext(), R.color.White))
 
-                    binding.Main.background = ContextCompat.getDrawable(
-                        requireContext(),
-                        R.color.Black
-                    )
-                    binding.NestedScrollView.background = ContextCompat.getDrawable(
-                        requireContext(),
-                        R.color.Black
-                    )
 
-                    val colorStateList = ColorStateList.valueOf(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.DeepPurple
-                        )
-                    )
-
+                    val colorStateList = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.DeepPurple))
                     binding.textInputLayout1.setHintTextColor(colorStateList)
                     binding.textInputLayout2.setHintTextColor(colorStateList)
 
-                    val autoCompleteTextView = binding.autocompleteCandidatetextview
-                    autoCompleteTextView.setTextColor(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.DeepPurple
-                        )
-                    )
-
-                    val autoCompleteTextView2 = binding.autocompleteVacancytextview
-                    autoCompleteTextView2.setTextColor(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.DeepPurple
-                        )
-                    )
+                    binding.autocompleteCandidatetextview.setTextColor(ContextCompat.getColor(requireContext(), R.color.DeepPurple))
+                    binding.autocompleteVacancytextview.setTextColor(ContextCompat.getColor(requireContext(), R.color.DeepPurple))
                 }
-
             }
         }
     }
@@ -197,7 +214,6 @@ class SessionCreateFragment : BaseFragment<FragmentSessionCreateBinding>(Fragmen
         viewModel.loading.observe(viewLifecycleOwner) { isLoading ->
             lifecycleScope.launch {
                 if (isAdded && viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
-
                     if (isLoading) {
                         binding.includeProgressbar.progressBar.visible()
                         binding.mainConstraintLayout.gone()
@@ -244,11 +260,7 @@ class SessionCreateFragment : BaseFragment<FragmentSessionCreateBinding>(Fragmen
             lifecycleScope.launch {
                 if (isAdded && viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
                     if (completeResult) {
-                        customResultDialog(
-                            "Successful!",
-                            "Please wait a moment, we are preparing for you...",
-                            R.color.DeepPurple
-                        )
+                        customResultDialog("Successful!", "Please wait a moment, we are preparing for you...", R.color.DeepPurple)
                         delay(2500)
                         findNavController().navigate(SessionCreateFragmentDirections.actionSessionCreateFragmentToSessionReadFragment())
                     } else {
@@ -267,13 +279,13 @@ class SessionCreateFragment : BaseFragment<FragmentSessionCreateBinding>(Fragmen
             vacancies.forEach { vacancy ->
                 vacancyMap[vacancy.title] = vacancy.id.toString()
             }
-            setupAutoCompleteTextView()
 
             val candidateDocuments = viewModel.getAllCandidateDocuments()
             candidateMap.clear()
             candidateDocuments.forEach { candidate ->
                 candidateMap[candidate.name] = candidate.id.toString()
             }
+
             setupAutoCompleteTextView()
         }
     }

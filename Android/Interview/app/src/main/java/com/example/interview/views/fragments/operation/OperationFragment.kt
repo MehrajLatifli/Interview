@@ -1,7 +1,9 @@
 package com.example.interview.views.fragments.operation
 
 import android.content.Context
+import android.content.IntentFilter
 import android.content.res.ColorStateList
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
@@ -11,6 +13,7 @@ import com.example.interview.R
 import com.example.interview.databinding.FragmentOperationBinding
 import com.example.interview.models.localadapdermodels.operationcrud.Operation
 import com.example.interview.models.localadapdermodels.operationtype.OperationType
+import com.example.interview.utilities.NetworkChangeReceiver
 import com.example.interview.utilities.gone
 import com.example.interview.views.adapters.operationtype.OperationTypeAdapder
 import com.example.interview.views.fragments.base.BaseFragment
@@ -20,6 +23,12 @@ import kotlinx.coroutines.launch
 
 class OperationFragment : BaseFragment<FragmentOperationBinding>(
     FragmentOperationBinding::inflate) {
+
+    private val networkChangeReceiver = NetworkChangeReceiver { isConnected ->
+        if (isAdded && isVisible) {
+            handleNetworkStatusChange(isConnected)
+        }
+    }
 
     private val operations = arrayListOf(
         Operation("Create", R.drawable.create),
@@ -35,6 +44,9 @@ class OperationFragment : BaseFragment<FragmentOperationBinding>(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        requireContext().registerReceiver(networkChangeReceiver, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
+
 
         binding.includeProgressbar.progressBar.gone()
 
@@ -54,6 +66,27 @@ class OperationFragment : BaseFragment<FragmentOperationBinding>(
         operationTypeAdapder.updateList(operationTypeList)
 
         applySize(getPrimaryFontsize(), getSecondaryFontsize())
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        requireContext().unregisterReceiver(networkChangeReceiver)
+    }
+
+    private fun handleNetworkStatusChange(isConnected: Boolean) {
+        binding?.let { bitem ->
+            if (isConnected) {
+
+
+                val operationTypeList = operationTypeList ?: emptyList()
+                operationTypeAdapder.updateList(operationTypeList)
+
+            } else {
+
+                operationTypeAdapder.updateList(emptyList())
+            }
+        }
     }
 
     private fun navigateToFragment(selectedItemText: String, operationTypeText: String) {

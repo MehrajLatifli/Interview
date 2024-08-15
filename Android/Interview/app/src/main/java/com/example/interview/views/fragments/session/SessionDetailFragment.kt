@@ -2,6 +2,8 @@ package com.example.interview.views.fragments.session
 
 import android.app.AlertDialog
 import android.content.Context
+import android.content.IntentFilter
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.util.Log
 import android.util.TypedValue
@@ -9,6 +11,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
@@ -19,6 +22,7 @@ import com.example.interview.R
 import com.example.interview.databinding.CustomresultdialogBinding
 import com.example.interview.databinding.FragmentSessionCreateBinding
 import com.example.interview.databinding.FragmentSessionDetailBinding
+import com.example.interview.utilities.NetworkChangeReceiver
 import com.example.interview.utilities.gone
 import com.example.interview.utilities.loadImageWithGlideAndResize
 import com.example.interview.utilities.visible
@@ -40,8 +44,16 @@ class SessionDetailFragment : BaseFragment<FragmentSessionDetailBinding>(Fragmen
     private val args: SessionDetailFragmentArgs by navArgs()
     private val viewModel by viewModels<SessionViewModel>()
 
+    private val networkChangeReceiver = NetworkChangeReceiver { isConnected ->
+        if (isAdded && isVisible) {
+            handleNetworkStatusChange(isConnected)
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        requireContext().registerReceiver(networkChangeReceiver, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
 
         // Ensure binding is not null and view is created
         binding?.let { bitem ->
@@ -73,10 +85,33 @@ class SessionDetailFragment : BaseFragment<FragmentSessionDetailBinding>(Fragmen
     }
 
     override fun onDestroyView() {
+        requireContext().unregisterReceiver(networkChangeReceiver)
         viewModel?.vacancies?.removeObservers(viewLifecycleOwner)
         viewModel?.sessions?.removeObservers(viewLifecycleOwner)
         viewModel?.profiles?.removeObservers(viewLifecycleOwner)
         super.onDestroyView()
+    }
+
+    private fun handleNetworkStatusChange(isConnected: Boolean) {
+        binding?.let { bitem ->
+            if (isConnected) {
+
+
+                observeData()
+
+                bitem.NestedScrollView.visible()
+            } else {
+
+                bitem.textView1.text=""
+                bitem.textView2.text=""
+                bitem.textView3.text=""
+                bitem.textView4.text=""
+                bitem.textView5.text=""
+                bitem.textView6.text=""
+
+                bitem.NestedScrollView.gone()
+            }
+        }
     }
 
     private fun applySize(savedPrimaryFontSize: Float, savedSecondaryFontSize:Float) {

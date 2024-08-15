@@ -2,25 +2,26 @@ package com.example.interview.views.fragments.session
 
 import android.app.AlertDialog
 import android.content.Context
+import android.content.IntentFilter
+import android.net.ConnectivityManager
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.interview.R
 import com.example.interview.databinding.CustomresultdialogBinding
 import com.example.interview.databinding.FragmentSessionReadBinding
-import com.example.interview.models.responses.post.sessionquestion.RandomQuestionRequest2
+import com.example.interview.utilities.NetworkChangeReceiver
 import com.example.interview.utilities.gone
 import com.example.interview.utilities.loadImageWithGlideAndResize
 import com.example.interview.utilities.visible
@@ -32,7 +33,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.concurrent.locks.ReentrantLock
-import kotlin.concurrent.withLock
+
 
 @AndroidEntryPoint
 class SessionReadFragment : BaseFragment<FragmentSessionReadBinding>(FragmentSessionReadBinding::inflate) {
@@ -45,14 +46,24 @@ class SessionReadFragment : BaseFragment<FragmentSessionReadBinding>(FragmentSes
     private val bindingLock = ReentrantLock()
     private val bindingLock2 = ReentrantLock()
 
+    private val networkChangeReceiver = NetworkChangeReceiver { isConnected ->
+        if (isAdded && isVisible) {
+            handleNetworkStatusChange(isConnected)
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        requireContext().registerReceiver(networkChangeReceiver, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
+
+        binding.createButton.gone()
 
 
         binding?.let { bitem ->
 
             bitem?.rvSessions?.adapter = sessionAdapder
+
 
             observeData()
 
@@ -139,9 +150,7 @@ class SessionReadFragment : BaseFragment<FragmentSessionReadBinding>(FragmentSes
 
 
 
-            binding.createButton.setOnClickListener {
-                findNavController().navigate(SessionReadFragmentDirections.actionSessionReadFragmentToSessionCreateFragment())
-            }
+
 
 
             val themeName = getThemeName() ?: "Primary"
@@ -154,10 +163,49 @@ class SessionReadFragment : BaseFragment<FragmentSessionReadBinding>(FragmentSes
     }
 
     override fun onDestroyView() {
+        requireContext().unregisterReceiver(networkChangeReceiver)
         viewModel?.vacancies?.removeObservers(viewLifecycleOwner)
         viewModel?.sessions?.removeObservers(viewLifecycleOwner)
         viewModel?.profiles?.removeObservers(viewLifecycleOwner)
         super.onDestroyView()
+    }
+
+    private fun handleNetworkStatusChange(isConnected: Boolean) {
+        lifecycleScope.launch {
+            if (isAdded && viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+                binding?.let { bitem ->
+                    if (isConnected) {
+
+
+                        binding.createButton.setOnClickListener {
+                            findNavController().navigate(SessionReadFragmentDirections.actionSessionReadFragmentToSessionCreateFragment())
+                        }
+
+                        val ft = parentFragmentManager.beginTransaction()
+                        ft.detach(this@SessionReadFragment).attach(this@SessionReadFragment).commit()
+
+                        bitem.NestedScrollView.visible()
+
+                        observeData()
+
+
+                    } else {
+
+
+                        val ft = parentFragmentManager.beginTransaction()
+                        ft.detach(this@SessionReadFragment).attach(this@SessionReadFragment).commit()
+
+                        bitem.createButton.gone()
+                        bitem.NestedScrollView.gone()
+                        sessionAdapder.updateList(emptyList())
+
+
+
+
+                    }
+                }
+            }
+        }
     }
 
     private fun applySize(savedPrimaryFontSize: Float, savedSecondaryFontSize:Float) {
