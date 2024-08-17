@@ -45,16 +45,11 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
     private var size2: Int = 0
     private var size3: Int = 0
 
-    private val networkChangeReceiver = NetworkChangeReceiver { isConnected ->
-        if (isAdded && isVisible) {
-            handleNetworkStatusChange(isConnected)
-        }
-    }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        requireContext().registerReceiver(networkChangeReceiver, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
 
         binding?.let { bitem ->
             // Initialize adapters with visibility settings
@@ -112,41 +107,13 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
 
     override fun onDestroyView() {
         super.onDestroyView()
-        // Unregister the receiver to avoid memory leaks and crashes
-        requireContext().unregisterReceiver(networkChangeReceiver)
+
         viewModel.vacancies.removeObservers(viewLifecycleOwner)
         viewModel.sessions.removeObservers(viewLifecycleOwner)
         viewModel.candidateDocuments.removeObservers(viewLifecycleOwner)
     }
 
-    private fun handleNetworkStatusChange(isConnected: Boolean) {
-        binding?.let { bitem ->
-            if (isConnected) {
 
-                    bitem.sessiontextView.text = "Sessions:"
-                    bitem.vacancytextView.text = "Vacancies:"
-                    bitem.candidatetextView.text = "Candidates:"
-
-                val vacancies = viewModel.getAllVacancies() ?: emptyList()
-                val candidates = viewModel.getAllCandidateDocuments()?: emptyList()
-                val sessions = viewModel.getAllOwnSession() ?: emptyList()
-
-                vacancyAdapter.updateList(vacancies)
-                candidateAdapter.updateList(candidates)
-                sessionAdapder.updateList(sessions)
-
-
-                }else {
-                    bitem.sessiontextView.text = ""
-                    bitem.vacancytextView.text = ""
-                    bitem.candidatetextView.text = ""
-                    vacancyAdapter.updateList(emptyList())
-                    candidateAdapter.updateList(emptyList())
-                    sessionAdapder.updateList(emptyList())
-                }
-
-        }
-    }
 
     private fun applyTheme(themeName: String) {
         if (themeName == "Secondary") {

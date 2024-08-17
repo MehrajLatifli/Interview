@@ -445,6 +445,18 @@ class SessionViewModel @Inject constructor(
 
                         _loading.postValue(false)
                         _afterDeleteResult.postValue(true)
+                        sessionRepository.getAllOwnSession().collect { sessionsResult ->
+                            when (sessionsResult) {
+                                is Resource.Success -> {
+                                    _sessions.postValue(sessionsResult.data ?: emptyList())
+                                }
+                                is Resource.Error -> {
+                                    _sessions.postValue(emptyList())
+                                    _error.postValue(sessionsResult.message ?: "Unknown error")
+                                    Log.e("SessionViewModel", "Error fetching sessions: ${sessionsResult.message}")
+                                }
+                            }
+                        }
                         Log.d("SessionViewModel", "Session deleted successfully")
                     }
 

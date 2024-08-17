@@ -55,11 +55,7 @@ class SessionUpdateFragment : BaseFragment<FragmentSessionUpdateBinding>(Fragmen
     private val args: SessionUpdateFragmentArgs by navArgs()
     private var sessionQuestionId: Int = 0
 
-    private val networkChangeReceiver = NetworkChangeReceiver { isConnected ->
-        if (isAdded && isVisible) {
-            handleNetworkStatusChange(isConnected)
-        }
-    }
+
 
     val questionValues = arrayListOf(
         QuestionValue(1),
@@ -73,9 +69,6 @@ class SessionUpdateFragment : BaseFragment<FragmentSessionUpdateBinding>(Fragmen
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        requireContext().registerReceiver(networkChangeReceiver, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
-
 
         viewModel.getSessionQuestionBySessionId(args.session.id!!.toInt())
         observeData()
@@ -143,7 +136,6 @@ class SessionUpdateFragment : BaseFragment<FragmentSessionUpdateBinding>(Fragmen
     }
 
     override fun onDestroyView() {
-        requireContext().unregisterReceiver(networkChangeReceiver)
         viewModel?.vacancies?.removeObservers(viewLifecycleOwner)
         viewModel?.sessions?.removeObservers(viewLifecycleOwner)
         viewModel?.profiles?.removeObservers(viewLifecycleOwner)
@@ -151,20 +143,7 @@ class SessionUpdateFragment : BaseFragment<FragmentSessionUpdateBinding>(Fragmen
     }
 
 
-    private fun handleNetworkStatusChange(isConnected: Boolean) {
-        binding?.let { bitem ->
-            if (isConnected) {
 
-              observeData()
-
-            } else {
-
-                questionAdapter.updateList(emptyList())
-                bitem.buttonFinishExam.gone()
-
-            }
-        }
-    }
 
     private fun applyTheme(themeName: String) {
         lifecycleScope.launch {

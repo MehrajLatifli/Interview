@@ -44,18 +44,12 @@ class SessionDetailFragment : BaseFragment<FragmentSessionDetailBinding>(Fragmen
     private val args: SessionDetailFragmentArgs by navArgs()
     private val viewModel by viewModels<SessionViewModel>()
 
-    private val networkChangeReceiver = NetworkChangeReceiver { isConnected ->
-        if (isAdded && isVisible) {
-            handleNetworkStatusChange(isConnected)
-        }
-    }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        requireContext().registerReceiver(networkChangeReceiver, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
 
-        // Ensure binding is not null and view is created
         binding?.let { bitem ->
             bitem.includeProgressbar.progressBar.visible()
             bitem.NestedScrollView.gone()
@@ -85,34 +79,12 @@ class SessionDetailFragment : BaseFragment<FragmentSessionDetailBinding>(Fragmen
     }
 
     override fun onDestroyView() {
-        requireContext().unregisterReceiver(networkChangeReceiver)
         viewModel?.vacancies?.removeObservers(viewLifecycleOwner)
         viewModel?.sessions?.removeObservers(viewLifecycleOwner)
         viewModel?.profiles?.removeObservers(viewLifecycleOwner)
         super.onDestroyView()
     }
 
-    private fun handleNetworkStatusChange(isConnected: Boolean) {
-        binding?.let { bitem ->
-            if (isConnected) {
-
-
-                observeData()
-
-                bitem.NestedScrollView.visible()
-            } else {
-
-                bitem.textView1.text=""
-                bitem.textView2.text=""
-                bitem.textView3.text=""
-                bitem.textView4.text=""
-                bitem.textView5.text=""
-                bitem.textView6.text=""
-
-                bitem.NestedScrollView.gone()
-            }
-        }
-    }
 
     private fun applySize(savedPrimaryFontSize: Float, savedSecondaryFontSize:Float) {
 

@@ -46,18 +46,13 @@ class SessionCreateFragment : BaseFragment<FragmentSessionCreateBinding>(Fragmen
     private var sessionOwnerId: String = ""
     private var size: Int = 0
 
-    private val networkChangeReceiver = NetworkChangeReceiver { isConnected ->
-        if (isAdded && isVisible) {
-            handleNetworkStatusChange(isConnected)
-        }
-    }
+
 
     private val viewModel by viewModels<SessionViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        requireContext().registerReceiver(networkChangeReceiver, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
 
         setupUI()
         observeData()
@@ -69,47 +64,11 @@ class SessionCreateFragment : BaseFragment<FragmentSessionCreateBinding>(Fragmen
 
     override fun onDestroyView() {
         super.onDestroyView()
-        requireContext().unregisterReceiver(networkChangeReceiver)
         viewModel.vacancies.removeObservers(viewLifecycleOwner)
         viewModel.sessions.removeObservers(viewLifecycleOwner)
         viewModel.profiles.removeObservers(viewLifecycleOwner)
     }
 
-    private fun handleNetworkStatusChange(isConnected: Boolean) {
-        binding?.let { bitem ->
-            if (isConnected) {
-
-
-                val ft = parentFragmentManager.beginTransaction()
-                ft.detach(this@SessionCreateFragment).attach(this@SessionCreateFragment).commit()
-
-
-                val vacancyAdapter = ArrayAdapter(requireContext(), R.layout.item_dropdownlist, vacancyMap.keys.toList())
-                bitem.autocompleteVacancytextview.setAdapter(vacancyAdapter)
-
-                val candidateAdapter = ArrayAdapter(requireContext(), R.layout.item_dropdownlist, candidateMap.keys.toList())
-                bitem.autocompleteCandidatetextview.setAdapter(candidateAdapter)
-
-                bitem.mainConstraintLayout.visible()
-                bitem.NestedScrollView.visible()
-
-
-            } else {
-
-                val ft = parentFragmentManager.beginTransaction()
-                ft.detach(this@SessionCreateFragment).attach(this@SessionCreateFragment).commit()
-
-                val vacancyAdapter = ArrayAdapter<String>(requireContext(), R.layout.item_dropdownlist, emptyList())
-                bitem.autocompleteVacancytextview.setAdapter(vacancyAdapter)
-
-                val candidateAdapter = ArrayAdapter<String>(requireContext(), R.layout.item_dropdownlist, emptyList())
-                bitem.autocompleteCandidatetextview.setAdapter(candidateAdapter)
-
-                bitem.mainConstraintLayout.gone()
-                bitem.NestedScrollView.gone()
-            }
-        }
-    }
 
     private fun setupUI() {
         val dropdownBackground: Drawable? = ContextCompat.getDrawable(requireContext(), R.drawable.autocompletetextview_radiuscolor)

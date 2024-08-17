@@ -6,12 +6,15 @@ import android.content.IntentFilter
 import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -30,6 +33,7 @@ import com.example.interview.views.adapters.session.SessionAdapder
 import com.example.interview.views.fragments.base.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.concurrent.locks.ReentrantLock
@@ -45,6 +49,8 @@ class SessionReadFragment : BaseFragment<FragmentSessionReadBinding>(FragmentSes
     private var size: Int = 0
     private val bindingLock = ReentrantLock()
     private val bindingLock2 = ReentrantLock()
+
+    private var searchJob: Job? = null
 
     private val networkChangeReceiver = NetworkChangeReceiver { isConnected ->
         if (isAdded && isVisible) {
@@ -175,38 +181,27 @@ class SessionReadFragment : BaseFragment<FragmentSessionReadBinding>(FragmentSes
             if (isAdded && viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
                 binding?.let { bitem ->
                     if (isConnected) {
+                        bitem.NestedScrollView.visible()
+                        observeData()
+
+
 
 
                         binding.createButton.setOnClickListener {
                             findNavController().navigate(SessionReadFragmentDirections.actionSessionReadFragmentToSessionCreateFragment())
                         }
 
-                        val ft = parentFragmentManager.beginTransaction()
-                        ft.detach(this@SessionReadFragment).attach(this@SessionReadFragment).commit()
-
-                        bitem.NestedScrollView.visible()
-
-                        observeData()
-
-
                     } else {
-
-
-                        val ft = parentFragmentManager.beginTransaction()
-                        ft.detach(this@SessionReadFragment).attach(this@SessionReadFragment).commit()
-
+                        sessionAdapder.updateList(emptyList())
                         bitem.createButton.gone()
                         bitem.NestedScrollView.gone()
-                        sessionAdapder.updateList(emptyList())
-
-
-
-
                     }
                 }
             }
         }
     }
+
+
 
     private fun applySize(savedPrimaryFontSize: Float, savedSecondaryFontSize:Float) {
 

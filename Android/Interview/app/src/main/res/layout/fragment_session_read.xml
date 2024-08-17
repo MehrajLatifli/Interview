@@ -45,6 +45,9 @@
         app:layout_constraintStart_toEndOf="@id/itemimageView"
         app:layout_constraintTop_toTopOf="parent" />
 
+
+
+
     <androidx.core.widget.NestedScrollView
         android:id="@+id/NestedScrollView"
         android:layout_width="0dp"
