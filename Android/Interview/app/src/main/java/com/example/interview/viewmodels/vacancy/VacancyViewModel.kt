@@ -229,6 +229,20 @@ class VacancyViewModel @Inject constructor(
                         delay(500) // Simulate network delay
                         _loading.postValue(false)
                         _afterDeleteResult.postValue(true)
+
+                        vacancyRepository.getAllVacancies().collect { sessionsResult ->
+                            when (sessionsResult) {
+                                is Resource.Success -> {
+                                    _vacancies.postValue(sessionsResult.data ?: emptyList())
+                                }
+                                is Resource.Error -> {
+                                    _vacancies.postValue(emptyList())
+                                    _error.postValue(sessionsResult.message ?: "Unknown error")
+                                    Log.e("VacancyViewModel", "Error fetching sessions: ${sessionsResult.message}")
+                                }
+                            }
+                        }
+
                         Log.d("VacancyViewModel", "Vacancy deleted successfully")
                     }
                     is Resource.Error -> {

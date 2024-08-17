@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.view.animation.LayoutAnimationController
 import androidx.core.content.ContextCompat
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -31,6 +32,7 @@ import com.example.interview.views.fragments.auth.login.LogInFragmentDirections
 import com.example.interview.views.fragments.base.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -42,6 +44,7 @@ class CandidateReadFragment  : BaseFragment<FragmentCandidateReadBinding>(Fragme
 
     var candidateAdapter = CandidateAdapter()
 
+    private var searchJob: Job? = null
 
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
 
@@ -71,6 +74,7 @@ class CandidateReadFragment  : BaseFragment<FragmentCandidateReadBinding>(Fragme
 
 
 
+            bitem.SearcheditText.text=null
 
             bitem?.rvCandidates?.adapter = candidateAdapter
 
@@ -109,6 +113,27 @@ class CandidateReadFragment  : BaseFragment<FragmentCandidateReadBinding>(Fragme
                 )
             }
 
+            bitem.SearcheditText.addTextChangedListener { text ->
+
+
+                searchJob?.cancel()
+                searchJob = lifecycleScope.launch(Dispatchers.Main) {
+                    delay(100)
+
+                    candidateAdapter.updateList(viewModel.candidateDocuments.value ?: emptyList())
+
+                    val query = text.toString().trim().lowercase()
+                    val allitems = viewModel.candidateDocuments.value ?: emptyList()
+
+                    // Normalize and filter sessions based on partial matches
+                    val filteredSessions = allitems.filter { items ->
+                        val item = items.name?.lowercase() ?: ""
+                        item.contains(query)
+                    }
+
+                    candidateAdapter.updateList(filteredSessions)
+                }
+            }
 
         }
 

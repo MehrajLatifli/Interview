@@ -53,6 +53,10 @@ class RefreshTokenDetector @Inject constructor(
             val accessToken = getApiKey()
             val refreshToken = getRefreshToken()
 
+            if(apiManager.getprofile().body()==null){
+
+                clearTokens()
+            }
 
 
             if (accessToken != null && refreshToken != null) {

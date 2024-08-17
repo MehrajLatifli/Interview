@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.core.content.ContextCompat
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -30,6 +31,7 @@ import com.example.interview.views.fragments.base.BaseFragment
 import com.example.interview.views.fragments.candidate.CandidateReadFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -40,6 +42,9 @@ class VacancyReadFragment : BaseFragment<FragmentVacancyReadBinding>(FragmentVac
     private val viewModel by viewModels<VacancyViewModel>()
 
     var vacancyAdapter = VacancyAdapter()
+
+
+    private var searchJob: Job? = null
 
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
 
@@ -69,6 +74,30 @@ class VacancyReadFragment : BaseFragment<FragmentVacancyReadBinding>(FragmentVac
 
             observeData()
 
+
+            bitem.SearcheditText.text=null
+
+            bitem.SearcheditText.addTextChangedListener { text ->
+
+
+                searchJob?.cancel()
+                searchJob = lifecycleScope.launch(Dispatchers.Main) {
+                    delay(100)
+
+                    vacancyAdapter.updateList(viewModel.vacancies.value ?: emptyList())
+
+                    val query = text.toString().trim().lowercase()
+                    val allitems = viewModel.vacancies.value ?: emptyList()
+
+                    // Normalize and filter sessions based on partial matches
+                    val filteredSessions = allitems.filter { items ->
+                        val item = items.title?.lowercase() ?: ""
+                        item.contains(query)
+                    }
+
+                    vacancyAdapter.updateList(filteredSessions)
+                }
+            }
 
             vacancyAdapter.onClickDeleteItem = { id ->
 

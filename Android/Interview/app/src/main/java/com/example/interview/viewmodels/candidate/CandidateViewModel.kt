@@ -189,6 +189,16 @@ class CandidateViewModel @Inject constructor(private val candidateRepository: Ca
                 delay(500)
                 _loading.postValue(false)
                 _afterdeleteResult.postValue(true)
+
+                val refreshResult = candidateRepository.getAllCandidateDocuments()
+                if (refreshResult is Resource.Success) {
+                    _candidateDocuments.postValue(refreshResult.data ?: emptyList())
+                } else if (refreshResult is Resource.Error) {
+                    _candidateDocuments.postValue(emptyList())
+                    _error.postValue(refreshResult.message ?: "Unknown error")
+                    Log.e("CandidateViewModel", "Error refreshing candidate documents: ${refreshResult.message}")
+                }
+
                 Log.d("CandidateViewModel", "CandidateDocument deleted successfully")
             } else if (result is Resource.Error) {
                 _afterdeleteResult.postValue(false)
