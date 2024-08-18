@@ -28,7 +28,6 @@ class WalkthroughFragment : BaseFragment<FragmentWalkthroughBinding>(FragmentWal
 
         walkthroughAdapter.updateList(walkthroughList)
 
-
         binding.viewPager2.adapter = walkthroughAdapter
 
 
@@ -36,9 +35,6 @@ class WalkthroughFragment : BaseFragment<FragmentWalkthroughBinding>(FragmentWal
         val viewPager = binding.viewPager2
         viewPager.adapter = walkthroughAdapter
         dotsIndicator.attachTo(viewPager)
-
-
-
 
         binding.RegistrationButton.setOnClickListener{
 

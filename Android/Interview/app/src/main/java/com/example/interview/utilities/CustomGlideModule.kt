@@ -20,10 +20,10 @@ class CustomGlideModule : AppGlideModule() {
     override fun registerComponents(context: Context, glide: Glide, registry: Registry) {
         super.registerComponents(context, glide, registry)
 
-        // Create an unsafe OkHttp client
+
         val unsafeOkHttpClient = createUnsafeOkHttpClient()
 
-        // Replace the GlideUrl loader with OkHttpUrlLoader
+
         registry.replace(
             GlideUrl::class.java,
             InputStream::class.java,

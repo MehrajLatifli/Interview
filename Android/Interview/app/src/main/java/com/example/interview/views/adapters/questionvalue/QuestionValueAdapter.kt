@@ -33,7 +33,7 @@ class QuestionValueAdapter(
 
         holder.itemBinding.itemtextView.textSize=secondaryFontSize
 
-        // Highlight the selected item
+
         val isSelected = item.value.toString() == selectedItemValue
         val context = holder.itemView.context
 

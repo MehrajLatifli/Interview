@@ -16,7 +16,7 @@ class QuestionAdapter : BaseAdapter<Question, QuestionAdapter.QuestionViewHolder
 
     var itemClickHandler: ((selectedItemText: String, sessionQuestionId: Int) -> Unit)? = null
 
-    // Track selected item state for each question
+
     private val selectedItems = mutableMapOf<Int, String>()
 
 

@@ -62,10 +62,10 @@ class SessionDetailFragment : BaseFragment<FragmentSessionDetailBinding>(Fragmen
                 args.session.candidateId?.let { candidateId -> viewModel.getCandidateDocumentByID(candidateId) }
                 args.session.userId?.let { viewModel.getprofile() }
 
-                // Observe data after loading
+
                 observeData()
 
-                // Ensure UI updates are performed on the main thread
+
                 withContext(Dispatchers.Main) {
                     binding?.includeProgressbar?.progressBar?.gone()
                     binding?.NestedScrollView?.visible()
@@ -160,11 +160,11 @@ class SessionDetailFragment : BaseFragment<FragmentSessionDetailBinding>(Fragmen
     }
 
     private fun observeData() {
-        // Check if view is valid before observing
+
         if (isAdded && viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)){
 
             viewModel.loading.observe(viewLifecycleOwner) { isLoading ->
-                // Use 'binding?.let' to ensure binding is valid
+
                 binding?.let { bitem ->
                     if (isLoading) {
                         bitem.includeProgressbar.progressBar.visible()

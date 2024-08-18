@@ -57,7 +57,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
         requireContext().registerReceiver(networkChangeReceiver, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
 
         binding?.let { bitem ->
-            // Initialize adapters with visibility settings
+
             vacancyAdapter.apply {
                 setDeleteButtonVisibility(false)
                 setDetailButtonVisibility(false)
@@ -112,7 +112,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
 
     override fun onDestroyView() {
         super.onDestroyView()
-        // Unregister the receiver to avoid memory leaks and crashes
+
         requireContext().unregisterReceiver(networkChangeReceiver)
         viewModel.vacancies.removeObservers(viewLifecycleOwner)
         viewModel.sessions.removeObservers(viewLifecycleOwner)

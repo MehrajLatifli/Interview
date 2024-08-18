@@ -48,11 +48,11 @@
 
     <EditText
         android:id="@+id/SearcheditText"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_width="175dp"
+        android:layout_height="25dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginTop="60dp"
+        android:layout_marginEnd="24dp"
         android:background="@drawable/rounded_edittext_bg"
         android:clickable="true"
         android:drawableLeft="@drawable/search"
@@ -62,17 +62,18 @@
         android:fontFamily="@font/nunito_light"
         android:hint="Search"
         android:inputType="textNoSuggestions"
-        android:maxLength="15"
+        android:maxLength="10"
         android:maxLines="1"
         android:paddingLeft="5dp"
         android:paddingRight="5dp"
         android:textColor="@color/DeepPurple"
         android:textColorHint="@color/DeepPurple"
-        android:textSize="20dp"
+        android:textSize="16dp"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/itemimageView" />
+        app:layout_constraintHorizontal_bias="0.25"
+        app:layout_constraintStart_toEndOf="@+id/itemtextView"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/NestedScrollView"

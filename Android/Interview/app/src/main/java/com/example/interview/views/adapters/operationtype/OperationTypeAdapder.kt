@@ -48,7 +48,7 @@ class OperationTypeAdapder : BaseAdapter<OperationType, OperationTypeAdapder.Ope
 
         holder.itemBinding.itemtextView.textSize = primaryFontSize
 
-        // Set color based on item.text
+
         val context = holder.itemView.context
         val (bgColor, cardColor, textColor) = when (item.text) {
             "Candidate" -> Triple(R.color.ThickBlue, R.color.Indigo, R.color.ThickBlue)

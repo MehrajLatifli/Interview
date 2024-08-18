@@ -50,9 +50,6 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Initial binding setup
-
-
         binding?.includeProgressbar?.progressBar?.gone()
 
 
@@ -100,7 +97,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
     }
 
     private fun handleNetworkStatusChange(isConnected: Boolean) {
-        // Safeguard against null binding
+
         lifecycleScope.launch {
             if (isAdded && viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
                 binding?.let { bitem ->
@@ -119,9 +116,6 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
                         observeData()
 
 
-
-
-                        // Update UI with profile data if available
                         val profiles = viewModel.getprofile()?: emptyList()
                         val userClaims = viewModel.userclaims.value ?: emptyList()
                         val roles = viewModel.roles.value ?: emptyList()
@@ -129,20 +123,19 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
                         bitem.rolestextView.text = "Roles:"
                         if (profiles.isNotEmpty()) {
                             profiles.forEach { profile ->
-                                // Handle nullable imagePath
+
                                 val imagePath = profile.imagePath
                                 if (imagePath != null && imagePath.isNotBlank()) {
-                                    // Load image from URL
+
                                     bitem.profileimageView.loadImageWithGlideAndResizeFromUrl(imagePath, requireContext())
 
                                     bitem.usernametextView.text=profile.username
                                     bitem.emailtextView.text=profile.email
 
                                 } else {
-                                    // Set default image or hide ImageView
+
                                     bitem.profileimageView.setImageResource(R.color.MellowMelon)
-                                    // Alternatively, hide the ImageView
-                                    // bitem.profileimageView.visibility = View.GONE
+
                                 }
                                 profile.permitions.forEach { permissions ->
                                     userClaimAdapder.updateList(permissions.userClaims)

@@ -112,12 +112,12 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
         }
 
         binding.buttonReset.setOnClickListener {
-            // Define default values
+
             val defaultPrimaryFontSize = 20.0F
             val defaultSecondaryFontSize = 16.0F
             val defaultThemeName = "Primary"
 
-            // Reset SharedPreferences
+
             val sharedPreferences = requireActivity().getSharedPreferences("setting_prefs", Context.MODE_PRIVATE)
             with(sharedPreferences.edit()) {
                 remove("primaryFontsize")
@@ -126,11 +126,11 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(FragmentSettingBind
                 apply()
             }
 
-            // Reset ViewModel
+
             viewModel?.setPrimaryFontSize(defaultPrimaryFontSize / 8.0f)
             viewModel?.setSecondaryFontSize(defaultSecondaryFontSize / 8.0f)
 
-            // Update UI
+
             binding?.let {
 
 

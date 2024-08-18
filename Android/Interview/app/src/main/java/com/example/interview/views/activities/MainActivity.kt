@@ -35,10 +35,10 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
-    private var isTransitionInProgress = false // Flag to track transition state
+    private var isTransitionInProgress = false
     private val handler = Handler(Looper.getMainLooper())
     private var isDebouncing = false
-    private val debounceDelay: Long = 100 // 1 second
+    private val debounceDelay: Long = 100
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,12 +70,12 @@ class MainActivity : AppCompatActivity() {
         navController.addOnDestinationChangedListener { _, destination, _ ->
             Log.d("MainActivity", "Current destination: ${destination.id}")
 
-            // Avoid overlapping transitions
+
             if (isTransitionInProgress) return@addOnDestinationChangedListener
 
             isTransitionInProgress = true
             lifecycleScope.launch {
-                delay(1000) // 1-second delay
+                delay(1000)
                 if (!supportFragmentManager.isStateSaved) {
                     if (!isFinishing && !isDestroyed) {
                         when (destination.id) {

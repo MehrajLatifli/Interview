@@ -265,8 +265,8 @@ class CandidateCreateFragment : BaseFragment<FragmentCandidateCreateBinding>(
 
     private fun openFilePicker() {
         val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
-            type = "*/*" // Allows selecting any file type
-            addCategory(Intent.CATEGORY_OPENABLE) // Ensures it opens file picker
+            type = "*/*"
+            addCategory(Intent.CATEGORY_OPENABLE)
         }
         startActivityForResult(intent, PICK_FILE_REQUEST_CODE)
     }

@@ -101,8 +101,8 @@ fun ImageView.loadImageWithGlideAndResizeFromUrl(imageUrl: String, context: Cont
 
     // Define RequestOptions
     val options = RequestOptions()
-        .placeholder(R.color.White) // Replace with actual drawable resource ID
-        .error(R.color.MellowMelon) // Replace with actual drawable resource ID
+        .placeholder(R.color.White)
+        .error(R.color.MellowMelon)
         .dontAnimate()
         .override(500,500)
         .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -111,9 +111,6 @@ fun ImageView.loadImageWithGlideAndResizeFromUrl(imageUrl: String, context: Cont
 
 //        val replacedUrl = imageUrl.replace("http://host.docker.internal", "http://10.0.2.2")
        val replacedUrl = imageUrl.replace("http://host.docker.internal", "http://192.168.22.189")
-
-        // Download the image
-
 
 
         GlideApp.with(context)
