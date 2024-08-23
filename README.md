@@ -6,6 +6,9 @@
 
 <a href="/Android/README.MD">Android</a> 
 
+<br/>
+
 ## Watch This Video
 
-<iframe width="560" height="315" src="https://www.youtube.com/watch?v=4pZnOiu7PtQ" frameborder="0" allowfullscreen></iframe>
+[![Video Thumbnail](https://img.youtube.com/vi/4pZnOiu7PtQ/0.jpg)](https://www.youtube.com/watch?v=4pZnOiu7PtQ)
+
